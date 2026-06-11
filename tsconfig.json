@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020"],
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@sinclair/*": ["./node_modules/@sinclair/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "/opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@types"
+    ]
+  },
+  "include": [
+    ".pi/extensions/**/*.ts",
+    "helpers/extensions/**/*.ts"
+  ]
+}
