@@ -1,0 +1,25 @@
+{
+  "globalEnabled": true,
+  "rules": {
+    "pathProtection": {
+      "enabled": true,
+      "bannedPaths": [
+        ".pi/settings",
+        "node_modules",
+        ".git",
+        ".ssh"
+      ],
+      "level": "hard"
+    },
+    "contentFiltering": {
+      "enabled": true,
+      "patterns": [
+        {
+          "name": "SecretKey",
+          "regex": "(?i)(api_key|secret|password|token)\\s*[:=]\\s*['\"].+['\"]",
+          "level": "hard"
+        }
+      ]
+    }
+  }
+}

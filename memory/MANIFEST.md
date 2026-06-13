@@ -3,9 +3,9 @@ This manifest provides a high-density index of the project's long-term memory. U
 
 ## 🧠 Mindbase (Procedural - "How")
 | File | Focus | Key Truths | Rec. Mode |
-|------|-------|-----------|----------|
 | `identity/MANDATES.md` | Core Law | Executor mindset, No Discovery, cmd Loop | `full` |
-| `processes/TASK_MANAGEMENT.md` | Task Flow | `ideas.md` (Incubator) $\rightarrow$ `todo.md` (Commitment) | `full` |
+| `processes/memory_management.md` | Knowledge Flow | L1->L2->L3 Pipeline, Knowledge Tax, Issue flow | `full` |
+| `processes/TASK_MANAGEMENT.md` | Task Flow | `ideas.md` (Incubator) -> `todo.md` (Commitment) | `full` |
 | `processes/EXECUTION_PACKET.md` | C2 Protocol | Packet structure for Manager -> Worker dispatch | `full` |
 | `processes/LEAN_CTX_STANDARD.md` | ctx Ops | Golden Workflow, Tool Mapping, Risk Gates | `map` |
 | `processes/TASK_EXECUTION.md` | Task Pipeline | Phases 0-6, AC, Convergence Proof | `map` |
@@ -15,7 +15,6 @@ This manifest provides a high-density index of the project's long-term memory. U
 
 ## 📚 Knowledgebase (Declarative - "What")
 | File | Focus | Key Truths | Rec. Mode |
-|------|-------|-----------|----------|
 | `projects/lean-ctx-sse.md` | Memory Infra | SSE Bridge, Lazy-load, MCP tools | `map` |
 | `projects/system-design.md` | Architecture | High-level design decisions | `map` |
 | `projects/system-spec.md` | Specifications | Technical requirements and specs | `map` |
@@ -25,10 +24,7 @@ This manifest provides a high-density index of the project's long-term memory. U
 
 ## 📋 Root Architecture
 | File | Focus | Key Truths | Rec. Mode |
-|------|-------|-----------|----------|
 | `ARCHITECTURE.md` | Layout | Memory vs Helpers separation | `map` |
 | `ARCHITECTURE_HELPERS.md` | Helpers | Separation of Truth and Tool | `map` |
 
 **Note**: Implementation guides (`extension-refactoring.md`, `extensions-pattern.md`, `buddy-features.md`, `task-execution-runner.md`) remain in `knowledgebase/projects/` for reference and deep-dives. Skill definitions are the source of truth in `mindbase/skills/`.
-
-**Compressed 407 → 390 tokens (-4%)**
