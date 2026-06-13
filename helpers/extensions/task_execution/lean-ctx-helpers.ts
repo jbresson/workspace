@@ -172,6 +172,7 @@ export const manifest = {
 
 // Legacy: Default export for backward compatibility
 export default async function (pi: ExtensionAPI) {
+  // Register all tools
   for (const toolDef of Object.values(tools)) {
     pi.registerTool({
       name: toolDef.name,
@@ -179,6 +180,63 @@ export default async function (pi: ExtensionAPI) {
       parameters: toolDef.parameters,
       async execute(toolCallId, params, signal, onUpdate, ctx) {
         return toolDef.execute(toolCallId, params, pi);
+      },
+    });
+  }
+
+  // Register phase commands
+  const phaseCommands = [
+    {
+      phase: 0,
+      name: 'pi-task-ignition',
+      tools: ['task_ignition'],
+      description: 'Phase 0-1: Decompose goal, map project, warm cache, retrieve history',
+    },
+    {
+      phase: 1,
+      name: 'pi-task-plan',
+      tools: ['task_offload_finding', 'task_offload_decision'],
+      description: 'Phase 1-2: Planning and decision logging',
+    },
+    {
+      phase: 2,
+      name: 'pi-task-execute',
+      tools: ['task_offload_finding', 'task_log_risk'],
+      description: 'Phase 2-3: Execution with risk tracking',
+    },
+    {
+      phase: 3,
+      name: 'pi-task-validate',
+      tools: ['task_offload_finding', 'task_log_blocker'],
+      description: 'Phase 3-4: Validation and blocker resolution',
+    },
+    {
+      phase: 4,
+      name: 'pi-task-refine',
+      tools: ['task_offload_finding', 'task_remember_fact'],
+      description: 'Phase 4-5: Refinement and knowledge archival',
+    },
+    {
+      phase: 5,
+      name: 'pi-task-cooldown',
+      tools: ['task_cooldown'],
+      description: 'Phase 5-6: Consolidation and session closure',
+    },
+  ];
+
+  for (const phase of phaseCommands) {
+    pi.registerCommand(phase.name, {
+      description: phase.description,
+      handler: async (args) => {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `✓ ${phase.name} activated (Phase ${phase.phase})\nAvailable tools: ${phase.tools.join(', ')}`,
+            },
+          ],
+          details: { phase: phase.phase, tools: phase.tools },
+        };
       },
     });
   }

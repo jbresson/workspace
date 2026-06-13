@@ -13,8 +13,9 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@sinclair/*": ["./node_modules/@sinclair/*"]
-    },
+      "@sinclair/*": ["./node_modules/@sinclair/*"],
+      "@modelcontextprotocol/*": ["./node_modules/@modelcontextprotocol/*"]
+    },,
     "typeRoots": [
       "./node_modules/@types",
       "/opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/node_modules/@types"

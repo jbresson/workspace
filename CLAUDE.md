@@ -1,9 +1,13 @@
-# CLAUDE.md
+# Project Root
 
-## Project
-- **IDEAS.md**: thoughts we're brainstorming before adding to self
-- **DESIGN.md**: source-of-truth for agent design
-- **helpers**: directory of functionality to help accomplish tasks
-- **knowledgebase**: directory of gathered and personal facts and decisions
-- **mindbase**: directory of functionality that define how we think and accomplish tasks
-- **lean-ctx**: https://leanctx.com for memory management (API, maybe replacement for knowledgebase/mindbase)
+## 🗺️ Navigation
+All project intelligence is partitioned into the `/memory` directory. **Lazy load all context.**
+
+- **Index**: `memory/MANIFEST.md` (Consult this first to locate specific info).
+- **Constraints**: `memory/mindbase/identity/MANDATES.md` (Refer only if constraints are unclear).
+- **Workflow**: `memory/mindbase/processes/LEAN_CTX_STANDARD.md` (Refer for tool usage patterns).
+
+## 🛠️ Execution
+- **Philosophy**: Lazy-load everything. Do not auto-load files or directories.
+- Use `lean-ctx` tools exclusively.
+- Follow the **Execution Packet** standard for all sub-agent dispatches.
