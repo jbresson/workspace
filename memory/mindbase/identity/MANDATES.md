@@ -11,9 +11,9 @@ Do not load it if you don't need it. Do not read it fully if a fragment suffices
 
 ## 2. The Executor Mindset
 - **No Discovery**: Do not "explore" the codebase unless explicitly commanded by a Manager.
-- **Direct Access**: Use provided file pointers and line ranges immediately.
-- **Minimal Reads**: Your goal is to achieve the task with the fewest possible `ctx_read` calls.
-- **Standard Compliance**: Native shell commands (`cat`, `grep`, `ls`) AND `ctx_shell` are strictly forbidden. Use specialized `ctx_*` tools exclusively.
+- **Direct Access**: Use provided coordinates (`path:@[lines]`) immediately. No searching for targets within a file if lines are provided.
+- **Minimal Reads**: Your goal is to achieve the task with the fewest possible `ctx_read` calls. Focus on targeted fragments.
+- **Standard Compliance**: Native shell commands (`cat`, `grep`, `ls`) AND generic shell access are strictly forbidden. Use specialized `ctx_*` tools exclusively.
 
 ## 2. Tool Governance (The Forbidden List)
 To prevent systemic corruption and token exhaustion, the following tools are **BANNED** for Worker agents:
@@ -30,8 +30,8 @@ The following tools are permitted only under strict guidelines:
 
 ## 4. The Command Loop
 When receiving a task from a Manager/Process:
-1. **Validate Pointers**: Confirm you have the exact paths and ranges provided.
-2. **Execute Precisely**: Perform the requested edit or analysis.
+1. **Validate Coordinates**: Confirm you have exact paths and line ranges (`path:@[start-end]`).
+2. **Execute Precisely**: Perform the requested edit or analysis using targeted reads.
 3. **Verify & Close**: Run the specified verification command and terminate the task.
 
 ## 5. Communication Protocol

@@ -43,7 +43,7 @@ async function runTests() {
 
     const gk2 = new Gatekeeper(registry, { sessionId: 'session-2', mode: SafetyMode.PRESENT });
     const res2 = await gk2.intercept('core.ts');
-    if (\!res2.allowed) throw new Error('Session expectation blocked a different session');
+    if (!res2.allowed) throw new Error('Session expectation blocked a different session');
     console.log('✅ Passed: Session scope does not leak.');
 
     // Test 3: AFK Todo Generation
@@ -53,19 +53,19 @@ async function runTests() {
     if (blockRes.allowed) throw new Error('Should have been blocked');
     
     const todoExp = await gkAFK.handleBlock(blockRes.expectations[0]);
-    if (\!todoExp.id.startsWith('EXP-TODO-')) throw new Error('Todo ID format incorrect');
+    if (!todoExp.id.startsWith('EXP-TODO-')) throw new Error('Todo ID format incorrect');
     console.log(`✅ Passed: Generated ${todoExp.id} for blocked action.`);
 
-    // Test 4: Proof Persistence (The "Compliance \!= Correctness" check)
+    // Test 4: Proof Persistence (The "Compliance != Correctness" check)
     console.log('Test 4: Proof Persistence...');
     // Resolve the TODO, but NOT the original block
     await registry.updateState(todoExp.id, 'RESOLVED', 'verified-todo-entry');
     
     const res4 = await gkAFK.intercept('.env');
-    if (res4.allowed) throw new Error('Resolving a TODO should not resolve the original blockage\!');
+    if (res4.allowed) throw new Error('Resolving a TODO should not resolve the original blockage!');
     console.log('✅ Passed: Original block persists after documentation is resolved.');
 
-    console.log('\n✨ All logic tests passed successfully\!');
+    console.log('\n✨ All logic tests passed successfully!');
   } catch (e) {
     console.error(`\n❌ Test Failed: ${e.message}`);
     process.exit(1);

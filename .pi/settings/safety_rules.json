@@ -14,11 +14,6 @@
     "contentFiltering": {
       "enabled": true,
       "patterns": [
-        {
-          "name": "SecretKey",
-          "regex": "(?i)(api_key|secret|password|token)\\s*[:=]\\s*['\"].+['\"]",
-          "level": "hard"
-        }
       ]
     }
   }
