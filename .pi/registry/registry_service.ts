@@ -26,7 +26,6 @@ export class RegistryService {
       state: 'PENDING',
       timestamp: Date.now(),
     };
-    
     await this.appendEntry(expectation);
     return expectation;
   }
@@ -38,7 +37,6 @@ export class RegistryService {
   async updateState(id: string, state: ExpectationState, proof: string | null = null): Promise<boolean> {
     const entries = await this.getAllEntries();
     let found = false;
-    
     const updatedEntries = entries.map(entry => {
       if (entry.id === id) {
         found = true;
@@ -50,7 +48,6 @@ export class RegistryService {
     if (found) {
       await fs.promises.writeFile(this.registryPath, updatedEntries.map(e => JSON.stringify(e)).join('\n') + '\n', 'utf8');
     }
-    
     return found;
   }
 
@@ -63,7 +60,18 @@ export class RegistryService {
     );
   }
 
-  private async getAllEntries(): Promise<Expectation[]> {
+  async clearRegistry(sessionId?: string): Promise<{ cleared: number }> {
+    const all = await this.getAllEntries();
+    if (!sessionId) {
+      await fs.promises.writeFile(this.registryPath, '', 'utf8');
+      return { cleared: all.length };
+    }
+    const filtered = all.filter(e => e.scope === 'GLOBAL' || e.sessionId !== sessionId);
+    await fs.promises.writeFile(this.registryPath, filtered.map(e => JSON.stringify(e)).join('\n') + '\n', 'utf8');
+    return { cleared: all.length - filtered.length };
+  }
+
+  async getAllEntries(): Promise<Expectation[]> {
     try {
       const content = await fs.promises.readFile(this.registryPath, 'utf8');
       return content
@@ -74,5 +82,10 @@ export class RegistryService {
     } catch (e) {
       return [];
     }
+  }
+
+  async getExpectation(id: string): Promise<Expectation | null> {
+    const entries = await this.getAllEntries();
+    return entries.find(e => e.id === id) || null;
   }
 }
