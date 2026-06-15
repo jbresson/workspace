@@ -22,6 +22,8 @@ This manifest provides a high-density index of the project's long-term memory. U
 | `projects/wip-status.md` | cur State | Active work and pending items | `full` |
 | `decisions/hf-download.md` | Model Ops | HF retention, local_dir defaults, subprocess.run | `full` |
 | `research/lm-studio-configs.md` | LM Studio | Inference profiles, thinking mode toggle, active config | `full` |
+| `research/llm-sliding-context-dilution.md` | LLM Context | Sys prompt attention decay, dilution rates, position encoding effects | `full` |
+| `research/llm-sliding-context-dilution-citations.md` | References | 20+ primary sources (arxiv), equation mappings, empirical validation | `full` |
 
 ## 📋 Root Architecture
 | File | Focus | Key Truths | Rec. Mode |

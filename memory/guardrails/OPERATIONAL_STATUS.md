@@ -1,21 +1,25 @@
 # 🚦 Guardrail Operational Status
 
-## Current Activation State: **OFFLINE / STAGING**
+## Current Activation State: **ACTIVE / ENFORCED**
 
-The engine is currently implemented in the codebase but is **NOT** hooked into the main Pi tool-call event hub. 
+The CGS engine is fully implemented and integrated into the Pi tool-call event hub via the `guardrail-interceptor` extension.
 
-### What this means:
-- No actions are currently being intercepted by the `Gatekeeper`.
-- No files are being blocked.
-- The system is currently a "library" of services that can be invoked, but it is not yet a "governor" of the agent's behavior.
+### Current Posture:
+- ✅ **Interception**: Active. Calls to `edit`, `write`, `bash`, and `ctx_shell` are routed through the Gatekeeper.
+- ✅ **Rule Set**: The "Top 10 Initial Rules" (GUARDRAIL-002) are active in the registry under the **Strict Profile**.
+- ✅ **Registry**: `.pi/extensions/guardrails/expectations.jsonl` is the source of truth for all pending blocks.
 
-## Potential Blockers (If Activated)
-If the system were activated now, the following rules would apply:
-1. **Registry Entries**: Only actions matching `PENDING` entries in `.pi/registry/expectations.jsonl` will be blocked.
-2. **Empty Registry = No Blocks**: If the `.jsonl` file is empty or missing, the Gatekeeper allows all actions.
+### Safety Protocols
+1. **Bootstrap Exemption**: Critical paths (`.pi/`, `todo.md`) are hard-coded as exempt in the interceptor to prevent system deadlocks.
+2. **Profile Management**: Rules can be switched between `Strict`, `Developer`, and `Minimal` profiles via the `GuardrailBootstrapper`.
+3. **Emergency Valve**: Registry can be cleared via `RegistryService.clearRegistry()`.
+4. **Baseline Integrity**: The genesis state of the registry is hashed to detect unauthorized mutations.
+   - **Genesis Hash (2026-06-14)**: `19b759bbec4b0270166613614b69b3a00260ab4f62b00d40f5bf778a281bf2ca`
+5. **Human Override**: Mode can be switched via `/guardrail set <MODE>` command (Session-only).
 
-## Safety Protocol for Activation
-To prevent accidental "self-blocking" during the final integration:
-1. **Dry-Run Mode**: The `Gatekeeper` will first be implemented to `WARN` instead of `BLOCK`.
-2. **Manual Registry Clear**: Ability to run a command to wipe all pending expectations.
-3. **Bootstrap Guarantee**: Ensure `.pi/` and `todo.md` are hard-coded as exempt in the `Gatekeeper` interceptor.
+## Active Constraints (Summary)
+- **Memory Lock**: `/memory` mutations require human review/rationale.
+- **Registry Protection**: `.pi/extensions/guardrails/expectations.jsonl` is strictly protected.
+- **Dir Lockdown**: No destructive operations on `.pi/`.
+- **Append-Only**: `todo.md` cannot be deleted or rewritten.
+- **Shell Safety**: Privilege escalation (`sudo`, etc.) and forbidden paths are hard-blocked.

@@ -91,7 +91,6 @@ Close the loop. Ensure project intelligence grows.
 - `ctx_ls({path, limit})`: List dir (summarized).
 - `ctx_find({pattern, path})`: Glob find files.
 - `ctx_grep({pattern, path, glob})`: Pattern search content.
-- `lean_ctx({args: []})`: Run lean-ctx CLI.
 - `ctx_session({action, value, session_id})`: CCP (status, task, finding, decision). Use for L2 memory. (Restricted: No cleanup/reset/restore).
 - `ctx_call({name, arguments})`: Call 50+ lean-ctx tools (architecture, impact, callgraph).
 - `load_helper_extension({module, tool})`: Lazy load Pi extensions.

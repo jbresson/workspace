@@ -18,7 +18,7 @@ export interface Expectation {
 }
 
 export class RegistryService {
-  private registryPath = path.join(process.cwd(), '.pi/registry/expectations.jsonl');
+  private registryPath = path.join(process.cwd(), '.pi/extensions/guardrails/expectations.jsonl');
 
   async issueExpectation(exp: Omit<Expectation, 'timestamp' | 'state'>): Promise<Expectation> {
     const expectation: Expectation = {
@@ -53,11 +53,46 @@ export class RegistryService {
 
   async findActive(trigger: string, sessionId: string): Promise<Expectation[]> {
     const entries = await this.getAllEntries();
-    return entries.filter(e => 
+    const active = entries.filter(e => 
       e.state === 'PENDING' && 
-      e.trigger === trigger && 
+      (e.trigger === trigger || this.isTriggerMatch(trigger, e.trigger)) && 
       (e.scope === 'GLOBAL' || e.sessionId === sessionId)
     );
+    console.log(`[CGS-LOG] findActive("${trigger}", "${sessionId}") -> found ${active.length} rules`);
+    return active;
+  }
+
+  private isTriggerMatch(actionTarget: string, ruleTrigger: string): boolean {
+    const absoluteTarget = path.isAbsolute(actionTarget) 
+      ? actionTarget 
+      : path.resolve(process.cwd(), actionTarget);
+
+    if (ruleTrigger === 'forbidden_paths') {
+      const forbidden = [
+        path.join(process.env.HOME || '', '.ssh'), 
+        path.join(process.env.HOME || '', '.aws'), 
+        '/etc/passwd', 
+        path.join(process.cwd(), '.git/hooks')
+      ];
+      return forbidden.some(p => absoluteTarget.includes(p));
+    }
+    if (ruleTrigger === 'audit_logs') {
+      const auditPath = path.join(process.cwd(), '.pi/extensions/guardrails/');
+      return absoluteTarget.startsWith(auditPath) || absoluteTarget.includes('decisions.log');
+    }
+    if (ruleTrigger === 'tool_abuse') {
+      const tools = ['shell', 'bash', 'ctx_shell'];
+      return tools.includes(actionTarget);
+    }
+    if (ruleTrigger === '.pi/') {
+      const piPath = path.join(process.cwd(), '.pi/');
+      return absoluteTarget.startsWith(piPath);
+    }
+    if (ruleTrigger === '/memory') {
+      const memoryPath = path.join(process.cwd(), 'memory');
+      return absoluteTarget.startsWith(memoryPath);
+    }
+    return false;
   }
 
   async clearRegistry(sessionId?: string): Promise<{ cleared: number }> {
@@ -68,7 +103,7 @@ export class RegistryService {
     }
     const filtered = all.filter(e => e.scope === 'GLOBAL' || e.sessionId !== sessionId);
     await fs.promises.writeFile(this.registryPath, filtered.map(e => JSON.stringify(e)).join('\n') + '\n', 'utf8');
-    return { cleared: all.length - filtered.length };
+    return { cleared: all.length };
   }
 
   async getAllEntries(): Promise<Expectation[]> {
