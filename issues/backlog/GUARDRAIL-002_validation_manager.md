@@ -1,6 +1,6 @@
 # GUARDRAIL-002: Validation Manager Implementation
 
-**Status**: PENDING
+**Status**: PARTIALLY IMPLEMENTED (needs validation evidence)
 **Priority**: HIGH
 **Category**: Core
 
@@ -59,8 +59,8 @@ Must implement a fail-safe mechanism: if the validation type is unknown or missi
 - [ ] **6.5** Verify no orphaned references to removed validation logic.
 
 ### Acceptance Criteria
-- [x] All proof types route to correct strategy.
-- [x] Unknown/missing types silently default to `MANUAL` without errors.
-- [x] Logging captures all routing decisions.
-- [x] Unit tests pass (>90% coverage).
-- [x] Integration tests pass with all downstream services.
+- [~] All proof types route to correct strategy (code present; test evidence missing).
+- [ ] Unknown/missing types default to `MANUAL` without errors (current code returns failure message for unknown type).
+- [ ] Logging captures all routing decisions.
+- [ ] Unit tests pass (>90% coverage).
+- [ ] Integration tests pass with all downstream services.

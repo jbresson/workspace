@@ -75,25 +75,17 @@ export default function (pi: ExtensionAPI) {
       name: `task_phase${id}`,
       label: `Task Phase ${id}: ${phase.name}`,
       description: `Run Phase ${id}. See memory/mindbase/processes/TASK_EXECUTION for guidelines.`,
-      parameters: {
-        type: "object",
-        properties: {
-          taskContext: { 
-            type: "string", 
-            description: "The detailed context, goals, or current state of the task to be processed." 
-          },
-          sessionId: { 
-            type: "string", 
-            description: "Optional session ID to continue a previous execution of this phase." 
-          },
-          tips: { 
-            type: "array", 
-            items: { type: "string" }, 
-            description: "List of strategic tips/facts to append to the system prompt to avoid redundant lookups." 
-          }
-        },
-        required: ["taskContext"]
-      },
+      parameters: Type.Object({
+        taskContext: Type.String({ 
+          description: "The detailed context, goals, or current state of the task to be processed." 
+        }),
+        sessionId: Type.Optional(Type.String({ 
+          description: "Optional session ID to continue a previous execution of this phase." 
+        })),
+        tips: Type.Optional(Type.Array(Type.String(), { 
+          description: "List of strategic tips/facts to append to the system prompt to avoid redundant lookups." 
+        })),
+      }),
       execute: async (_id, params) => {
         return await runPiPhase(phaseNum, params as any);
       }

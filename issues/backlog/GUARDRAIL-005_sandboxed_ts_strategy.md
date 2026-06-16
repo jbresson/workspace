@@ -1,6 +1,6 @@
 # GUARDRAIL-005: Sandboxed TS Strategy
 
-**Status**: PENDING
+**Status**: PARTIALLY IMPLEMENTED (basic heuristic checks only)
 **Priority**: HIGH
 **Category**: Security
 
@@ -107,11 +107,11 @@ Perform AST analysis to block unauthorized modules (`child_process`, `net`, etc.
 - [ ] **10.5** Deploy with monitoring: track rejection rate, sandbox escape attempts.
 
 ### Acceptance Criteria
-- [x] All blocklist modules detected and rejected.
-- [x] Dangerous patterns (eval, Function, vm) detected and rejected.
-- [x] Read-only fs allowed, write/network rejected.
-- [x] Indirect module usage tracked and rejected.
-- [x] 60+ unit tests, >80% code coverage.
-- [x] AST parsing + validation < 500ms per proof.
-- [x] Sandbox timeout + memory limits enforced.
-- [x] No way to escape sandbox or bypass blocklist.
+- [~] Basic blocklist patterns rejected (string match), full AST/blocklist coverage pending.
+- [ ] Dangerous patterns (eval, Function, vm) detected and rejected.
+- [ ] Read-only fs allowed, write/network rejected.
+- [ ] Indirect module usage tracked and rejected.
+- [ ] 60+ unit tests, >80% code coverage.
+- [ ] AST parsing + validation < 500ms per proof.
+- [ ] Sandbox timeout + memory limits enforced.
+- [ ] No way to escape sandbox or bypass blocklist.

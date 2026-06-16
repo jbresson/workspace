@@ -6,7 +6,7 @@ This manifest provides a high-density index of the project's long-term memory. U
 | `identity/MANDATES.md` | Core Law | Executor mindset, No Discovery, cmd Loop | `full` |
 | `identity/RIGOR_BASELINE.md` | Safety Rails | Non-negotiable triggers, loop gates, memory L1-L3 | `full` |
 | `processes/memory_management.md` | Knowledge Flow | L1->L2->L3 Pipeline, Knowledge Tax, Issue flow | `full` |
-| `processes/TASK_MANAGEMENT.md` | Task Flow | `ideas.md` (Incubator) -> `todo.md` (Commitment) | `full` |
+| `processes/TASK_MANAGEMENT.md` | Task Flow | `issues/` as single source of truth (triage -> execute -> archive) | `full` |
 | `processes/EXECUTION_PACKET.md` | C2 Protocol | Packet structure for Manager -> Worker dispatch | `full` |
 | `processes/LEAN_CTX_STANDARD.md` | ctx Ops | Golden Workflow, Tool Mapping, Risk Gates | `map` |
 | `processes/TASK_EXECUTION.md` | Task Pipeline | Phases 0-6, AC, Convergence Proof | `map` |

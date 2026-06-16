@@ -1,14 +1,9 @@
-# Task & Idea Management Workflow
+# Task & Issue Management Workflow
 
-## 📌 `todo.md` (The Commitment)
-- **Purpose**: Source of Truth for active, decided tasks and desires.
-- **Status**: High priority, committed execution.
-- **Rule**: Only items that are "super duper for sure" decided belong here.
+## 📌 `issues/` (Single Source of Truth)
+- **Purpose**: Source of truth for proposed, active, blocked, and completed work.
+- **Status Model**: Use issue status fields (e.g., BACKLOG, ACTIVE, BLOCKED, DONE, ARCHIVED).
+- **Rule**: All meaningful work must be represented and maintained in an issue.
 
-## 💡 `ideas.md` (The Incubator)
-- **Purpose**: Sandbox for suggestions, conceptual improvements, and experimental ideas.
-- **Status**: Low pressure, exploratory.
-- **Usage**: Agent adds optimization ideas here $\rightarrow$ Human review $\rightarrow$ Discussion.
-
-## 🚀 Promotion Pipeline
-`ideas.md` $\Rightarrow$ `Discussion/Validation` $\Rightarrow$ `todo.md`
+## 🚀 Flow
+`Discovery` -> `issues/backlog` (or `issues/active` if urgent blocker) -> `Human triage` -> `Execution updates in same issue` -> `Archive when complete`

@@ -8,12 +8,12 @@
 
 ### Phase 1: Hardening (The Truth Engine)
 **Objective**: Replace mock/heuristic validations with actual shell execution.
-- [ ] **ConstrainedExecutor**: Create `helpers/services/constrained_executor.ts`.
-  - Implement `exec` wrapper with hard timeouts (10s).
-  - Implement stdout/stderr capture with size limits (1MB).
-  - Ensure non-zero exit codes are treated as failures.
-- [ ] **ValidationManager Upgrade**: Integrate `ConstrainedExecutor` into `validation_strategies.ts`.
-- [ ] **Unit Tests**: Verify that a failing shell command actually blocks resolution.
+- [x] **ConstrainedExecutor**: `helpers/services/constrained_executor.ts` implemented.
+  - [x] `exec` wrapper with hard timeouts (10s).
+  - [x] stdout/stderr capture with size limits (1MB).
+  - [x] non-zero exit codes treated as failures.
+- [x] **ValidationManager Upgrade**: `validation_strategies.ts` uses `ConstrainedExecutor` in `ConstrainedCmdStrategy`.
+- [ ] **Unit Tests**: Verify failing shell command blocks resolution (evidence not attached in this issue).
 
 ### Phase 2: The Hook (The Interceptor)
 **Objective**: Prevent tool bypasses by intercepting at the dispatcher level.
@@ -23,8 +23,8 @@
 
 ### Phase 3: Deep Audit (The Final Gate)
 **Objective**: Prevent "Fake Success" through adversarial LLM verification of output.
-- [ ] **FinalizeChecker Upgrade**: Update `finalize_resolution()` to use `LLMService.call("SKEPTIC", ...)`.
-- [ ] **Verification Loop**: Send `(Expectation, ValidatorScript, ActualOutput)` $\rightarrow$ Skeptic $\rightarrow$ Final Verdict.
+- [x] **FinalizeChecker Upgrade**: `finalize_checker.ts` uses `LLMService.call("SKEPTIC", ...)`.
+- [~] **Verification Loop**: Wired in code, but output payload still minimal (`validationResult.reason` placeholder vs full stdout artifact).
 
 ## 🚨 Risk Register
 - **Infinite Loops**: A validator script that hangs could freeze the harness. (Mitigated by `ConstrainedExecutor` timeouts).

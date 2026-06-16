@@ -1,6 +1,6 @@
 # BLOCK-002-guardrails-pi-integration
 
-## Status: PENDING
+## Status: PARTIALLY RESOLVED (2026-06-15)
 **Priority**: HIGH
 **Category**: Integration / Safety
 
@@ -8,16 +8,21 @@
 The Cognitive Guardrail System (CGS) is architected and validated in `.pi/registry/`, but remains a standalone library. It is not yet hooked into the Pi harness event loop, meaning it cannot currently intercept or block real tool calls.
 
 ## Acceptance Criteria (AC)
-- [ ] **Interceptor Hook**: Create `.pi/extensions/guardrail-interceptor.ts` to intercept `edit`, `write`, `bash`, and `ctx_shell`.
-- [ ] **Orchestrator Routing**: Ensure intercepted calls are routed through `GuardrailOrchestrator.handleAction()`.
-- [ ] **Execution Strategy Upgrade**: Update `CONSTRAINED_CMD` strategy in `validation_strategies.ts` to include actual execution with timeout and output pattern matching (currently only syntax check).
-- [ ] **Adversarial LLM Integration**: Replace heuristic-based checks in `skeptic_auditor.ts` with actual LLM calls using a `temp=0` profile.
-- [ ] **End-to-End Validation**: Demonstrate a full cycle: `Action` -> `Block` -> `Negotiation` -> `Proof` -> `Resolution` -> `Execution`.
+- [x] **Interceptor Hook**: `.pi/extensions/guardrails/guardrail-interceptor.ts` exists and intercepts `tool_call`.
+- [x] **Orchestrator Routing**: Interceptor routes through `GuardrailOrchestrator.handleAction()`.
+- [x] **Execution Strategy Upgrade**: `CONSTRAINED_CMD` now executes proof via `ConstrainedExecutor` with timeout/buffer constraints.
+- [~] **Adversarial LLM Integration**: `skeptic_auditor.ts` uses `LLMService.call("SKEPTIC", ...)`, but true temperature pinning in CLI path still unverified.
+- [ ] **End-to-End Validation**: Full harness-level proof demo still missing in issue evidence.
 
 ## Risks & False Wins
 - **False Win**: Interceptor exists but can be bypassed by calling internal tool implementations directly.
 - **Risk**: Fail-open logic in Orchestrator might hide critical safety bugs during testing.
 - **Risk**: High latency introduced to every tool call by the interceptor loop.
 
+## Current Verification Notes (2026-06-15)
+- Interceptor currently at `.pi/extensions/guardrails/guardrail-interceptor.ts` (path changed from original issue text).
+- Extension export wired via `.pi/extensions/guardrails/index.ts`.
+- Remaining blocker for closure: attach reproducible end-to-end run evidence.
+
 ## Dependency Graph
-`Pi Event Hub` -> `Guardrail Interceptor` -> `GuardrailOrchestrator` -> `Gatekeeper` -> `RegistryService`
+`Pi Event Hub` -> `Guardrail Interceptor` -> `GuardrailOrchestrator` -> `Gatekeeper` -> `ExpectationService`

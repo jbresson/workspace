@@ -1,4 +1,4 @@
-import { Expectation, ExpectationState } from './registry_service';
+import { Expectation, ExpectationState } from './expectation_service';
 import { 
   ValidationResult, 
   ManualStrategy, 
@@ -20,7 +20,7 @@ export class ValidationManager {
   async validate(expectation: Expectation, proof: string): Promise<ValidationResult> {
     const strategy = this.strategies.get(expectation.validationType);
 
-    if (\!strategy) {
+    if (!strategy) {
       // FAIL-SAFE: Default to Manual if type is unknown or unsupported
       return { 
         success: false, 

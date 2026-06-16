@@ -1,5 +1,5 @@
 # Project Root
-```<ONLY_CARE_ABOUT_THIS_IF_YOU_ARE "Claude">
+```<ONLY_CARE_ABOUT_THIS_IF_YOU_ARE_NOT "Pi">
 ## 🎯 Quick Start
 1. Load system prompt: `memory/mindbase/wip-system.md` (Your operating instructions).
 2. Orient via `memory/MANIFEST.md` (Navigation index).
@@ -22,7 +22,7 @@ All project intelligence is partitioned into the `/memory` directory. **Lazy loa
   - **Format**: `path/to/file.ts:@[42-85]` (Read lines 42-85 from file.ts).
   - **Example task**: "Fix bug in memory_management.md:@[17-25] (Registry initialization)."
   - **Execution**: `ctx_read({path: "memory/mindbase/processes/memory_management.md", offset: 17, limit: 9})`.
-- **Issues**: Agent-identified needs → `issues/backlog/` → `ideas.md` → `todo.md` (via human review).
+- **Issues**: Agent-identified needs → create/update issue in `issues/backlog/` (or `issues/active/` if blocking). Issues are source of truth.
 
 ## 🚨 Escalation & Blockers
 **If task cannot proceed:**
@@ -36,7 +36,7 @@ All project intelligence is partitioned into the `/memory` directory. **Lazy loa
 2. **Architectural Question**:
    - Create issue in `issues/backlog/` with question + impact.
    - Link to affected memory files.
-   - Flag for human review via `ideas.md`.
+   - Flag for human review by setting issue status/owner directly in the issue file.
 
 3. **Token Overflow**:
    - Immediately offload via `ctx_session(action="finding", value="[TRIM] files to evict: ...")`.
@@ -55,4 +55,4 @@ All project intelligence is partitioned into the `/memory` directory. **Lazy loa
 - **When uncertain about rigor**: `memory/mindbase/identity/RIGOR_BASELINE.md` (Never skip these).
 - **When tracking memory**: `ctx_session(action="status")` → see all findings/decisions from current task.
 
-</ONLY_CARE_ABOUT_THIS_IF_YOU_ARE "Claude">```
+</ONLY_CARE_ABOUT_THIS_IF_YOU_ARE_NOT "Pi">```

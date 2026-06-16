@@ -14,7 +14,6 @@ export class GuardrailConfig {
   private loadModeFromEnv(): GuardrailMode {
     return GuardrailMode.ENFORCE;
   }
-  }
 
   public static getInstance(): GuardrailConfig {
     return this.instance;

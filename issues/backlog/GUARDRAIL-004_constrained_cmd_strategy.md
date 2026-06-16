@@ -1,6 +1,6 @@
 # GUARDRAIL-004: Constrained Command Strategy
 
-**Status**: PENDING
+**Status**: PARTIALLY IMPLEMENTED (baseline + executor wired)
 **Priority**: HIGH
 **Category**: Security
 
@@ -94,10 +94,10 @@ Implement the `ConstrainedCmdStrategy` for shell-based proofs.
 - [ ] **9.5** Deploy with monitoring: track rejection rate.
 
 ### Acceptance Criteria
-- [x] All blacklist characters rejected without ambiguity.
-- [x] All paths validated against whitelist/blacklist.
-- [x] Trigger correlation enforced or command rejected.
-- [x] 50+ unit tests, >85% code coverage.
-- [x] Validation latency < 100ms.
-- [x] Integration tests pass with ValidationManager + SkepticAuditor.
-- [x] No way to bypass blacklist or path pinning.
+- [~] Blacklist characters rejected (baseline implemented; ambiguity/bypass testing incomplete).
+- [~] Paths screened against sensitive dirs (full whitelist/canonicalization pending).
+- [~] Trigger correlation enforced (string-contains check only; stronger matcher pending).
+- [ ] 50+ unit tests, >85% code coverage.
+- [ ] Validation latency < 100ms.
+- [ ] Integration tests pass with ValidationManager + SkepticAuditor.
+- [ ] No way to bypass blacklist or path pinning.

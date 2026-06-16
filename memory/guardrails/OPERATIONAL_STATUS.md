@@ -1,25 +1,37 @@
-# 🚦 Guardrail Operational Status
+# Guardrails Operational State (2026-06-15)
 
-## Current Activation State: **ACTIVE / ENFORCED**
+## 🏗️ Current Architecture
+The Guardrail system operates as a two-step interception filter integrated into the Pi Harness `tool_call` event hub.
 
-The CGS engine is fully implemented and integrated into the Pi tool-call event hub via the `guardrail-interceptor` extension.
+### 1. Interception Pipeline
+`Tool Call` $\rightarrow$ `GuardrailInterceptor` $\rightarrow$ `GuardrailOrchestrator` $\rightarrow$ `Gatekeeper` $\rightarrow$ `Result`
 
-### Current Posture:
-- ✅ **Interception**: Active. Calls to `edit`, `write`, `bash`, and `ctx_shell` are routed through the Gatekeeper.
-- ✅ **Rule Set**: The "Top 10 Initial Rules" (GUARDRAIL-002) are active in the registry under the **Strict Profile**.
-- ✅ **Registry**: `.pi/extensions/guardrails/expectations.jsonl` is the source of truth for all pending blocks.
+### 2. The Two-Step Filter (Gatekeeper)
+- **Step 1: Global Rules (`gatekeeper-rules.ts`)**
+  - **Predicate**: Fast filter via `toolGuard(toolName)`.
+  - **Validation**: Deep inspection via `paramInspector(toolName, params)`.
+  - **Normalization**: Each rule is responsible for its own parameter normalization (e.g., resolving relative paths).
+  - **Oversight**: If `requiresOversight` is true and mode is `AFK`, a session expectation (`EXP-AFK-*`) is issued and the tool is blocked.
+- **Step 2: Session Expectations (`ExpectationsService`)**
+  - Checks for `PENDING` expectations linked to the current `sessionId`.
+  - **Bypass**: Resolution tools (`resolve_guardrail`, `negotiate_guardrail`) bypass this check to prevent circular blocks.
 
-### Safety Protocols
-1. **Bootstrap Exemption**: Critical paths (`.pi/`, `todo.md`) are hard-coded as exempt in the interceptor to prevent system deadlocks.
-2. **Profile Management**: Rules can be switched between `Strict`, `Developer`, and `Minimal` profiles via the `GuardrailBootstrapper`.
-3. **Emergency Valve**: Registry can be cleared via `RegistryService.clearRegistry()`.
-4. **Baseline Integrity**: The genesis state of the registry is hashed to detect unauthorized mutations.
-   - **Genesis Hash (2026-06-14)**: `19b759bbec4b0270166613614b69b3a00260ab4f62b00d40f5bf778a281bf2ca`
-5. **Human Override**: Mode can be switched via `/guardrail set <MODE>` command (Session-only).
+## 🛠️ Component Responsibilities
+| Component | Responsibility | Key Logic |
+| :--- | :--- | :--- |
+| `Interceptor` | Hooking & Routing | Extracts `sessionId`, routes to Orchestrator. |
+| `Orchestrator` | Coordination | Manages the flow between Gatekeeper, Negotiator, and Finalizer. |
+| `Gatekeeper` | Enforcement | Executes the 2-step filter; handles AFK mode logic. |
+| `ExpectationsService` | State Management | CRUD for `.pi/extensions/guardrails/expectations.jsonl`. |
+| `gatekeeper-rules.ts` | Policy Definition | Self-contained rules with embedded validation logic. |
 
-## Active Constraints (Summary)
-- **Memory Lock**: `/memory` mutations require human review/rationale.
-- **Registry Protection**: `.pi/extensions/guardrails/expectations.jsonl` is strictly protected.
-- **Dir Lockdown**: No destructive operations on `.pi/`.
-- **Append-Only**: `todo.md` cannot be deleted or rewritten.
-- **Shell Safety**: Privilege escalation (`sudo`, etc.) and forbidden paths are hard-blocked.
+## ⚙️ Operational Modes
+- `OFF`: No interception.
+- `DEBUG`: Log violations but allow execution.
+- `ENFORCE`: Block any violation (Global or Session).
+- `AFK`: Blocks actions requiring human oversight; converts them to `EXP-TODO` expectations.
+
+## 🚨 Critical Constraints
+- **Session First**: All service methods must accept `sessionId` as the first parameter.
+- **Rule Autonomy**: No shared matching logic in services; rules must be self-contained units of truth.
+- **Fail-Closed**: Interceptor errors result in a block to prevent accidental unsafe execution.

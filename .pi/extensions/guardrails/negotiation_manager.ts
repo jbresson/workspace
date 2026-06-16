@@ -1,7 +1,7 @@
-import { Expectation, RegistryService } from './registry_service';
+import { Expectation, ExpectationService } from './expectation_service';
 import { SkepticAuditor } from './skeptic_auditor';
 import { ValidationManager } from './validation_manager';
-import { LLMService } from '../../helpers/services/llm_service';
+import { LLMService } from '../../../helpers/services/llm_service';
 
 export interface NegotiationState {
   iterations: number;
@@ -13,7 +13,7 @@ export class NegotiationManager {
   private MAX_ITERATIONS = 10;
 
   constructor(
-    private registry: RegistryService,
+    private registry: ExpectationService,
     private auditor: SkepticAuditor,
     private validator: ValidationManager
   ) {}

@@ -99,7 +99,7 @@
 
 ---
 
-## New Issues (From todo.md)
+## New Issues
 
 ### Engine Track
 - **ENG-001**: Task execution leverages expectations engine for pre-condition validation & failure prediction. Integrates into 7-phase loop Phase 3 (Foresee & Plan).
@@ -112,7 +112,7 @@
 
 - **Full Summary**: `PLANS_SUMMARY.md` (dependency graph, critical path, timeline)
 - **Memory Index**: `memory/MANIFEST.md` (overall project structure)
-- **Completed Tasks**: `todo.md` (what's done)
+- **Completed Tasks**: `issues/archive/` (closed work and historical context)
 - **Active Blockers**: `issues/active/` (current problems)
 
 ---

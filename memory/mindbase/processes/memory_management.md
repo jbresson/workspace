@@ -18,12 +18,12 @@ During Cool-Down, promote validated info to the permanent record:
 - **Declarative Facts** -> Update or create files in memory/knowledgebase/projects/.
 - **Architecture Shifts** -> Update ARCHITECTURE.md and MANIFEST.md.
 ## 3. Task & Issue Management
-To maintain a clean todo.md, use the following req flow:
+Issues are the single source of truth for work tracking.
 1. **Discovery**: Agent identifies a need or improvement.
 2. **Capture**: Create a detailed issue file in `issues/` (categorized into `/active`, `/backlog`, or `/archive`).
-3. **Proposal**: Link the issue in memory/mindbase/processes/TASK_MANAGEMENT.md -> ideas.md.
-4. **Commitment**: Human review => Move from ideas.md -> todo.md.
-**Rule**: No "invisible" tasks. If it needs doing, it must be an issue -> idea -> todo.
+3. **Triage**: Human review updates issue status/priority/owner directly in the issue.
+4. **Execution Tracking**: Progress, blockers, AC checks, and completion evidence are updated in the same issue.
+**Rule**: No "invisible" tasks. If it needs doing, it must exist as an issue.
 ## 4. ctx Hygiene (L1 Management)
 - **Min-Load**: Always start with ctx_session(status) -> ctx_knowledge(wakeup).
 - **Hierarchical Reading**: signatures -> map -> full.

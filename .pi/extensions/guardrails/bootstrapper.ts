@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { RegistryService } from './registry_service.ts';
+import { ExpectationService } from './expectation_service.ts';
 import { GUARDRAIL_RULES, GUARDRAIL_PROFILES } from './rules_definition.ts';
 
 class GuardrailBootstrapper {
@@ -61,7 +61,7 @@ class GuardrailBootstrapper {
 }
 
 (async () => {
-  const rs = new RegistryService();
+  const rs = new ExpectationService();
   const boot = new GuardrailBootstrapper(rs);
   try {
     await boot.activateProfile('strict');

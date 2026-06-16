@@ -1,6 +1,6 @@
 # GUARDRAIL-003: Skeptic Auditor Interface
 
-**Status**: PENDING
+**Status**: PARTIALLY IMPLEMENTED (LLM-backed, hardening pending)
 **Priority**: HIGH
 **Category**: Security
 
@@ -82,10 +82,10 @@ Use strict delimiters for agent input and a high-rigor system prompt to prevent 
 - [ ] **8.5** Deploy with monitoring: track audit pass/fail rates.
 
 ### Acceptance Criteria
-- [x] No proof accepted without audit.
-- [x] Delimiter scheme prevents prompt injection.
-- [x] Audit rubric enforced: all checks >= 7 to pass.
-- [x] Contradiction detection works (unit + integration tested).
-- [x] False win detection prevents trivial "victories".
-- [x] Audit latency < 2s per proof.
-- [x] Audit trail logged for all decisions.
+- [~] No proof accepted without audit (orchestrated paths use audit, but coverage not fully proven).
+- [ ] Delimiter scheme prevents prompt injection.
+- [ ] Audit rubric enforced: all checks >= 7 to pass.
+- [ ] Contradiction detection works (unit + integration tested).
+- [~] False win detection attempted (heuristic + skeptic pass), needs formal test evidence.
+- [ ] Audit latency < 2s per proof.
+- [ ] Audit trail logged for all decisions.

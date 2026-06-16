@@ -33,11 +33,11 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-const registry_service_1 = require("./registry_service");
+const expectation_service_1 = require("./expectation_service");
 const gatekeeper_1 = require("./gatekeeper");
 const fs = __importStar(require("fs"));
 async function runTests() {
-    const registry = new registry_service_1.RegistryService();
+    const registry = new expectation_service_1.ExpectationService();
     // Clear registry before tests
     if (fs.existsSync('.pi/registry/expectations.jsonl')) {
         await fs.promises.unlink('.pi/registry/expectations.jsonl');

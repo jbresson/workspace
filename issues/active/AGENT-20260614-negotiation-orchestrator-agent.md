@@ -1,10 +1,10 @@
 # ISSUE SPECIFICATION
 ### 🆔 Metadata
 - **ID**: AGENT-20260614-negotiation-orchestrator-agent
-- **Status**: Active
+- **Status**: Active (Partially Implemented: manager exists; agent migration not started)
 - **Severity**: High
 - **Type**: Feature
-- **Traceability**: `src/extensions/guardrails/negotiation_manager.ts`
+- **Traceability**: `.pi/extensions/guardrails/negotiation_manager.ts`
 
 ### 🔍 Problem Statement (The "What")
 > Implement a dedicated `NegotiatorAgent` to manage the multi-turn handshake process between the user and guardrail expectations.
@@ -22,9 +22,9 @@
 2.  **Define Negotiation Tools**:
     - `refine_tweak`: A tool that allows the negotiator to call the `SkepticAuditor` as an expert witness.
     - `inspect_context`: Allows the agent to read the file it's attempting to validate before proposing a validator script.
-3.  **State Transition via Events**: Instead of returning `{ status: 'NEGOTIATING', ... }`, the agent should emit `turn_end` events with structured metadata that updates the `RegistryService`.
+3.  **State Transition via Events**: Instead of returning `{ status: 'NEGOTIATING', ... }`, the agent should emit `turn_end` events with structured metadata that updates the `ExpectationService`.
 4.  **Multi-Turn Handshake Loop**: Implement a loop where the Agent can "propose", then wait for an event/message from the human, and then "respond" to the human's feedback using its own context.
 
 **Risk Assessment:**
-- [ ] **State Divergence**: Ensure that the `AgentState` remains synchronized with the `RegistryService` (the source of truth for expectations).
+- [ ] **State Divergence**: Ensure that the `AgentState` remains synchronized with the `ExpectationService` (the source of truth for expectations).
 - [ ] **Infinite Loops**: Implement a hard limit on negotiation turns within the agent loop to prevent runaway costs.

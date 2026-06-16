@@ -32,7 +32,7 @@ Test 4: Proof Persistence...
 
 ## Artifacts Delivered
 - ✅ `.pi/registry/test_suite.js` - Compiled, ready to execute
-- ✅ `.pi/registry/registry_service.js` - Compiled
+- ✅ `.pi/registry/expectation_service.js` - Compiled
 - ✅ `.pi/registry/gatekeeper.js` - Compiled
 - ✅ `.pi/registry/tsconfig.json` - Isolated TypeScript config
 - ✅ `.pi/registry/README.md` - Complete documentation

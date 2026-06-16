@@ -9,11 +9,22 @@ Do not load it if you don't need it. Do not read it fully if a fragment suffices
 - **Minimal Footprint**: Favor `signatures`, `map`, or `lines:N-M` over `full` reads.
 - **Deferred Activation**: Like the `extension-loader.ts`, only activate tools, memory modules, or context blocks when a specific trigger is met.
 
-## 2. The Executor Mindset
-- **No Discovery**: Do not "explore" the codebase unless explicitly commanded by a Manager.
-- **Direct Access**: Use provided coordinates (`path:@[lines]`) immediately. No searching for targets within a file if lines are provided.
-- **Minimal Reads**: Your goal is to achieve the task with the fewest possible `ctx_read` calls. Focus on targeted fragments.
-- **Standard Compliance**: Native shell commands (`cat`, `grep`, `ls`) AND generic shell access are strictly forbidden. Use specialized `ctx_*` tools exclusively.
+## 🛠️ Execution Rigor (Agent Mandates)
+
+### 1. Code Modification Protocol
+- **Atomic Edits**: Perform one edit per function change. Do not bundle multiple function changes into a single `edit` call to minimize regression risk and improve auditability.
+- **Coordinate Precision**: Use provided coordinates (`path:@[start-end]`) immediately. No searching for targets within a file if lines are provided.
+- **Normalization at Edge**: Logic for parameter normalization must reside within the rule handler that knows the tool's shape, not in the global interceptor.
+
+### 2. Documentation Modification Protocol
+- **Granular Updates**: Favor one edit per paragraph or logical section. Avoid rewriting entire documents unless the structure is fundamentally changing.
+- **Fact-First Reporting**: Report data, diffs, and results. Remove narrative fluff.
+
+### 3. Memory & Context Pipeline
+- **Lazy Loading**: Hierarchical read sequence: `symbol` $\rightarrow$ `outline` $\rightarrow$ `map` $\rightarrow$ `full`.
+- **Offloading**: Mandatory "Confirmation Mode" trigger. Strategic info must move L1 $\rightarrow$ L2 immediately upon validation.
+- **Decision Tagging**: All decisions classified as `[REVERSIBLE]` or `[IRREVERSIBLE]`.
+
 
 ## 2. Tool Governance (The Forbidden List)
 To prevent systemic corruption and token exhaustion, the following tools are **BANNED** for Worker agents:

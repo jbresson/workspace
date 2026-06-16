@@ -77,6 +77,7 @@ export default async function (pi: ExtensionAPI) {
     // Register as tool
     pi.registerTool({
       name: "project_memory_lean_ctx",
+      label: "Project Memory (Lean-Ctx)",
       description: "Access project memory via lean-ctx.",
       parameters: Type.Object({
         projectPath: Type.String({

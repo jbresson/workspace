@@ -176,6 +176,7 @@ export default async function (pi: ExtensionAPI) {
   for (const toolDef of Object.values(tools)) {
     pi.registerTool({
       name: toolDef.name,
+      label: toolDef.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
       description: toolDef.description,
       parameters: toolDef.parameters,
       async execute(toolCallId, params, signal, onUpdate, ctx) {

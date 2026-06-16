@@ -10,7 +10,7 @@ This catalog serves as the canonical record of the Cognitive Guardrail System's 
 | **RULE-1** | Memory Integrity Lock | `/memory` | SESSION_ID + Rationale + Shelf-life | MANUAL | GLOBAL | KB Poisoning |
 | **RULE-2** | Registry Protection | `expectations.jsonl` | Prior state hash + Reason | CONSTRAINED_CMD | GLOBAL | Self-Unblocking |
 | **RULE-3** | .pi Lockdown | `.pi/` | No destructive ops (delete/move/chmod) | CONSTRAINED_CMD | GLOBAL | Audit Vaporization |
-| **RULE-4** | todo.md Append-Only | `todo.md` | No deletions or rewrites | CONSTRAINED_CMD | GLOBAL | Task Erasure |
+| **RULE-4** | Issue Ledger Integrity | `issues/` | No silent deletion/rewrites of issue history; status/evidence updates must be auditable | CONSTRAINED_CMD | GLOBAL | Task Erasure |
 | **RULE-5** | Session Immutability | `ctx_session` | No `reset`; `cleanup` requires snapshot | MANUAL | GLOBAL | Decision Wiping |
 | **RULE-6** | Privilege Escalation | `shell` | Block: sudo, su, chmod, rm -rf /, eval, exec | CONSTRAINED_CMD | GLOBAL | Root Access |
 | **RULE-7** | Forbidden Paths | `forbidden_paths` | Block: ~/.ssh, ~/.aws, /etc/passwd, etc. | CONSTRAINED_CMD | GLOBAL | Credential Theft |

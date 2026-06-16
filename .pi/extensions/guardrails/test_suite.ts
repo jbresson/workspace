@@ -1,9 +1,9 @@
-import { RegistryService, ExpectationState } from './registry_service';
+import { ExpectationService, ExpectationState } from './expectation_service';
 import { Gatekeeper, SafetyMode } from './gatekeeper';
 import * as fs from 'fs';
 
 async function runTests() {
-  const registry = new RegistryService();
+  const registry = new ExpectationService();
   // Clear registry before tests
   if (fs.existsSync('.pi/registry/expectations.jsonl')) {
     await fs.promises.unlink('.pi/registry/expectations.jsonl');

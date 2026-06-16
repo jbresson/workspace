@@ -1,6 +1,6 @@
 # ISSUE-002-LLM-DETERMINISM
 
-## Status: PENDING
+## Status: IN PROGRESS (2026-06-15)
 **Priority**: MEDIUM
 **Category**: Quality / Reliability
 
@@ -10,8 +10,12 @@ The `SkepticAuditor` and `Negotiator` rely on `LLMService` via the `runBuddy` (P
 ## Acceptance Criteria
 - [ ] Verify if `pi` CLI supports a `--temperature` or `--temp` flag.
 - [ ] If supported: Update `runBuddy` in `helpers/extensions/pi-buddies/runner.ts` to accept and pass the temperature parameter.
-- [ ] If not supported: Implement "Soft Temp" mandates in the `SKEPTIC` and `NEGOTIATOR` system prompts.
+- [x] If not supported: Implement "Soft Temp" mandates in the `SKEPTIC` and `NEGOTIATOR` system prompts.
 - [ ] Validate that the Auditor produces consistent results for the same proof across multiple runs.
+
+## Current State Notes (2026-06-15)
+- `LLMService` prompt explicitly mandates deterministic/zero-temp behavior for SKEPTIC profile.
+- `runBuddy/buildPiCommand` currently has no explicit temperature parameter forwarding.
 
 ## Risks
 - **False Positives**: High temperature may cause the Auditor to be randomly lenient or overly aggressive.

@@ -5,7 +5,7 @@ This directory contains the test harness for validating the core logic of the gu
 
 ## Files
 
-- **`registry_service.ts`**: Manages expectation persistence and retrieval.
+- **`expectation_service.ts`**: Manages expectation persistence and retrieval.
 - **`gatekeeper.ts`**: Implements safety interception logic.
 - **`test_suite.ts`**: Comprehensive test suite (4 test cases).
 - **`tsconfig.json`**: TypeScript compiler config for this directory.
@@ -77,7 +77,7 @@ All tests must complete with exit code `0` and terminal message:
 ## Architecture
 
 ```
-RegistryService
+ExpectationService
     ↓ (issues expectations)
 Expectation (PENDING)
     ↓ (intercepted by)

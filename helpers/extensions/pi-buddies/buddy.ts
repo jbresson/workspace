@@ -189,7 +189,7 @@ export default function (pi: ExtensionAPI) {
   });
 
   // Register as command
-  pi.registerCommand("/buddy", {
+  pi.registerCommand("buddy", {
     description: "Run a headless Pi buddy with custom system prompt and reasoning",
     handler: async (args) => {
       // Validate required params in command context

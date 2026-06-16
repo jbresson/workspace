@@ -3,9 +3,9 @@
 This document tracks the "last mile" implementation requirements for the Cognitive Guardrail System (CGS).
 
 ## 🔴 Critical Gaps (Blocking Production)
-- **Interceptor Hook**: `.pi/extensions/guardrail-interceptor.ts` is missing. The `GuardrailOrchestrator` exists but has no way to actually intercept tool calls in the Pi harness.
-- **Event Hub Integration**: No bridge between the Pi Tool Execution loop and `GuardrailOrchestrator.handleAction()`.
-- **Execution Strategy**: `validation_strategies.ts` still contains placeholders for actual shell execution of validators (currently mostly syntax checks).
+- **End-to-End Proof Evidence**: Core components exist, but missing reproducible artifact showing full block→negotiate→resolve flow in harness.
+- **Determinism Gap**: Skeptic path claims zero-temp behavior in prompt text, but CLI-level temperature control still unverified.
+- **Fail-closed Consistency**: Operational docs and runtime behavior need explicit alignment/audit for error-path allow/block policy.
 
 ## 🟡 Partial Implementations (Stubbed/Mocked)
 - **Finalize Checker**: `finalize_checker.ts` is currently a structural stub; it doesn't yet perform deep adversarial verification of the final proof beyond basic pattern matching.
@@ -19,6 +19,7 @@ This document tracks the "last mile" implementation requirements for the Cogniti
 - **Orchestrator Logic**: Transactional flow (Block $\rightarrow$ Negotiate $\rightarrow$ Resolve) is architected.
 
 ## 🗓️ Next Steps
-1. Implement `guardrail-interceptor.ts`.
-2. Upgrade `validation_strategies.ts` to execute actual shell commands.
-3. Perform the **Dependency Audit** ("Run Lean, Run Clean").
+1. Add captured end-to-end validation transcript + expected assertions.
+2. Verify/implement explicit temperature control in runner/CLI path.
+3. Perform fail-closed audit and document policy conformance.
+4. Perform the **Dependency Audit** ("Run Lean, Run Clean").

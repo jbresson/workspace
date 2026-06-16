@@ -1,5 +1,5 @@
 import { GuardrailOrchestrator } from "./orchestrator";
-import { RegistryService } from "./registry_service";
+import { ExpectationService } from "./expectation_service";
 import { Gatekeeper } from "./gatekeeper";
 import { NegotiationManager } from "./negotiation_manager";
 import { FinalizeChecker } from "./finalize_checker";
@@ -8,10 +8,10 @@ import { SkepticAuditor } from "./skeptic_auditor";
 
 describe("GuardrailInterceptor", () => {
   let orchestrator: GuardrailOrchestrator;
-  let registry: RegistryService;
+  let registry: ExpectationService;
 
   beforeEach(() => {
-    registry = new RegistryService();
+    registry = new ExpectationService();
     const auditor = new SkepticAuditor();
     const validationManager = new ValidationManager();
     const gatekeeper = new Gatekeeper(registry);

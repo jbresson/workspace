@@ -1,10 +1,10 @@
 # ISSUE SPECIFICATION
 ### 🆔 Metadata
 - **ID**: AGENT-20260614-skeptic-auditor-migration
-- **Status**: Active
+- **Status**: Active (Partially Implemented: LLM-backed auditor exists; agent/event-stream migration pending)
 - **Severity**: Medium
 - **Type**: Refactor
-- **Traceability**: `src/extensions/guardrails/skeptic_auditor.ts`
+- **Traceability**: `.pi/extensions/guardrails/skeptic_auditor.ts`
 
 ### 🔍 Problem Statement (The "What")
 > Transform the `SkepticAuditor` from a stateless utility class into a stateful, event-emitting `@earendil-works/pi-agent-core` Agent.

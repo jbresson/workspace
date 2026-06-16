@@ -79,7 +79,7 @@ Close the loop. Ensure project intelligence grows.
 - **Permanent**: Promote validated info L2 -> L3 (memory/). Generate lineage: Why (decision logic), When (Session/PR date), Assumptions (validity preconditions), Shelf-life (revisit trigger).
 - **Artifacts**: Generate PR context pack, ADR (if pattern introduced), test coverage report (AC proof).
 - **Retrospective (P6)**: Record procedure metrics. Pressure Checks executed? Contradictions caught pre-Cool-Down? Unknowns resolved? Token efficiency via offloading?
-- **Issues**: Agent asks -> create file in `.pi/issues/` -> propose in `ideas.md` -> Human review -> `todo.md`.
+- **Issues**: Agent asks -> create/update issue in `.pi/issues/` (or `issues/` in repo) with status, evidence, owner, next action. Issues are the source of truth.
 
 ---
 *Helpful Information*

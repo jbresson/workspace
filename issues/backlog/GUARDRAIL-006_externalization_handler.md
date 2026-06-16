@@ -1,6 +1,6 @@
 # GUARDRAIL-006: Externalization Handler & Prompt Injection
 
-**Status**: PENDING
+**Status**: PLANNED (no implementation evidence found)
 **Priority**: MEDIUM
 **Category**: Cognitive
 
@@ -56,7 +56,7 @@ Force the agent to use `log_todo` with a 5-point structured rubric (Intent, Bloc
 ### Phase 5: Log_todo Implementation
 - [ ] **5.1** Create `log_todo` function: accepts 5-point rubric.
 - [ ] **5.2** Validate rubric completeness: reject if any field missing or too vague.
-- [ ] **5.3** Persist log entry: append to `todo.md` or dedicated log file.
+- [ ] **5.3** Persist log entry: append to issue activity log or dedicated guardrail log file.
 - [ ] **5.4** Emit metrics: log reason code (blockage type) for analytics.
 - [ ] **5.5** Return receipt: confirm log entry with ID for tracking.
 - [ ] **5.6** Link to block context: todo entry references original failure event.
@@ -97,11 +97,11 @@ Force the agent to use `log_todo` with a 5-point structured rubric (Intent, Bloc
 - [ ] **9.6** Deploy with monitoring: track externalization + escalation rates.
 
 ### Acceptance Criteria
-- [x] Block triggers externalization prompt injection.
-- [x] Externalization prompt forces `log_todo` call.
-- [x] Rubric fields validated (complete, meaningful, parseable).
-- [x] Isolation vs. cascading detection works (per GUARDRAIL-007).
-- [x] Escalation logic enforced: cascading blocks always escalate.
-- [x] Max 3 retry attempts before human escalation.
-- [x] Audit trail captures all externalization events.
-- [x] Integration tests pass with all upstream safety validators.
+- [ ] Block triggers externalization prompt injection.
+- [ ] Externalization prompt forces `log_todo` call.
+- [ ] Rubric fields validated (complete, meaningful, parseable).
+- [ ] Isolation vs. cascading detection works (per GUARDRAIL-007).
+- [ ] Escalation logic enforced: cascading blocks always escalate.
+- [ ] Max 3 retry attempts before human escalation.
+- [ ] Audit trail captures all externalization events.
+- [ ] Integration tests pass with all upstream safety validators.

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-class RegistryService {
+class ExpectationService {
   constructor() { this.registryPath = path.join(process.cwd(), '.pi/registry/expectations.jsonl'); }
   async issueExpectation(exp) {
     const expectation = { ...exp, state: 'PENDING', timestamp: Date.now(), metadata: {} };
@@ -86,7 +86,7 @@ class FinalizeChecker {
 }
 
 async function runTests() {
-  const reg = new RegistryService();
+  const reg = new ExpectationService();
   if (fs.existsSync('.pi/registry/expectations.jsonl')) await fs.promises.unlink('.pi/registry/expectations.jsonl');
   const auditor = new SkepticAuditor();
   const vm = new ValidationManager();

@@ -405,41 +405,16 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("listTools", {
     description: "List all currently registered tools in the Pi harness",
     handler: async (args, ctx) => {
-      console.log("[listTools] Command triggered");
       try {
         const tools = pi.getAllTools();
-        console.log("[listTools] Found tools:", tools.length);
         
         const toolList = tools.map(t => `- ${t.name}: ${t.description || "no description"}`).join("\n");
         const text = `Registered Tools (${tools.length}):\n${toolList}`;
-        
-        console.log("[listTools] Final text length:", text.length);
 
-        await ctx.ui.select("Registered Tools", [
-          ...tools.map(t => `${t.name}: ${t.description || "no description"}`),
-          "--- End of List ---"
-        ]);
-        console.log("--- REGISTERED TOOLS ---\n", text, "\n------------------------");
-
-        return {
-          content: [
-            {
-              type: "text",
-              text: text,
-            },
-          ],
-        };
+        ctx.ui.notify(text);
       } catch (e) {
         console.error("[listTools] Error:", e);
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Error in listTools: ${e instanceof Error ? e.message : String(e)}`,
-            },
-          ],
-          isError: true,
-        };
+        ctx.ui.notify(`Error in listTools: ${e instanceof Error ? e.message : String(e)}`)
       }
     },
   });

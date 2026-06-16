@@ -1,6 +1,6 @@
 # GUARDRAIL-007: Dependency Analysis Engine
 
-**Status**: PENDING
+**Status**: PLANNED (no implementation evidence found)
 **Priority**: MEDIUM
 **Category**: Cognitive
 
@@ -31,7 +31,7 @@ The `SkepticAuditor` must validate the agent's claim that a block is isolated be
 
 ### Phase 2: Dependency Graph & Analysis
 - [ ] **2.1** Build task dependency graph at start (or cache from last run):
-  - Nodes: task IDs (from `todo.md` and active work).
+  - Nodes: task IDs (from `issues/active` and current execution context).
   - Edges: task X depends on task Y (blocking relationship).
 - [ ] **2.2** Implement reverse-dependency lookup: given failed task, find all downstream tasks.
 - [ ] **2.3** Implement module dependency graph (code-level):
@@ -129,11 +129,11 @@ The `SkepticAuditor` must validate the agent's claim that a block is isolated be
 - [ ] **10.4** Handle edge cases: document new block types as they emerge.
 
 ### Acceptance Criteria
-- [x] Dependency graph constructed correctly (no cycles, all edges verified).
-- [x] Isolated blocks classified correctly (>90% accuracy on test set).
-- [x] Cascading blocks never escape detection (specificity >95%).
-- [x] Cascading blocks always escalated (no fallthrough).
-- [x] Isolation claims validated against actual dependencies.
-- [x] Analysis latency < 200ms per block.
-- [x] Integration tests pass with SkepticAuditor.
-- [x] Audit trail captures all classification decisions.
+- [ ] Dependency graph constructed correctly (no cycles, all edges verified).
+- [ ] Isolated blocks classified correctly (>90% accuracy on test set).
+- [ ] Cascading blocks never escape detection (specificity >95%).
+- [ ] Cascading blocks always escalated (no fallthrough).
+- [ ] Isolation claims validated against actual dependencies.
+- [ ] Analysis latency < 200ms per block.
+- [ ] Integration tests pass with SkepticAuditor.
+- [ ] Audit trail captures all classification decisions.

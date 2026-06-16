@@ -26,4 +26,4 @@ The CGS is a transactional guardrail system that transforms "Safety" into "Expec
 - **S.M.A.R.T. Intents**: Expectations must be Specific, Measurable, Attainable, Relevant, and Traceable.
 - **No Workarounds**: The Auditor rejects any plan that avoids a constraint via "hacks."
 - **Adversarial Verification**: Validations are checked for "fake successes" (e.g., `echo success`).
-- **Bootstrap Exception**: `.pi/` and `todo.md` are exempt from their own blocks to prevent deadlocks.
+- **Bootstrap Exception**: `.pi/registry/` and issue-tracking artifacts are exempt from self-blocking rules to prevent deadlocks.
