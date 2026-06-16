@@ -22,7 +22,7 @@ The Cognitive Guardrail System (CGS) is currently **offline/staging** with the c
 This issue identifies the **Top 10 Rules** to bootstrap the system with maximum defensive value against:
 1. Rogue/nefarious agents (behavioral hijack, tool abuse)
 2. Machine compromise (unauthorized file ops, shell escapes, privilege escalation)
-3. Memory/identity corruption (.pi, memory, issues, todo.md, session state)
+3. Memory/identity corruption (.pi, memory, issues, session state)
 
 ---
 
@@ -33,7 +33,7 @@ Per CGS ARCHITECTURE:
 - ✅ **S.M.A.R.T. Intents**: Specific, Measurable, Attainable, Relevant, Traceable.
 - ✅ **No Workarounds**: Skeptic rejects hacks (e.g., `echo success` fake proofs).
 - ✅ **Adversarial Verification**: Validations checked for "fake successes."
-- ✅ **Bootstrap Exception**: `.pi/` and `todo.md` exempt to prevent deadlocks.
+- ✅ **Bootstrap Exception**: critical guardrail bookkeeping paths exempt to prevent deadlocks.
 
 ---
 
@@ -73,7 +73,7 @@ Per CGS ARCHITECTURE:
   - Reads (LIST, GREP, READ) allowed w/o proof
   - Writes to `.pi/registry/` require RULE-2
   - Writes to `.pi/issues/` require RULE-8
-  - **Deletes**: FORBIDDEN (must resolve via todo.md deprecation, never unlink)
+  - **Deletes**: FORBIDDEN (archive/deprecate through issue lifecycle, never unlink silently)
   - **Overwrites to non-log files**: Requires explicit SESSION_ID + timestamp append
 
 **Scope**: GLOBAL  
@@ -82,17 +82,17 @@ Per CGS ARCHITECTURE:
 
 ---
 
-### RULE-4: todo.md Append-Only
-**Trigger**: Any mutation to `todo.md`  
+### RULE-4: Issue Ledger Integrity
+**Trigger**: Any mutation to issue tracking artifacts in `issues/`  
 **Condition**:
-  - **Appends**: Allowed (new tasks, DONE checks, refinements)
-  - **Deletions**: FORBIDDEN (mark as DONE, never delete)
-  - **Rewrites of prior lines**: FORBIDDEN (append new section instead)
-  - Proof: Every append must tag **SESSION_ID** + **timestamp** + **decision_id** (from ctx_session)
+  - **Status/Evidence updates**: Allowed when attributable and auditable
+  - **Deletions**: FORBIDDEN for active issue history (archive instead)
+  - **Silent rewrites**: FORBIDDEN (changes must preserve auditability)
+  - Proof: Every update must tag **SESSION_ID** + **timestamp** + **decision_id** (from ctx_session)
 
 **Scope**: GLOBAL  
-**ValidationType**: CONSTRAINED_CMD (grep/diff to verify: no lines removed, only added)  
-**Risk if Skipped**: Rogue agent erases assigned tasks, hides completed work, corrupts task state.
+**ValidationType**: CONSTRAINED_CMD (diff/metadata checks for auditable updates)  
+**Risk if Skipped**: Rogue agent erases assigned tasks, hides completed work, corrupts issue state.
 
 ---
 
@@ -105,7 +105,7 @@ Per CGS ARCHITECTURE:
   - Proof: Snapshot hash + timestamp + why cleanup needed
 
 **Scope**: GLOBAL (prevents session poisoning)  
-**ValidationType**: MANUAL (requires human approval in `todo.md` decision)  
+**ValidationType**: MANUAL (requires human approval recorded in issue decision trail)  
 **Risk if Skipped**: Rogue agent wipes its own decision trail, erases contradictions, restarts with clean slate.
 
 ---
@@ -158,7 +158,7 @@ Per CGS ARCHITECTURE:
     - **Alternatives** (lower-privilege workarounds considered + rejected)
     - **Impact** (what breaks without this exception)
     - **Rollback plan** (how to revert if abused)
-  - Human reviews + approves via `todo.md` decision
+  - Human reviews + approves via issue decision trail
   - Proof: Issue ID + human approval signature
 
 **Scope**: GLOBAL (all sessions must go through this funnel)  
@@ -169,7 +169,7 @@ Per CGS ARCHITECTURE:
 
 ### RULE-9: Tool Abuse Detection (Constrained Executor Validation)
 **Trigger**: Any invocation of `ctx_shell`, `shell`, or `bash` with:
-  - File I/O on `.pi/*`, `memory/*`, `todo.md` (should use `edit()` / `write()`)
+  - File I/O on `.pi/*`, `memory/*`, `issues/*` via unsafe shell paths (should use structured tools)
   - Piping data into sensitive operations
   - Loops/conditionals that automate decision-making
   - Data exfiltration (curl, wget, scp to external hosts)
@@ -217,7 +217,7 @@ Per CGS ARCHITECTURE:
 | Memory corruption | RULE-1 | SESSION_ID + rationale + shelf-life traceability |
 | Registry tampering | RULE-2 | SHA256 hash chain + validator proof |
 | .pi vaporization | RULE-3 | Append-only, no deletes, whitelist ops |
-| Task erasure | RULE-4 | Append-only, DONE checks only |
+| Task erasure | RULE-4 | Issue history integrity + auditable status updates |
 | Session poisoning | RULE-5 | Immutable decisions, snapshots required |
 | Privilege escalation | RULE-6 | Regex blocklist + zero-trust token analysis |
 | Credential theft | RULE-7 | Path whitelist + symlink escape detection |
@@ -232,7 +232,7 @@ Per CGS ARCHITECTURE:
 ### Phase 1: Activation Safety (Pre-Deployment)
 1. **Dry-Run Mode**: Gatekeeper logs blocks but allows execution (WARN vs BLOCK)
 2. **Registry Wipe**: Manual ability to clear all pending expectations (bootstrap safety valve)
-3. **Bootstrap Exempt**: Hardcode `.pi/registry/`, `todo.md`, `issues/active/` into Gatekeeper bypass logic
+3. **Bootstrap Exempt**: Hardcode `.pi/registry/` and minimal issue-bookkeeping paths into Gatekeeper bypass logic
 4. **Integration Point**: Hook Gatekeeper into Pi tool-call event hub (before `edit()`, `write()`, `shell` execute)
 5. **Emergency Kill-Switch**: A single file (`.pi/CGS_OFF`) that, if present and signed by human, disables all guardrails immediately.
 

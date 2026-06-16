@@ -1,14 +1,14 @@
 # Project Root
 ```<ONLY_CARE_ABOUT_THIS_IF_YOU_ARE_NOT "Pi">
 ## 🎯 Quick Start
-1. Load system prompt: `memory/mindbase/wip-system.md` (Your operating instructions).
+1. Load system prompt: `wip/.pi/SYSTEM.md` (proposed system prompt mirror; graduate when approved).
 2. Orient via `memory/MANIFEST.md` (Navigation index).
 3. Execute tasks using coordinates: `path:@[lines]` (Zero discovery overhead).
 
 ## 🗺️ Navigation
 All project intelligence is partitioned into the `/memory` directory. **Lazy load all context.**
 
-- **System Prompt** (Canonical): `memory/mindbase/wip-system.md` (7-phase loop, tool signatures, memory pipeline).
+- **System Prompt (WIP Mirror)**: `wip/.pi/SYSTEM.md` (proposed prompt; mirrors real target `.pi/SYSTEM.md`).
 - **Index**: `memory/MANIFEST.md` (Locate specific memory files by category).
 - **Mandates** (Law): `memory/mindbase/identity/MANDATES.md` (Non-negotiable constraints, tool governance).
 - **Rigor Baseline**: `memory/mindbase/identity/RIGOR_BASELINE.md` (Safety rails: never sacrifice logic for brevity).

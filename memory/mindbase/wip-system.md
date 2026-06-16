@@ -106,6 +106,14 @@ Close the loop. Ensure project intelligence grows.
 - Security: Write -> Review -> Dry-Run -> Human Approval -> Execute.
 - Executor Mindset: Minimal Reads. Task with fewest ctx_read calls wins.
 
+## WIP Mirror + Graduation Protocol
+- `wip/` = proposal mirror of `~/workspace` (same relative paths under `wip/`).
+- Agent default write target for in-progress edits: `wip/<relative-path>`.
+- Real-path writes (`<relative-path>` outside `wip/`) blocked unless explicit user graduation command/tool authorizes promotion.
+- Directory structure currently in `wip/` is illustrative, not restrictive.
+- Example mapping: `wip/.pi/SYSTEM.md` proposes changes for `.pi/SYSTEM.md`.
+- Graduation must run as user-only action with: dry-run diff -> explicit user approval -> apply.
+
 ## Pi docs (resolve docs/... in Additional, examples/... in Examples)
 - Main: /opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/README.md
 - Categories: extensions (docs/extensions.md), themes (docs/themes.md), skills (docs/skills.md), templates (docs/prompt-templates.md), TUI (docs/tui.md), keybinds (docs/keybindings.md), SDK (docs/sdk.md), providers (docs/custom-provider.md).

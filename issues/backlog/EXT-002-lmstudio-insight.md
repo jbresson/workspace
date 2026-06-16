@@ -1,108 +1,337 @@
-# Issue EXT-002: lmstudio-insight Extension
+# EXT-002: LMStudio Insight Extension — Full Spec (REST-first, Log-assisted)
 
-## Context
-LMStudio integration currently only surfaces error/terminated states in TUI. Extension lacks visibility into model performance, memory events, and response characteristics. Real-time insight into LMStudio events (model loading, token throughput, memory spikes, inference latency) would improve debugging and enable adaptive agent decision-making.
+## Status
+- **Type**: Implementation-ready spec (with explicit unknowns)
+- **Owner**: TBD
+- **Priority**: High (unblocks adaptive runtime decisions)
+- **Scope**: Extension + agent tools + optional TUI pane wiring
+- **Non-goals**: Building generic multi-provider observability framework
 
-## Goal
-Develop lmstudio-insight extension that streams real-time model status, memory events, and performance metrics from LMStudio via event listening, log tailing, and REST API integration.
+---
 
-## Requirements
-- [ ] Extension listens to LMStudio process events (load, unload, inference start/end).
-- [ ] Extension tails LMStudio logs and parses meaningful events.
-- [ ] Extension queries LMStudio REST API for current model state.
-- [ ] Extension exposes memory events (allocation, GC, spikes).
-- [ ] Extension identifies slow response patterns and surfaces them to agent.
-- [ ] TUI displays streaming status beyond error/terminated states.
-- [ ] Low overhead: monitoring does not impact model inference performance.
+## 1) Problem
+Current LMStudio integration in TUI reports only `error`/`terminated` style state. Missing:
+- live model/process health
+- inference latency/throughput visibility
+- memory pressure signals
+- API readiness/degraded states
 
-## Success Criteria
-- [ ] LMStudio extension discovers ≥5 distinct event types (load, unload, memory spike, slow inference, error).
-- [ ] Real-time insight displayed in TUI (status bar or dedicated pane).
-- [ ] Agent can query lmstudio-insight for "current model health" and make adaptive decisions.
-- [ ] No measurable inference slowdown when insight extension is active.
-- [ ] Integration with existing TUI keybinds (e.g., `Alt+L` to show LMStudio pane).
+Result: agent blind to model quality drift and can make bad planning/execution choices.
 
-## Implementation Plan
+---
 
-### Phase 1: Requirements & Event Discovery
-- [ ] **1.1** Analyze LMStudio architecture: process lifecycle, event emission points, REST endpoints.
-- [ ] **1.2** Identify event categories: startup, model load, inference lifecycle, memory mgmt, errors.
-- [ ] **1.3** Reverse-engineer LMStudio log format: parse useful metrics (tokens/sec, VRAM usage, latency).
-- [ ] **1.4** Document LMStudio REST API endpoints for model status, health, inference queue.
-- [ ] **1.5** Define event schema: timestamp, event_type, payload, severity.
+## 2) Goal
+Deliver `lmstudio-insight` extension that provides **real-time health + performance signals** for local LMStudio runtime, primarily via REST API polling/probing, with optional log tail augmentation.
 
-### Phase 2: Log Tailing & Event Parsing
-- [ ] **2.1** Implement log tail module: consume LMStudio log file in real-time.
-- [ ] **2.2** Implement event parser: extract structured data from free-text logs.
-- [ ] **2.3** Implement event filter: suppress noise, surface actionable events.
-- [ ] **2.4** Test with multiple LMStudio versions (identify version-specific log formats).
-- [ ] **2.5** Design fallback: if log tailing fails, degrade gracefully to REST API polling.
+Primary outcome: agent can query a single health surface and adapt behavior (chunking, retry strategy, model switch guidance, throttling).
 
-### Phase 3: REST API Integration
-- [ ] **3.1** Implement REST client for LMStudio API (model endpoints, health endpoints, metrics).
-- [ ] **3.2** Implement periodic polling: query model state every N seconds.
-- [ ] **3.3** Implement memory metrics extraction: parse VRAM, RAM, allocation events.
-- [ ] **3.4** Implement latency tracking: measure time-to-first-token, generation speed.
-- [ ] **3.5** Implement circuit breaker: if API unavailable, fallback to log tailing only.
+---
 
-### Phase 4: Event Stream & Buffering
-- [ ] **4.1** Design event buffer: store N recent events for query (sliding window).
-- [ ] **4.2** Implement event aggregation: combine similar events (e.g., "slow inference" counts).
-- [ ] **4.3** Implement memory event detection: flag allocation spikes, GC pauses.
-- [ ] **4.4** Implement inference performance tracking: detect inference slowdown trends.
-- [ ] **4.5** Design data retention: keep ≥1000 recent events in memory (configurable).
+## 3) Architecture (v1)
 
-### Phase 5: TUI Integration
-- [ ] **5.1** Design TUI pane: real-time status display (model, VRAM, tokens/sec, latency).
-- [ ] **5.2** Implement TUI status bar indicator: green (healthy), yellow (slow), red (error).
-- [ ] **5.3** Implement TUI pane for detailed event log (scrollable, searchable).
-- [ ] **5.4** Implement TUI keybind to toggle LMStudio insight pane (suggest `Alt+L`).
-- [ ] **5.5** Design color coding: green (event), yellow (warning), red (error), gray (debug).
+## 3.1 Signal Sources (priority order)
+1. **REST API (primary, required)**
+2. **Request wrapper telemetry (required)**
+3. **Process probe (optional v1.1)**
+4. **Log tail parsing (optional, best effort)**
 
-### Phase 6: Agent Integration
-- [ ] **6.1** Create lmstudio-insight tool: query extension for "model health" status.
-- [ ] **6.2** Implement tool: "get_memory_events" (return recent memory-related events).
-- [ ] **6.3** Implement tool: "get_inference_metrics" (throughput, latency, token stats).
-- [ ] **6.4** Implement tool: "get_event_log" (query events by type, timestamp range, severity).
-- [ ] **6.5** Design tool response format: structured JSON, suitable for agent decision-making.
+Reason: REST + wrapper signals deterministic and portable; raw log formats can drift by LMStudio version.
 
-### Phase 7: Performance & Observability
-- [ ] **7.1** Profile extension: measure CPU overhead, memory footprint.
-- [ ] **7.2** Benchmark: confirm <1% inference slowdown when insight is active.
-- [ ] **7.3** Implement extension metrics: event count/sec, query latency, buffer utilization.
-- [ ] **7.4** Add debug logging (configurable verbosity).
-- [ ] **7.5** Create performance baseline document.
+## 3.2 Data Flow
+1. `Poller` hits configured LMStudio base URL(s).
+2. `ProbeRunner` performs low-cost capability checks.
+3. `RequestTelemetry` captures TTFT, total latency, tok/s from actual inference calls (where available).
+4. `EventEngine` classifies events + severity.
+5. `HealthEngine` computes current health state.
+6. `RingBuffer` stores recent events + snapshots.
+7. Expose via:
+   - agent tools (`get_model_health`, etc.)
+   - TUI status/pane feed.
 
-### Phase 8: Documentation & Examples
-- [ ] **8.1** Create `docs/extensions/lmstudio-insight.md` architecture overview.
-- [ ] **8.2** Document event schema with examples.
-- [ ] **8.3** Document REST API endpoints and polling strategy.
-- [ ] **8.4** Create agent integration examples: "adapt task execution based on model health".
-- [ ] **8.5** Create troubleshooting guide (logs unavailable, API down, buffer overflow).
+---
 
-### Phase 9: Testing & Validation
-- [ ] **9.1** Integration test: run inference with insight extension active, verify events captured.
-- [ ] **9.2** Stress test: simulate rapid inference (verify buffer not overwhelmed).
-- [ ] **9.3** Failure test: kill LMStudio process, verify graceful degradation.
-- [ ] **9.4** API test: mock LMStudio API with synthetic responses.
-- [ ] **9.5** TUI test: verify all event types display correctly in pane.
+## 4) Explicit Unknowns + Handling
 
-## Acceptance Criteria
-- [ ] Extension detects and streams ≥5 distinct event types from LMStudio.
-- [ ] TUI displays real-time model status beyond error/terminated states.
-- [ ] Agent can query lmstudio-insight and make adaptive decisions.
-- [ ] No measurable inference performance degradation (<1% slowdown).
-- [ ] All events documented with examples in extension README.
-- [ ] Switched to streaming response: TUI updates continuously (not just on error).
+Because LMStudio API shape varies by release/config, spec uses **capability negotiation**.
 
-## Related Issues
-- EXT-001-turn-completion-validator (may coordinate on TUI updates).
-- ENG-001-task-phase-expectations-engine (expectations can factor in model health signals).
+Unknowns:
+1. Exact endpoint availability beyond OpenAI-compat routes.
+2. Presence/format of model runtime metrics (VRAM, queue depth, tokens/sec) from REST.
+3. Whether per-request usage fields are consistently returned.
+4. Log file locations and schema across OS/version.
 
-## Notes
-- Scope: LMStudio insight only. Do not create general "model monitoring" framework yet.
-- MVP: Log tailing + REST API polling. Event stream to agent is stretch goal.
-- Start with ≥5 core events; can expand later.
-- Consider rate limiting for log tail (1000s of lines/sec → must batch parse).
+Mitigation:
+- startup capability probe
+- endpoint fallback chain
+- strict parser guards + version tagging
+- confidence scores on derived metrics
 
-Compressed 1043 → 1043 tokens (0%)
+---
+
+## 5) API Capability Profile (REST)
+
+## 5.1 Config
+```yaml
+lmstudioInsight:
+  baseUrls:
+    - http://127.0.0.1:1234
+  pollIntervalMs: 1500
+  timeoutMs: 1200
+  maxBufferEvents: 2000
+  slowInferenceMs: 8000
+  errorRateWindowSec: 120
+  healthWindowSec: 60
+  enableLogTail: false
+```
+
+## 5.2 Endpoint Probe Matrix
+At startup and every 60s, probe in order:
+
+1. `GET /v1/models` (OpenAI-compatible; expected widely available)
+2. `GET /health` (if exists)
+3. `GET /api/v0/models` (tentative/custom)
+4. `GET /api/v1/models` (tentative/custom)
+
+Store per endpoint:
+- `supported: boolean`
+- `lastStatus`
+- `latencyMs`
+- `schemaFingerprint` (keys hash)
+- `lastSeenAt`
+
+## 5.3 Inference Telemetry Source
+Required: instrument LMStudio-bound request path used by agent/provider wrapper.
+Capture:
+- start timestamp
+- first token timestamp (if streaming)
+- end timestamp
+- prompt/output token counts (if returned)
+- transport/code errors
+
+This guarantees latency metrics even when REST metrics endpoints absent.
+
+---
+
+## 6) Event Model
+
+## 6.1 Event Types (minimum)
+- `LMSTUDIO_UP`
+- `LMSTUDIO_DOWN`
+- `MODEL_LIST_CHANGED`
+- `MODEL_ACTIVE_CHANGED` (if derivable)
+- `INFERENCE_STARTED`
+- `INFERENCE_COMPLETED`
+- `INFERENCE_SLOW`
+- `INFERENCE_ERROR`
+- `ERROR_RATE_SPIKE`
+- `MEMORY_PRESSURE` (confidence-tagged; often inferred)
+- `API_DEGRADED` (timeouts/high latency)
+
+## 6.2 Event Schema
+```ts
+type InsightEvent = {
+  id: string;
+  ts: string; // ISO
+  type: string;
+  severity: 'info' | 'warn' | 'error';
+  source: 'rest' | 'request-telemetry' | 'log' | 'process';
+  confidence: 'high' | 'medium' | 'low';
+  model?: string;
+  metrics?: {
+    latencyMs?: number;
+    ttftMs?: number;
+    tokensPerSec?: number;
+    inputTokens?: number;
+    outputTokens?: number;
+    errorRate?: number;
+    queueDepth?: number;
+    memoryUsedMb?: number;
+    memoryPct?: number;
+  };
+  payload?: Record<string, unknown>;
+};
+```
+
+---
+
+## 7) Health Model
+
+## 7.1 Health States
+- `HEALTHY`
+- `DEGRADED`
+- `UNHEALTHY`
+- `UNKNOWN`
+
+## 7.2 Rules (initial)
+- `UNHEALTHY` if LMStudio unreachable for `>=3` consecutive polls OR error rate > 25% in 2m window.
+- `DEGRADED` if p95 latency > threshold or slow inferences >= 3 within 5m.
+- `HEALTHY` if reachable + error rate low + latency under threshold.
+- `UNKNOWN` on startup before enough samples.
+
+## 7.3 Health Payload
+```json
+{
+  "state": "DEGRADED",
+  "reasonCodes": ["HIGH_P95_LATENCY", "SLOW_INFERENCE_BURST"],
+  "windowSec": 60,
+  "samples": 34,
+  "lastUpdated": "2026-06-15T18:31:22.000Z"
+}
+```
+
+---
+
+## 8) Buffer + Retention
+- Ring buffer default: 2000 events (configurable)
+- Snapshot cache: last 120 health snapshots (1 per poll cycle)
+- Aggregates: 1m, 5m rolling windows
+- Drop policy: oldest-first, count `droppedEvents`
+
+Performance guardrails:
+- Poll work budget < 20ms average CPU per cycle
+- Event parsing batch cap when log tail active
+
+---
+
+## 9) Agent Tool Contract
+
+Register tools (read-only):
+
+1. `lmstudio_get_model_health`
+   - Returns current state + reasons + headline metrics.
+
+2. `lmstudio_get_inference_metrics`
+   - Args: `{ windowSec?: number, model?: string }`
+   - Returns p50/p95 latency, error rate, throughput.
+
+3. `lmstudio_get_events`
+   - Args: `{ types?: string[], sinceTs?: string, severity?: string, limit?: number }`
+   - Returns filtered event list.
+
+4. `lmstudio_get_capabilities`
+   - Returns probe results, supported endpoints, schema fingerprints.
+
+All tool responses include:
+- `asOf`
+- `dataLatencyMs`
+- `confidenceSummary`
+
+---
+
+## 10) TUI Integration Contract
+
+Minimal v1:
+- status indicator in existing footer/header:
+  - green `HEALTHY`
+  - yellow `DEGRADED`
+  - red `UNHEALTHY`
+  - gray `UNKNOWN`
+- tooltip/compact line: model, p95 latency, err%, last event
+
+v1.1 optional pane (`Alt+L`):
+- live event stream (scrollable)
+- rolling charts (latency/error)
+- endpoint capability table
+
+---
+
+## 11) Implementation Plan
+
+### Phase A — Capability Discovery + Skeleton
+- [ ] Add extension scaffold `helpers/extensions/lmstudio-insight/`
+- [ ] Add config loader + sane defaults
+- [ ] Implement HTTP client with timeout/retry budget
+- [ ] Implement endpoint probe engine + capability cache
+
+### Phase B — Telemetry + Events
+- [ ] Hook provider request path for timing + token usage capture
+- [ ] Build event classifier + dedupe (burst suppression)
+- [ ] Build ring buffer + rolling metric aggregator
+
+### Phase C — Health Engine + Tools
+- [ ] Implement health state machine/rules
+- [ ] Register four read-only tools
+- [ ] Add JSON schema for tool outputs
+
+### Phase D — TUI + Logging
+- [ ] Add status indicator binding
+- [ ] Optional pane toggle wiring (`Alt+L`) if accepted
+- [ ] Add extension debug logs with rate limiting
+
+### Phase E — Hardening
+- [ ] Fallback behavior validation (partial capability, API down)
+- [ ] Perf profile (CPU/memory overhead)
+- [ ] Failure-mode test matrix
+
+---
+
+## 12) Failure Modes + Required Behavior
+1. **API unreachable** -> emit `LMSTUDIO_DOWN`; health `UNHEALTHY` after threshold.
+2. **Partial endpoint support** -> continue with supported subset; mark confidence lower.
+3. **No token usage data** -> latency-only metrics, set throughput unknown.
+4. **Log tail parse failure** -> auto-disable parser, keep REST mode.
+5. **Burst errors** -> aggregate to avoid event spam.
+
+---
+
+## 13) Testing Matrix
+
+## 13.1 Unit
+- health state transitions
+- event classification rules
+- rolling aggregation math
+- endpoint probe fallback ordering
+
+## 13.2 Integration
+- mock LMStudio API with variable endpoint sets
+- simulate slow/failed requests
+- verify tool outputs stable + schema-valid
+
+## 13.3 Performance
+- target: <1% added inference overhead from instrumentation path
+- poller CPU stable under long-run load
+
+## 13.4 Resilience
+- process restart mid-session
+- timeout storms
+- malformed payloads
+
+---
+
+## 14) Acceptance Criteria
+- [ ] Detect/emit >= 8 event types (list in §6.1).
+- [ ] Health state available continuously via tool call.
+- [ ] Inference metrics available for 1m/5m windows.
+- [ ] TUI shows health state beyond error/terminated.
+- [ ] Graceful degraded mode when endpoints missing.
+- [ ] Measured overhead <= 1% on representative local workload.
+- [ ] Documentation includes capability probe behavior + confidence semantics.
+
+---
+
+## 15) Deliverables
+1. Extension code + tests
+2. `docs/extensions/lmstudio-insight.md`
+3. Example tool call transcripts
+4. Perf baseline note (before/after)
+5. Endpoint capability report sample
+
+---
+
+## 16) Open Decisions (need human confirmation)
+1. Should pane keybind be `Alt+L` (conflict check with existing map)?
+2. Keep log tail disabled by default? (recommended yes)
+3. Preferred source of memory pressure signal when API lacks VRAM metrics:
+   - pure inference-time heuristic (safe)
+   - platform process inspection (more accuracy, more complexity)
+4. Should health thresholds be global config or per-model config in v1?
+
+---
+
+## 17) Related
+- EXT-001-turn-completion-validator
+- ENG-001-task-phase-expectations-engine
+
+Notes:
+- This spec intentionally assumes **REST shape variability**. Do not hardcode one undocumented endpoint family without capability probe.
+- MVP can ship with REST + request telemetry only; log/process sources remain additive.

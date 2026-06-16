@@ -1,88 +1,244 @@
-# ISSUE-001: Implementation of Common Process Subroutine Suite
+# ISSUE-001: Common Process Subroutine Suite — Full Implementation Spec
 
-## 🎯 Goal
-Codify the `TASK_EXECUTION.md` and `memory_management.md` lifecycles into a set of Pi extension **subroutines** and event handlers to move from "manual process following" to "runtime enforcement".
+## 1) Objective
+Implement enforceable process subroutines for task execution + memory lifecycle so agent behavior is runtime-checkable, resumable, and auditable.
 
-## Subroutine Tier Model (Proposed)
+Primary outcome: replace "best-effort process following" with typed subroutines + deterministic event handlers + explicit guardrail hooks.
 
-### S1 — Atomic Subroutines
-- Smallest reusable unit; one intent, one state mutation.
-- Deterministic schema + minimal side effects.
-- Example: `record_finding_strict`, `record_uncertainty`.
-- Rule: should be independently testable in isolation.
+---
 
-### S2 — Composite Subroutines
-- Orchestrates 2+ S1 subroutines under one checkpoint objective.
-- Produces merged proof artifact and explicit partial-failure output.
-- Example: `verify_ac` (aggregate AC checks + gap map).
-- Rule: no hidden writes; every child call surfaced in `details.trace`.
+## 2) Scope
+### In scope
+- Subroutine registry (S1/S2/S3 tiers).
+- Typed input/output contracts for all listed subroutines.
+- Event bus + lifecycle handlers for checkpoint, finding, decision, blocker, close.
+- Persistence for task packet, registries, traces, workflow state.
+- Guardrail integration points (`expect`, `validate`, `resolve` semantics).
+- MVP + phased rollout.
 
-### S3 — Workflow Subroutines
-- Multi-phase process codification; can cross Orient/Do/Verify/Record.
-- Coordinates sequencing + guardrail gates + escalation fallback.
-- Example: `close_task_with_tax`.
-- Rule: must emit resumable state (`workflowState`) for interruption/restart.
+### Out of scope (phase-later)
+- S4 meta-subroutines auto-synthesis.
+- Cross-project federated memory writes.
+- Autonomous backlog prioritization.
 
-### S4 — Meta Subroutines (Future)
-- Build, tune, or compose new subroutines from prior validated blocks.
-- Purpose: codify increasingly complex tasks without freeform drift.
-- Example (future): `synthesize_release_readiness_workflow`.
-- Rule: generated composition must pass policy + schema validation before activation.
+---
+
+## 3) Tier Model (Normative)
+- **S1 Atomic**: one intent, one mutation, deterministic output.
+- **S2 Composite**: orchestrates 2+ S1; no hidden side effects; full child trace.
+- **S3 Workflow**: multi-phase orchestration with resumable `workflowState`.
+- **S4 Meta**: future, approval-gated composition.
 
 ### Tier invariants
-- Up-tier may call down-tier (`S3 -> S2 -> S1`), never inverse.
-- Guardrail metadata mandatory at all tiers.
-- Idempotency target increases by tier:
-  - S1 strict idempotent where possible
-  - S2 retry-safe
-  - S3 resumable
-  - S4 versioned + approval-gated
+- Call direction: `S3 -> S2 -> S1` only.
+- Every tier emits guardrail metadata.
+- Idempotency targets:
+  - S1 strict idempotent where feasible.
+  - S2 retry-safe (duplicate child calls deduped).
+  - S3 resumable from checkpoint state.
+  - S4 versioned + human approval.
 
-## 🛠️ Scope & Requirements
+---
 
-## Canonical Process Subroutine Spec Table
+## 4) Canonical Contract Matrix
+| Subroutine | Tier | Trigger | Required Inputs | Output `details` (required) | Failure Modes |
+|---|---|---|---|---|---|
+| `start_task_packet` | S2 | Immediately after intake | `objective`, `constraints[]`, `owner`, `targetPhase` | `acceptanceCriteria[]`, `falseWinRisks[]`, `criticalPath[]`, `checkpoints[]`, `taskId` | `E_BAD_OBJECTIVE`, `E_EMPTY_AC`, `E_OWNER_MISSING` |
+| `init_registries` | S1 | After task packet | `taskId`, `riskSeed[]?`, `uncertaintySeed[]?` | `riskRegisterId`, `uncertaintyRegistryId`, `blockerLogId` | `E_TASK_NOT_FOUND`, `E_DUP_REGISTRY` |
+| `record_finding_strict` | S1 | Analyze step fact capture | `taskId`, `finding`, `evidenceRefs[]`, `confidence`, `category` | `findingId`, `conflicts[]`, `saved` | `E_NO_EVIDENCE`, `E_LOW_CONFIDENCE_WITHOUT_FLAG` |
+| `record_decision_strict` | S1 | Decision commit | `taskId`, `decision`, `reasoning`, `reversibility`, `alternatives[]`, `rollbackPlan?` | `decisionId`, `riskLevel`, `validated` | `E_NO_ALTERNATIVES`, `E_IRREV_NO_ROLLBACK` |
+| `record_uncertainty` | S1 | Unknown discovered | `taskId`, `question`, `owner`, `resolutionTrigger`, `dueHint?` | `uncertaintyId`, `status` | `E_OWNER_MISSING`, `E_BAD_TRIGGER` |
+| `build_task_graph` | S2 | Post-map; scope changes | `taskId`, `tasks[]`, `dependencies[]`, `constraints[]` | `dag`, `criticalPath`, `blockedNodes[]`, `graphVersion` | `E_CYCLE_DETECTED`, `E_ORPHAN_NODE` |
+| `next_best_action` | S2 | Each iteration start | `taskId`, `taskGraphId`, `completed[]`, `blocked[]` | `nextTask`, `why`, `requiresBlockerLog` | `E_NO_RUNNABLE_NODE`, `E_STALE_GRAPH` |
+| `run_checkpoint` | S1 | Forcing gate | `taskId`, `checkpointId`, `phase`, `validatorRef` | `passed`, `evidenceRefs[]`, `delta`, `validationId` | `E_VALIDATOR_MISSING`, `E_VALIDATION_FAIL` |
+| `verify_ac` | S2 | Pre-close convergence | `taskId`, `acceptanceCriteria[]` | `acResults[]`, `gaps[]`, `overallPass` | `E_AC_UNTESTABLE`, `E_GAPS_PRESENT` |
+| `false_win_scan` | S2 | After AC verify | `taskId`, `falseWinRisks[]`, `executedMitigations[]` | `unmitigated[]`, `severityMap` | `E_UNMITIGATED_HIGH` |
+| `pressure_check` | S2 | Every N loops or drift | `taskId`, `iteration`, `openUnknowns`, `openContradictions` | `convergenceScore`, `unknownsDrift`, `trimNeeded` | `E_DRIFT_RISING`, `E_CONTRADICTION_OPEN` |
+| `open_blocker_issue` | S1 | Hard stop | `taskId`, `title`, `impact`, `blockedBy`, `neededFromHuman` | `issuePath`, `issueId`, `linkedTaskId` | `E_PATH_WRITE_FAIL` |
+| `propose_followup_issue` | S1 | Non-blocking deferred gap | `taskId`, `gap`, `impact`, `owner?`, `references[]` | `backlogIssuePath`, `status` | `E_BAD_REFERENCE` |
+| `context_trim_plan` | S2 | Load drift / long chain | `taskId`, `activeFiles[]`, `staleCandidates[]` | `evict[]`, `retain[]`, `rationale` | `E_EMPTY_RETAIN_SET` |
+| `close_task_with_tax` | S3 | Final close gate | `taskId`, `acProof`, `findings[]`, `decisions[]`, `openUncertainties[]` | `closureReport`, `followups[]`, `memoryPromotionCandidates[]`, `workflowState` | `E_CLOSE_WITH_OPEN_BLOCKER`, `E_NO_TAX` |
+| `promote_l2_to_l3` | S2 | Post-close cool-down | `taskId`, `entries[]`, `targetMemoryPath`, `lineage` | `promoted[]`, `rejected[]`, `reasons[]` | `E_CONTRADICTION_UNRESOLVED`, `E_LINEAGE_INCOMPLETE` |
 
-| Subroutine | Tier | Exact When Used | Required Inputs | Required Output (`details`) | Guardrail Relation | MVP Priority |
-|---|---|---|---|---|---|---|
-| `start_task_packet` | S2 | First action after task intake, before any repo edits/tool execution | `objective`, `constraints[]`, `owner`, `targetPhase` | `acceptanceCriteria[]`, `falseWinRisks[]`, `criticalPath[]`, `checkpoints[]` | **Direct**: defines mandatory checkpoints later consumed by expectation/gate logic | P0 |
-| `init_registries` | S1 | Immediately after `start_task_packet`, before entering Do/Cycling for medium+ risk | `taskId`, `riskSeed[]?`, `uncertaintySeed[]?` | `riskRegisterId`, `uncertaintyRegistryId`, `blockerLogId` | **Direct**: creates auditable structures guardrails can require as preconditions | P1 |
-| `record_finding_strict` | S1 | Every Analyze step when new evidence-backed fact appears | `finding`, `evidenceRefs[]`, `confidence`, `category` | `findingId`, `conflicts[]`, `saved` | **Direct**: enforces evidence requirement + contradiction surfacing (anti-handwave gate) | P0 |
-| `record_decision_strict` | S1 | Every Offload step when agent commits to a design/implementation choice | `decision`, `reasoning`, `reversibility`, `alternatives[]`, `rollbackPlan?` | `decisionId`, `riskLevel`, `validated:false` | **Direct**: blocks unsafe irreversible decisions lacking alternatives/rollback path | P0 |
-| `record_uncertainty` | S1 | Any time assumption/open question discovered and not resolved in current step | `question`, `owner`, `resolutionTrigger`, `dueHint?` | `uncertaintyId`, `status:OPEN` | **Indirect**: supports guardrail audits by proving unknowns are explicit, not hidden | P1 |
-| `build_task_graph` | S2 | Once per task after Map, refreshed when scope/dependencies change materially | `tasks[]`, `dependencies[]`, `constraints[]` | `dag`, `criticalPath`, `blockedNodes[]` | **Indirect**: identifies irreversible/high-impact nodes for stricter gating | P1 |
-| `next_best_action` | S2 | Start of each Cycling iteration before selecting next implementation step | `taskGraphId`, `completed[]`, `blocked[]` | `nextTask`, `why`, `requiresBlockerLog` | **Indirect**: prevents silent bypass of blocked critical work | P1 |
-| `run_checkpoint` | S1 | At each declared forcing function checkpoint (phase gates) and before risky transitions | `checkpointId`, `phase`, `validatorRef` | `passed`, `evidenceRefs[]`, `delta` | **Direct**: primary proof mechanism for resolving guardrail expectations | P0 |
-| `verify_ac` | S2 | Convergence phase before task close claim | `taskId`, `acceptanceCriteria[]` | `acResults[]`, `gaps[]`, `overallPass` | **Direct**: prevents false completion; can be mandatory close gate | P0 |
-| `false_win_scan` | S2 | After `verify_ac`, before final sign-off | `falseWinRisks[]`, `executedMitigations[]` | `unmitigated[]`, `severityMap` | **Direct**: explicit anti-false-win control tied to safety expectations | P1 |
-| `pressure_check` | S2 | Periodic cadence (e.g., every N iterations) and whenever drift suspected | `iteration`, `openUnknowns`, `openContradictions` | `convergenceScore`, `unknownsDrift`, `trimNeeded` | **Direct**: policy-driven recurring compliance gate | P1 |
-| `open_blocker_issue` | S1 | Immediate hard-stop when blocked by missing dependency/approval/info | `title`, `impact`, `blockedBy`, `neededFromHuman` | `issuePath`, `issueId`, `linkedTaskId` | **Direct**: AFK/oversight externalization requirement | P1 |
-| `propose_followup_issue` | S1 | When non-blocking gap found that cannot be addressed in current scope | `gap`, `impact`, `owner?`, `references[]` | `backlogIssuePath`, `status:PROPOSED` | **Indirect**: ensures deferred risk is visible and auditable | P2 |
-| `context_trim_plan` | S2 | When pressure_check signals load drift or before long multi-step execution | `activeFiles[]`, `staleCandidates[]` | `evict[]`, `retain[]`, `rationale` | **Indirect**: supports rigor by preventing context-overflow errors | P2 |
-| `close_task_with_tax` | S3 | Final step before declaring done / handoff / merge-ready | `taskId`, `acProof`, `findings[]`, `decisions[]`, `openUncertainties[]` | `closureReport`, `followups[]`, `memoryPromotionCandidates[]`, `workflowState` | **Direct**: hard close gate; no completion without auditable knowledge tax | P0 |
-| `promote_l2_to_l3` | S2 | Cool-down phase after closure report approved | `entries[]`, `targetMemoryPath`, `lineage` | `promoted[]`, `rejected[]`, `reasons[]` | **Direct**: blocks memory promotion while contradictions unresolved | P2 |
+---
 
-## Initial Implementation Slice (MVP)
-- [ ] `start_task_packet`
-- [ ] `record_finding_strict`
-- [ ] `record_decision_strict`
-- [ ] `run_checkpoint`
-- [ ] `verify_ac`
-- [ ] `close_task_with_tax`
+## 5) Data Contracts (minimum JSON schema shape)
+All subroutines return:
+```json
+{
+  "ok": true,
+  "subroutine": "record_finding_strict",
+  "tier": "S1",
+  "taskId": "TASK-123",
+  "details": {},
+  "guardrail": {
+    "phase": "Do",
+    "riskLevel": "medium",
+    "checkpointId": "CP-2",
+    "requiresOversight": false,
+    "evidenceRefs": ["path:@[12-20]"]
+  },
+  "trace": {
+    "callId": "uuid",
+    "parentCallId": null,
+    "timestamp": "ISO-8601",
+    "idempotencyKey": "hash"
+  }
+}
+```
 
-## Non-Negotiable Contract (all subroutines)
-- [ ] Structured output only (machine-checkable in `details`)
-- [ ] Explicit fail states (no warning-only success)
-- [ ] Idempotent behavior where feasible
-- [ ] Emit guardrail metadata: `requiresOversight`, `riskLevel`, `phase`, `checkpointId`, `evidenceRefs`
-- [ ] Compatible with issue-only pipeline (`issues/` lifecycle with direct status/owner/progress updates)
+Failure return:
+```json
+{
+  "ok": false,
+  "error": { "code": "E_NO_EVIDENCE", "message": "...", "retryable": false },
+  "details": { "missing": ["evidenceRefs"] },
+  "trace": { "callId": "uuid" }
+}
+```
 
-## 🚩 Success Criteria
-- LLM no longer forgets to record findings/decisions because subroutines provide structured execution.
-- Phase 3 "Decision Sign-off" is an automated check rather than a manual checklist.
-- Task tracking and promotion follow strict issue lifecycle (`issues/backlog` -> `issues/active` -> `issues/archive` as appropriate).
-- Composite/workflow behavior is traceable and resumable (no hidden orchestration state).
+---
 
-## 🔗 References
-- Analysis: `PROCESS_ANALYSIS.md`
-- Process: `memory/mindbase/processes/TASK_EXECUTION.md`
-- Memory Law: `memory/mindbase/processes/memory_management.md`
+## 6) Architecture
+### Modules
+- `process-suite/registry.ts` — declarative subroutine registry + tier policy checks.
+- `process-suite/contracts.ts` — zod/json schemas for input/output.
+- `process-suite/executor.ts` — dispatch, idempotency, retries, tracing.
+- `process-suite/persistence.ts` — append-only log + state snapshots.
+- `process-suite/guardrail-adapter.ts` — expectation + resolution bridge.
+- `process-suite/subroutines/*.ts` — per-subroutine implementation.
+- `process-suite/workflows/close-task-with-tax.ts` — S3 orchestrator.
+
+### Persistence model
+- `TaskPacket`
+- `RiskRegister`
+- `UncertaintyRegistry`
+- `BlockerLog`
+- `SubroutineTrace`
+- `WorkflowSnapshot`
+
+Storage requirement: append-only event log + latest materialized snapshot per `taskId`.
+
+---
+
+## 7) Execution Semantics
+1. Validate input schema.
+2. Compute idempotency key (`subroutine + normalizedInput + taskId`).
+3. If prior success with same key -> return cached success + `details.replayed=true`.
+4. Execute logic.
+5. Persist event + snapshot delta.
+6. Emit guardrail metadata/event.
+7. Return structured result.
+
+### Retry policy
+- Retry only `retryable=true` errors.
+- Max retries configurable (default 2).
+- No retry for policy violations (`E_IRREV_NO_ROLLBACK`, `E_NO_EVIDENCE`, etc).
+
+---
+
+## 8) Guardrail Integration
+- `run_checkpoint`, `verify_ac`, `close_task_with_tax` are mandatory gates.
+- Any `riskLevel=high` decision auto-sets `requiresOversight=true`.
+- `record_decision_strict` with `reversibility=IRREVERSIBLE` must include:
+  - alternatives (>=1)
+  - rollback/mitigation plan
+  - pre-merge communication note ref
+
+If missing -> hard fail (`E_IRREV_NO_ROLLBACK`).
+
+---
+
+## 9) Workflow Spec: `close_task_with_tax` (S3)
+Phases:
+1. `VERIFY_AC` -> call `verify_ac`.
+2. `FALSE_WIN_SCAN` -> call `false_win_scan`.
+3. `DECISION_AUDIT` -> validate irreversible decisions.
+4. `OPEN_ITEMS_CHECK` -> blockers/unknowns handling.
+5. `EMIT_CLOSURE_REPORT` -> compile proof + followups.
+6. `OPTIONAL_PROMOTION` -> call `promote_l2_to_l3` when allowed.
+
+Resumability: persist `workflowState.phase`, `completedCalls[]`, `pending[]`, `lastError`.
+
+---
+
+## 10) Event Handlers
+- `onFindingRecorded` -> contradiction detector.
+- `onDecisionRecorded` -> irreversible decision policy validator.
+- `onCheckpointFailed` -> open blocker or bounce to previous phase.
+- `onTaskClosed` -> create promotion candidates + coverage report artifact.
+
+Handler rules:
+- Side effects explicit in trace.
+- Handler failure cannot silently swallow parent failure.
+
+---
+
+## 11) MVP Plan (P0)
+Implement first:
+1. `start_task_packet`
+2. `record_finding_strict`
+3. `record_decision_strict`
+4. `run_checkpoint`
+5. `verify_ac`
+6. `close_task_with_tax`
+
+### MVP acceptance
+- End-to-end run from intake -> close with structured traces.
+- At least one hard fail proven for missing evidence + missing irreversible rollback.
+- Resume interrupted `close_task_with_tax` from snapshot.
+
+---
+
+## 12) Test Strategy
+### Unit
+- Schema validation per subroutine.
+- Idempotency replay.
+- Error code correctness.
+
+### Integration
+- Full happy path for MVP chain.
+- Failure path: checkpoint fail -> blocker issue path created.
+- Failure path: AC gap -> close blocked.
+- Resume path after simulated interruption.
+
+### Policy tests
+- Irreversible decision without rollback -> fail.
+- Finding without evidence -> fail.
+- Contradiction open at promotion -> fail.
+
+Coverage target: 90% statements on `process-suite/*`, 100% on policy validators.
+
+---
+
+## 13) Rollout
+- Phase A: shadow mode (evaluate outputs, no hard enforcement).
+- Phase B: enforce on P0 subroutines.
+- Phase C: enforce S2 periodic checks (`pressure_check`, `false_win_scan`).
+- Phase D: add promotion gating + S4 design draft.
+
+Rollback: feature flag `PROCESS_SUITE_ENFORCEMENT=false` reverts to non-blocking advisory mode.
+
+---
+
+## 14) Risks + Mitigations
+- **Overhead risk**: too many mandatory calls -> mitigate with S2 batching.
+- **False certainty risk**: weak evidence refs -> enforce ref shape + source existence checks.
+- **State drift risk**: snapshot/event mismatch -> periodic reconcile job.
+- **Orchestration opacity**: hidden child calls -> mandatory `details.trace[]`.
+
+---
+
+## 15) Done Definition
+Done when:
+- MVP subroutines implemented with contracts + tests.
+- Guardrail gate behavior demonstrably blocks invalid close.
+- `close_task_with_tax` resumability proven in integration test.
+- Audit artifact emitted: AC proof + decision audit + followup list.
+
+---
+
+## 16) References
+- `PROCESS_ANALYSIS.md`
+- `memory/mindbase/processes/TASK_EXECUTION.md`
+- `memory/mindbase/processes/memory_management.md`
