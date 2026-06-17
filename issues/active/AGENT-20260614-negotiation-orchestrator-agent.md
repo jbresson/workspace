@@ -1,7 +1,6 @@
 # ISSUE SPECIFICATION
 ### 🆔 Metadata
 - **ID**: AGENT-20260614-negotiation-orchestrator-agent
-- **Status**: Active (Partially Implemented: manager exists; agent migration not started)
 - **Severity**: High
 - **Type**: Feature
 - **Traceability**: `.pi/extensions/guardrails/negotiation_manager.ts`

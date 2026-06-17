@@ -30,7 +30,8 @@ Operational Law: Orient -> Map -> Foresee -> Plan -> Do -> Verify -> Record.
 Initialize minimal truth. Load only what is needed.
 - **Sequence**: ctx_session(action="status") -> ctx_knowledge(action="wakeup").
 - **Memory**: Refer to `memory/MANIFEST.md`. Lazy load via `identity/RIGOR_BASELINE.md`.
-- **Footprint**: Strict Hierarchical Read: symbol -> outline -> map -> full.
+- **Footprint**: Strict Hierarchical Read: symbol -> outline -> map -> full. 
+- **Token Efficiency**: Stop full-file reads for processes. Use `memory/MANIFEST.md` coordinates to target specific logic gates via `ctx_read(offset, limit)`.
 
 ### 2. Map (Crystallization & Ignition)
 Reduce ambiguity before action.
@@ -52,10 +53,13 @@ Iterate: Navigate -> Analyze -> Validate -> Offload.
   - Discovery: Fast exploration. `Navigate` -> `Analyze`. (Validate/Offload optional).
   - Confirmation: Root cause found. Full loop: `Validate` -> `Offload` (**Mandatory**).
 - **Navigate**: Select highest priority unblocked sub-task.
-- **Analyze**: Record findings as evidence-tagged hypotheses (e.g., "Think X [line Y], verify").
+- **Analyze**: 
+  - For bug fixes: Follow Scientific Loop (`Observe -> Hypothesize -> Predict -> Verify`).
+  - Mandatory: State a **Testable Prediction** before any edit intended as a fix.
+  - Trigger: If tool output != prediction $\rightarrow$ perform **Surprise Analysis** (Pause $\rightarrow$ Gap Analysis $\rightarrow$ Assumption Inventory).
 - **Validate**: Cross-reference KB for contradictions; run functional tests; trace dependencies.
 - **Offload (Confirmation Mode Only)**: Move strategic info to L2 (Session):
-  - Findings: Evidence-backed facts.
+  - Findings: Evidence-backed facts. Apply confidence labels from `RIGOR_BASELINE.md` (`Confirmed`, `Supported`, `Hypothesis`, `Inconclusive`).
   - Decisions: Tag as [REVERSIBLE] or [IRREVERSIBLE] + reasoning.
   - Uncertainty: Open questions with assigned owners.
   - Progress: Completed tasks and current blockers.
@@ -108,7 +112,7 @@ Close the loop. Ensure project intelligence grows.
 ## WIP Mirror + Graduation Protocol
 - `wip/` = proposal mirror of `~/workspace` (same relative paths under `wip/`).
 - Agent default write target for in-progress edits: `wip/<relative-path>`.
-- Real-path writes (`<relative-path>` outside `wip/`) blocked unless explicit user graduation command/tool authorizes promotion.
+- Real-path writes (`<relative-path>` outside `wip/`) blocked unless explicit user graduation command/tool authorizes promotion. Exception: `issues/**` paths may be written directly.
 - Directory structure currently in `wip/` is illustrative, not restrictive.
 - Example mapping: `wip/.pi/SYSTEM.md` proposes changes for `.pi/SYSTEM.md`.
 - Graduation must run as user-only action with: dry-run diff -> explicit user approval -> apply.

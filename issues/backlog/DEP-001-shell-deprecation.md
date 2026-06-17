@@ -43,7 +43,7 @@ Remove all generic shell execution capabilities and replace them with specialize
 - [ ] **2.7** Document fail-safe defaults (e.g., read-only mode, dry-run).
 
 ### Phase 3: Implementation & Integration
-- [ ] **3.1** Implement `GitWrapper` tool in helpers/extensions/.
+- [ ] **3.1** Implement `GitWrapper` tool in `.pi/extensions/`.
 - [ ] **3.2** Implement `NpmWrapper` tool.
 - [ ] **3.3** Implement `PythonWrapper` tool.
 - [ ] **3.4** Implement `CargoWrapper` tool.

@@ -1,6 +1,5 @@
 # Backlog Planning Summary
 **Date**: 2026-06-13
-**Status**: All 7 issues now have comprehensive implementation plans
 
 ---
 
@@ -18,28 +17,24 @@ All backlog issues have been reviewed and plans have been created for those miss
 ## Issue Summaries & Plan Sizes
 
 ### DEP-001: Shell Deprecation
-**Status**: NEW PLAN | **Priority**: HIGH | **Effort**: LARGE (6 phases)
 - **Goal**: Remove all generic `shell` and `ctx_shell` access, replace with specialized safe wrappers.
 - **Key Phases**: Audit → Wrapper Design → Implementation → Validation → Removal → Documentation
 - **Blockers**: Requires audit of all system prompts and agent workflows.
 - **Critical Path**: Audit (1.1-1.5) → Design high-frequency CLIs (2.1-2.7) → Implement wrappers (3.1-3.8)
 
 ### GUARDRAIL-002: Validation Manager
-**Status**: NEW PLAN | **Priority**: HIGH | **Effort**: MEDIUM (6 phases)
 - **Goal**: Route proof attempts to correct validation strategy with fail-safe default to `MANUAL`.
 - **Key Phases**: Architecture → Implementation → Strategy Integration → Testing → Observability → Documentation
 - **Critical Dependency**: Downstream from SkepticAuditor (GUARDRAIL-003).
 - **Fail-Safe**: Unknown validation types always default to MANUAL review.
 
 ### GUARDRAIL-003: Skeptic Auditor
-**Status**: NEW PLAN | **Priority**: HIGH | **Effort**: LARGE (8 phases)
 - **Goal**: Perform adversarial logic and safety checks on proofs with high-rigor auditor prompt.
 - **Key Phases**: Architecture → Delimiter Injection Prevention → Auditor Prompt → Core Audit Logic → ValidationManager Integration → Testing → Observability → Documentation
 - **Rubric**: Logic (0-10), Evidence (0-10), Safety (0-10). Pass threshold: all ≥ 7.
 - **Critical Innovation**: Strict input delimiters prevent prompt injection attacks.
 
 ### GUARDRAIL-004: Constrained Command Strategy
-**Status**: NEW PLAN | **Priority**: HIGH | **Effort**: LARGE (9 phases)
 - **Goal**: Validate shell commands with blacklist characters, path pinning, and trigger correlation.
 - **Key Phases**: Architecture → Parser & Lexer → Blacklist Enforcement → Path Pinning → Trigger Correlation → Integration → Testing → Observability → Documentation
 - **Safety Rules**:
@@ -49,14 +44,12 @@ All backlog issues have been reviewed and plans have been created for those miss
   - Trigger correlation: command must target original expectation
 
 ### GUARDRAIL-005: Sandboxed TS Strategy
-**Status**: NEW PLAN | **Priority**: HIGH | **Effort**: LARGE (10 phases)
 - **Goal**: AST-analyze TypeScript code to block dangerous modules and patterns before execution.
 - **Key Phases**: Architecture → AST Parser → Blocklist/Allowlist → Dangerous Pattern Detection → Whitelist File/Network → Symbol Analysis → Sandbox Environment → Testing → Observability → Documentation
 - **Blocklist**: `child_process`, `net`, `http`, `https`, `fs` (writes only), `eval`, `Function`, `vm`
 - **Allowlist**: Built-ins (`console`, `JSON`, etc.), project modules (`src/*`), safe npm packages (`lodash`, `uuid`, `zod`)
 
 ### GUARDRAIL-006: Externalization Handler
-**Status**: NEW PLAN | **Priority**: MEDIUM | **Effort**: LARGE (9 phases)
 - **Goal**: Force structured externalization when proofs are blocked in AFK mode via `log_todo` with 5-point rubric.
 - **Key Phases**: Architecture → Block Detection → Externalization Prompt → Rubric Definition → Log_todo Implementation → Escalation Logic → Testing → Observability → Documentation
 - **5-Point Rubric**:
@@ -67,7 +60,6 @@ All backlog issues have been reviewed and plans have been created for those miss
   5. Plan to Continue: Next step or escalation?
 
 ### GUARDRAIL-007: Dependency Analysis Engine
-**Status**: NEW PLAN | **Priority**: MEDIUM | **Effort**: LARGE (10 phases)
 - **Goal**: Distinguish isolated blocks (continue allowed) from cascading blocks (halt required).
 - **Key Phases**: Concept & Taxonomy → Dependency Graph Analysis → Block Classification → Isolation Claim Validation → SkepticAuditor Integration → False Positive/Negative Mitigation → Testing → Observability → Documentation → Maintenance
 - **Key Logic**: Cascading blocks always escalate to human. Isolation claims require SkepticAuditor validation.
@@ -125,7 +117,6 @@ GUARDRAIL-007 (Dependency Analysis Engine)
 6. **GUARDRAIL-006** (Externalization) — Handles blocked proofs gracefully.
 7. **DEP-001** (Shell Deprecation) — Completes safety boundary enforcement.
 
-**Estimated Timeline**:
 - Phases 1-3: Weeks 1-2 (architecture + core code)
 - Phases 4-6: Weeks 3-4 (integration + testing)
 - Phases 7-10: Weeks 5-6 (observability + documentation + hardening)

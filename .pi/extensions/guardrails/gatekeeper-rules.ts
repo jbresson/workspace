@@ -19,136 +19,202 @@ export interface GatekeeperRule {
   afkBehavior: 'BLOCK' | 'ISSUE_TODO' | 'PROMPT';
 }
 
+const isSystemPath = (p: string) => {
+  if (!p) return false;
+  const absolute = path.isAbsolute(p) ? p : path.resolve(process.cwd(), p);
+  const forbidden = [
+    path.join(process.env.HOME || '', '.ssh'), 
+    path.join(process.env.HOME || '', '.aws'), 
+    '/etc/passwd', 
+    path.join(process.cwd(), '.git/hooks')
+  ];
+  return forbidden.some(f => absolute.includes(f));
+};
+
 const normalizePath = (params: any) => {
   const p = params?.path || params?.filePath;
   if (!p) return '';
   return path.isAbsolute(p) ? p : path.resolve(process.cwd(), p);
 };
 
-const isSecretPath = (p: string) => {
-  if (!p) return false;
-  const absolute = normalizePath({ path: p });
-  const home = process.env.HOME || '';
-  
-  const secretPatterns = [
-    path.join(home, '.ssh'),
-    path.join(home, '.aws'),
-    path.join(home, '.kube'),
-    path.join(home, '.gnupg'),
-    '/etc/passwd',
-    '/etc/shadow',
-    '/etc/sudoers',
-  ];
+const hasGraduateIntent = (toolName: string, params: any): boolean => {
+  if ((toolName || '').toLowerCase().includes('graduate')) return true;
 
-  return secretPatterns.some(pattern => absolute.startsWith(pattern));
-};
+  const direct = [
+    params?.action,
+    params?.subAction,
+    params?.tool,
+    params?.command,
+    params?.name,
+  ]
+    .filter(Boolean)
+    .map((v) => String(v).toLowerCase());
 
-const isSelfIntegrityZone = (p: string) => {
-  if (!p) return false;
-  const absolute = normalizePath({ path: p });
-  const workspace = process.cwd();
+  if (direct.some((v) => v.includes('graduate'))) return true;
 
-  // Protect Core Project Integrity Zones
-  const integrityZones = [
-    path.join(workspace, 'memory'),
-    path.join(workspace, '.pi'),
-    path.join(workspace, 'issues'),
-  ];
+  const nestedArgs = params?.arguments;
+  if (nestedArgs && typeof nestedArgs === 'object') {
+    const nested = [nestedArgs.action, nestedArgs.subAction, nestedArgs.tool, nestedArgs.command]
+      .filter(Boolean)
+      .map((v: any) => String(v).toLowerCase());
+    if (nested.some((v) => v.includes('graduate'))) return true;
+  }
 
-  return integrityZones.some(zone => absolute.startsWith(zone));
+  return false;
 };
 
 export const GLOBAL_RULES: GatekeeperRule[] = [
   {
-    id: 'RULE-READ-PERIMETER',
-    description: 'Read Perimeter Guard',
-    toolGuard: (name) => ['ctx_read', 'ctx_grep', 'ctx_ls', 'read'].includes(name),
-    paramInspector: (_name, params) => {
-      const p = normalizePath(params);
-      if (isSecretPath(p)) {
+    id: 'RULE-GRADUATE-BLOCK',
+    description: 'Block all tool-call graduation avenues; graduation is user-command only.',
+    toolGuard: () => true,
+    paramInspector: (toolName, params) => {
+      if (hasGraduateIntent(toolName, params)) {
         return {
           allowed: false,
-          reason: 'Reading from secret-containing paths is strictly prohibited.',
-          alternative: 'Request access through a human administrator.'
+          reason: 'Tool-call graduation is forbidden by policy. Use user command `graduate <repo>` only.',
+          alternative: 'Run user command `graduate <repo>` in approved flow.',
         };
       }
       return { allowed: true };
     },
     requiresOversight: false,
-    resolutionGuidance: 'Request specific file access via an issue if a legitimate need exists.',
-    afkBehavior: 'BLOCK'
+    resolutionGuidance: 'Do not invoke graduate through tools or tool-proxy actions.',
+    afkBehavior: 'BLOCK',
   },
   {
     id: 'RULE-1',
-    description: 'Self Integrity Lock',
+    description: 'Memory Integrity Lock',
     toolGuard: (name) => ['write', 'edit'].includes(name),
-    paramInspector: (_name, params) => {
-      const absolute = normalizePath(params);
-      const baseDir = process.cwd();
-
-      if (!absolute) {
-        return { allowed: false, reason: 'Missing path for write/edit operation.' };
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath;
+      if (p && p.includes('/memory')) {
+        return { allowed: false, reason: 'Changes to memory files must include SESSION_ID and Rationale.', alternative: 'Use a structured edit with justification.' };
       }
-
-      if (!absolute.startsWith(baseDir + path.sep) && absolute !== baseDir) {
-        return {
-          allowed: false,
-          reason: 'Writes are only permitted within the current working directory.',
-          alternative: 'Start the agent in the intended base directory.'
-        };
-      }
-
-      if (isSecretPath(absolute)) {
-        return {
-          allowed: false,
-          reason: 'Direct mutation of secret-containing paths is forbidden.',
-          alternative: 'Contact human administrator.'
-        };
-      }
-
-      if (isSelfIntegrityZone(absolute)) {
-        return {
-          allowed: false,
-          reason: 'Direct mutation of self-integrity zones is forbidden.',
-          alternative: 'Use the corresponding Process Tool (e.g., save_decision, log_todo).'
-        };
-      }
-
       return { allowed: true };
     },
     requiresOversight: true,
-    resolutionGuidance: 'Use process tools to request changes via issue filing.',
+    resolutionGuidance: 'Include SESSION_ID, Rationale, and Shelf-life in the change.',
     afkBehavior: 'ISSUE_TODO'
   },
   {
-    id: 'RULE-SHELL-BLOCK',
-    description: 'Zero-Trust Shell Policy',
-    toolGuard: (name) => ['bash', 'ctx_shell', 'shell'].includes(name),
-    paramInspector: () => ({
-      allowed: false,
-      reason: 'Raw shell access is forbidden for safety.',
-      alternative: 'Use specialized process tools for file and system operations.'
-    }),
+    id: 'RULE-2',
+    description: '.pi Registry Protection',
+    toolGuard: (name) => ['write', 'edit'].includes(name),
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath;
+      if (p && p.includes('expectations.jsonl')) {
+        return { allowed: false, reason: 'Registry mutations require strict state hashing.', alternative: 'Use the resolve_guardrail tool.' };
+      }
+      return { allowed: true };
+    },
+    requiresOversight: true,
+    resolutionGuidance: 'Submit proof of prior state hash and justification.',
+    afkBehavior: 'BLOCK'
+  },
+  {
+    id: 'RULE-3',
+    description: '.pi Directory Lockdown',
+    toolGuard: (name) => ['write', 'edit', 'bash', 'ctx_shell'].includes(name),
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath;
+      if (p && p.includes('.pi/')) {
+        return { allowed: false, reason: 'Destructive ops on .pi/ are forbidden.', alternative: 'Use the provided CGS tools for registry management.' };
+      }
+      return { allowed: true };
+    },
     requiresOversight: false,
-    resolutionGuidance: 'Identify the required operation and use the appropriate Pi tool.',
+    resolutionGuidance: 'Do not attempt to modify .pi/ directly.',
     afkBehavior: 'BLOCK'
   },
   {
     id: 'RULE-5',
     description: 'Session State Immutability',
     toolGuard: (name) => name === 'ctx_session',
-    paramInspector: (_name, params) => {
-      if (params?.action === 'reset' || params?.action === 'cleanup') {
-        return {
-          allowed: false,
-          reason: 'Forbidden ctx_session action for integrity (reset/cleanup).',
-          alternative: 'Use snapshot/status/task/finding/decision actions only.'
-        };
+    paramInspector: (name, params) => {
+      if (params.action === 'reset') {
+        return { allowed: false, reason: 'Forbidden action="reset".', alternative: 'Use snapshot and cleanup if 72h idle.' };
       }
       return { allowed: true };
     },
     requiresOversight: true,
-    resolutionGuidance: 'Use non-destructive session actions only.',
+    resolutionGuidance: 'Provide a snapshot reference before cleanup.',
+    afkBehavior: 'BLOCK'
+  },
+  {
+    id: 'RULE-6',
+    description: 'Shell Escapes & Privilege Escalation',
+    toolGuard: (name) => ['bash', 'ctx_shell'].includes(name),
+    paramInspector: (name, params) => {
+      const cmd = params.command || '';
+      const forbidden = [/sudo\s/i, /su\s/i, /chmod\s/i, /rm\s+-rf\s+\//i, /eval\s/i, /exec\s/i];
+      if (forbidden.some(regex => regex.test(cmd))) {
+        return { allowed: false, reason: 'Shell escape detected.', alternative: 'Use the provided specialized tools for file system ops.' };
+      }
+      return { allowed: true };
+    },
+    requiresOversight: false,
+    resolutionGuidance: 'Avoid privilege escalation commands.',
+    afkBehavior: 'BLOCK'
+  },
+  {
+    id: 'RULE-7',
+    description: 'Forbidden File Paths',
+    toolGuard: (name) => ['write', 'edit', 'bash', 'ctx_shell'].includes(name),
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath || (params.command ? params.command : '');
+      if (isSystemPath(p)) {
+        return { allowed: false, reason: 'Access to system paths is prohibited.', alternative: 'Use ctx_read for inspection.' };
+      }
+      return { allowed: true };
+    },
+    requiresOversight: false,
+    resolutionGuidance: 'Do not access credentials or system config files.',
+    afkBehavior: 'BLOCK'
+  },
+  {
+    id: 'RULE-8',
+    description: 'Meta-Expectation (Issue Filing)',
+    toolGuard: (name) => ['write', 'edit'].includes(name),
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath;
+      if (p && p.includes('.pi/issues/active/')) {
+        return { allowed: true }; // Logic for "formal issue" handled by auditor
+      }
+      return { allowed: true };
+    },
+    requiresOversight: false,
+    resolutionGuidance: 'All blocks must result in a formal issue.',
+    afkBehavior: 'ISSUE_TODO'
+  },
+  {
+    id: 'RULE-9',
+    description: 'Tool Abuse Detection',
+    toolGuard: (name) => ['bash', 'ctx_shell'].includes(name),
+    paramInspector: (name, params) => {
+      const cmd = params.command || '';
+      if ((cmd.includes('.pi/') || cmd.includes('/memory')) && !cmd.includes('cat ')) {
+        return { allowed: false, reason: 'Shell I/O on system dirs must use edit()/write().', alternative: 'Use the provided Pi tools.' };
+      }
+      return { allowed: true };
+    },
+    requiresOversight: false,
+    resolutionGuidance: 'Use specialized tools for .pi and memory directories.',
+    afkBehavior: 'BLOCK'
+  },
+  {
+    id: 'RULE-10',
+    description: 'Audit Trail Immutability',
+    toolGuard: (name) => ['write', 'edit'].includes(name),
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath;
+      if (p && p.includes('.pi/extensions/guardrails/')) {
+        return { allowed: false, reason: 'Audit logs are append-only.', alternative: 'Log updates via the Orchestrator.' };
+      }
+      return { allowed: true };
+    },
+    requiresOversight: false,
+    resolutionGuidance: 'Do not modify audit trails manually.',
     afkBehavior: 'BLOCK'
   }
 ];

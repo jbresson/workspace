@@ -1,7 +1,7 @@
 import { Expectation, ExpectationService } from './expectation_service';
 import { SkepticAuditor } from './skeptic_auditor';
 import { ValidationManager } from './validation_manager';
-import { LLMService } from '../../../helpers/services/llm_service';
+import { LLMService } from '../services/llm_service';
 
 export interface NegotiationState {
   iterations: number;

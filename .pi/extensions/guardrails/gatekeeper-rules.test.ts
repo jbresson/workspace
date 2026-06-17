@@ -5,6 +5,7 @@ import { GLOBAL_RULES } from './gatekeeper-rules';
 describe('Gatekeeper hardening policy', () => {
   const TESTED_RULE_IDS = new Set([
     'RULE-READ-PERIMETER',
+    'RULE-GRADUATE-BLOCK',
     'RULE-1',
     'RULE-SHELL-BLOCK',
     'RULE-5',
@@ -90,6 +91,19 @@ describe('Gatekeeper hardening policy', () => {
 
     expect(result.allowed).toBe(false);
     expect(result.ruleId).toBe('RULE-SHELL-BLOCK');
+  });
+
+  it('blocks graduate via tool-call routes', async () => {
+    const direct = await gatekeeper.intercept('s1', 'graduate', { action: 'scan', path: '/tmp' });
+    const proxied = await gatekeeper.intercept('s1', 'omnitool', {
+      action: 'call',
+      params: { tool: 'core.wip', arguments: { subAction: 'graduate', ticketId: 't1', repoName: 'r1' } },
+    });
+
+    expect(direct.allowed).toBe(false);
+    expect(proxied.allowed).toBe(false);
+    expect(direct.ruleId).toBe('RULE-GRADUATE-BLOCK');
+    expect(proxied.ruleId).toBe('RULE-GRADUATE-BLOCK');
   });
 
   it('blocks ctx_session reset and cleanup', async () => {

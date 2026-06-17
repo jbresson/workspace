@@ -1,9 +1,5 @@
 # GUARDRAIL-006: Externalization Handler & Prompt Injection
 
-**Status**: PLANNED (no implementation evidence found)
-**Priority**: MEDIUM
-**Category**: Cognitive
-
 ## Description
 Implement the prompt injection logic that triggers when an action is blocked in AFK mode.
 

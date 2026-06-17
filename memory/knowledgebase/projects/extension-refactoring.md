@@ -55,9 +55,9 @@ pi.registerCommand("command-name", {
 | File | Lines | Changes |
 |------|-------|---------|
 | `.pi/extensions/extension-loader.ts` | 366L | Extracted `loadExtension()` |
-| `.pi/extensions/pi-buddies/buddy.ts` | 413L | Dual tool + cmd, safe escaping |
-| `helpers/extensions/lean-ctx-sse/loader.ts` | 100L | Extracted `projectMemory()` |
-| `helpers/extensions/task_execution/lean-ctx-helpers.ts` | 243L | Added 6 phase commands |
+| `.pi/extensions/buddies/buddy.ts` | 413L | Dual tool + cmd, safe escaping |
+| `.pi/extensions/lean-ctx-sse/loader.ts` | 100L | Extracted `projectMemory()` |
+| `.pi/extensions/task_execution/lean-ctx-helpers.ts` | 243L | Added 6 phase commands |
 
 ---
 

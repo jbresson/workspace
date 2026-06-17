@@ -13,6 +13,7 @@ A validation-centric procedure for navigating complex tasks while maintaining tr
 - **Acceptance Criteria (AC)**: 3–5 testable conditions (e.g., "API 200 <1000 RPS", "Zero regressions").
 - **Hard Constraints**: Boundaries (e.g., "No Redis", "No schema changes").
 - **Use**: North Star for all decisions.
+- **ENG-002 Contract (required before Do)**: deterministic artifact set at `docs/pending/<item-id>/` with required files `plan.md`, `spec.json`, `logs.json`, `verify.json`.
 
 ### Identify False Win Risks
 - Record blindspots: "What does thinking done but failing look like?"
@@ -68,6 +69,7 @@ A validation-centric procedure for navigating complex tasks while maintaining tr
 2. Identify highest-priority unstarted sub-task.
 3. Load context (files, symbols, tests).
 4. State micro-goal explicitly.
+5. **Spec gate required** (`spec action=ready`): Map -> Do transition blocked until pass.
 
 ### Sub-Phase 2b: Analyze (Gather Signal)
 1. Read hierarchically: symbol → outline → map → full.
@@ -88,6 +90,7 @@ A validation-centric procedure for navigating complex tasks while maintaining tr
 - **Findings**: Include evidence (e.g., "Auth timeout 30s (test_timeout_behavior).").
 - **Uncertainty**: Open questions with owners.
 - **Progress**: Completed tasks, blockers.
+- **Safe edit required for source edits**: all edits via `safe_edit`; direct source write without `logs.json` transaction is invalid.
 
 ### Sub-Phase 2e: Pressure Check (Sanity Gate)
 **Every N iterations or after major decision:**
@@ -123,6 +126,9 @@ For every `[IRREVERSIBLE]` decision:
 
 ## Phase 4: Convergence Proof
 **Verify we actually met the AC from Phase 0.**
+
+**Audit required (synchronous)**: run `audit_change_ledger` in Verify/Audit phase, not background.
+Task cannot close if audit reports unlogged modifications, hash mismatches, or stale invariant verification mappings.
 
 ### AC Checklist
 - Each AC satisfied? If not: gap? Current PR or follow-up?
@@ -192,9 +198,9 @@ For each knowledge entry, record:
 |-------|---|---|
 | **0. Crystallization** | AC defined + Constraints clear | Goal contract + Risk registry |
 | **1. Ignition** | Mental model stable + Caches warm | Task graph + Checkpoints |
-| **2. Cycling** | All sub-tasks complete + Pressure checks passing | Validated findings + Decisions |
+| **2. Cycling** | Gate A pass before entry + Gate B transaction on every source edit | Validated findings + Decisions + ledger entries |
 | **3. Decision Audit** | All irreversible decisions signed off + Contradictions resolved | Decision genealogy |
-| **4. Convergence Proof** | AC checklist green + Edge cases addressed | Coverage proof |
+| **4. Convergence Proof** | Gate C synchronous audit pass + AC checklist green | Coverage proof + audit proof |
 | **5. Cool-Down** | All session findings migrated + Artifacts generated | Persistent knowledge |
 | **6. Retrospective** | Procedure metrics collected | Feedback for future sessions |
 

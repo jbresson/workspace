@@ -1,9 +1,6 @@
 # EXT-002: LMStudio Insight Extension — Full Spec (REST-first, Log-assisted)
 
-## Status
 - **Type**: Implementation-ready spec (with explicit unknowns)
-- **Owner**: TBD
-- **Priority**: High (unblocks adaptive runtime decisions)
 - **Scope**: Extension + agent tools + optional TUI pane wiring
 - **Non-goals**: Building generic multi-provider observability framework
 
@@ -238,7 +235,7 @@ v1.1 optional pane (`Alt+L`):
 ## 11) Implementation Plan
 
 ### Phase A — Capability Discovery + Skeleton
-- [ ] Add extension scaffold `helpers/extensions/lmstudio-insight/`
+- [ ] Add extension scaffold `.pi/extensions/lmstudio-insight/`
 - [ ] Add config loader + sane defaults
 - [ ] Implement HTTP client with timeout/retry budget
 - [ ] Implement endpoint probe engine + capability cache

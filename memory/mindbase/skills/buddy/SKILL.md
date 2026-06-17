@@ -122,7 +122,7 @@ A **buddy** is an isolated, lightweight Pi CLI sub-session that executes special
 - Tool: `run_buddy` (for LLM-driven invocation)
 - Command: `/buddy` (for interactive use)
 
-**File**: `.pi/extensions/pi-buddies/buddy.ts` (413L)
+**File**: `.pi/extensions/buddies/buddy.ts` (413L)
 
 **Key Functions**:
 - `runBuddy(params)` — Execute headless Pi CLI
@@ -162,6 +162,6 @@ Buddies are **phase engines**. Each phase delegates to a buddy with:
 
 ## References
 
-- **Implementation**: `helpers/extensions/pi-buddies/buddy.ts`
+- **Implementation**: `.pi/extensions/buddies/buddy.ts`
 - **Feature Guide**: `memory/knowledgebase/projects/buddy-features.md`
 - **Task Execution**: `memory/mindbase/skills/task-execution/SKILL.md`

@@ -109,7 +109,7 @@ Close the loop. Ensure project intelligence grows.
 ## WIP Mirror + Graduation Protocol
 - `wip/` = proposal mirror of `~/workspace` (same relative paths under `wip/`).
 - Agent default write target for in-progress edits: `wip/<relative-path>`.
-- Real-path writes (`<relative-path>` outside `wip/`) blocked unless explicit user graduation command/tool authorizes promotion.
+- Real-path writes (`<relative-path>` outside `wip/`) blocked unless explicit user graduation command/tool authorizes promotion. Exception: `issues/**` paths may be written directly.
 - Directory structure currently in `wip/` is illustrative, not restrictive.
 - Example mapping: `wip/.pi/SYSTEM.md` proposes changes for `.pi/SYSTEM.md`.
 - Graduation must run as user-only action with: dry-run diff -> explicit user approval -> apply.

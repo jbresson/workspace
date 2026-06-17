@@ -4,7 +4,7 @@
 - **Status**: Complete.
 - **Capabilities**: Auto-discovery, lazy-load, selective tool loading.
 - **Patterns**: Implements 3 patterns (A/B/C).
-- **Documentation**: Located at `helpers/extensions/` (`GUIDE.md`, `DEVELOPMENT.md`, `API.md`).
+- **Documentation**: Located at `.pi/extensions/` (`GUIDE.md`, `DEVELOPMENT.md`, `API.md`).
 
 ## Lean-Ctx SSE
 - **Bridge**: `McpSseBridge` is active.

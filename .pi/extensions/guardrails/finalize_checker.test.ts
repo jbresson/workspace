@@ -1,9 +1,9 @@
 import { FinalizeChecker } from "./finalize_checker";
 import { ValidationManager } from "./validation_manager";
-import { LLMService } from "../../../helpers/services/llm_service";
-import * as runner from "../../helpers/extensions/pi-buddies/runner";
+import { LLMService } from "../services/llm_service";
+import * as runner from "../buddies/runner";
 
-jest.mock("../../helpers/extensions/pi-buddies/runner", () => ({
+jest.mock("../buddies/runner", () => ({
   runBuddy: jest.fn(),
 }));
 

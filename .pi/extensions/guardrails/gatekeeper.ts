@@ -26,7 +26,7 @@ export class Gatekeeper {
 
     // Step 1: Global Rules Filter
     const matchingRules = GLOBAL_RULES.filter(r => r.toolGuard(toolName));
-    console.log(`[GATEKEEPER-DEBUG] matchingRules: ${matchingRules.map(r => r.id).join(',') || 'none'}`);
+    ctx.ui.notify(`matchingRules: ${matchingRules.toString()}`)
     for (const rule of matchingRules) {
       if (rule.paramInspector) {
         const result = rule.paramInspector(toolName, toolParams);

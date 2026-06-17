@@ -1,6 +1,6 @@
 import { Expectation } from './expectation_service';
 import { ValidationManager } from './validation_manager';
-import { LLMService } from '../../../helpers/services/llm_service';
+import { LLMService } from '../services/llm_service';
 
 /**
  * FinalizeChecker is strictly separated from the NegotiationManager.

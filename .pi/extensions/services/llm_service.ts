@@ -5,7 +5,7 @@
  * Wraps the Pi Buddy runner to ensure consistency in temperature and tool access.
  */
 
-import { runBuddy } from "../../extensions/pi-buddies/runner";
+import { runBuddy } from "../../extensions/buddies/runner";
 
 export type LLMProfile = "SKEPTIC" | "NEGOTIATOR";
 

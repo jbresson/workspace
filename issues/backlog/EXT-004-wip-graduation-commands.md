@@ -1,8 +1,6 @@
 # EXT-004: WIP Worktree Commands (User-Only) — Full Implementation Spec
 
-## Status
 - **Type**: Implementation-ready spec
-- **Owner**: TBD
 - **Scope**: Pi slash commands + helper module + tests + audit logging
 - **Non-goals**: Remote push/PR automation, merge orchestration across remotes
 
@@ -295,7 +293,7 @@ Events required for:
 ## 10) Implementation Structure
 
 ### Target extension module
-- `helpers/extensions/wip-worktree/loader.ts` (new)
+- `.pi/extensions/wip-worktree/loader.ts` (new)
 
 ### Internal helpers (module scope)
 - `parseAndValidateNaming()`

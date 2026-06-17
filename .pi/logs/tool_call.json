@@ -1,0 +1,1774 @@
+[
+  {
+    "timestamp": "2026-06-16T20:32:42.734Z",
+    "action": "index",
+    "params": {},
+    "status": "error",
+    "error": "Unsupported omnitool action 'index'. Use one of: call, list, search, wip"
+  },
+  {
+    "timestamp": "2026-06-16T20:32:45.273Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 1,
+        "tools": [
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:32:47.308Z",
+    "action": "search",
+    "params": {
+      "pattern": "omnitool",
+      "path": "."
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- core.wip"
+        }
+      ],
+      "details": {
+        "count": 1,
+        "tools": [
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:33:23.512Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 1,
+        "tools": [
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:38:00.015Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet: S2: Create task packet with AC/risks/path/checkpoints.\n- subroutines.init_registries: S1: Initialize risk/uncertainty/blocker registries.\n- subroutines.record_finding_strict: S1: Evidence-backed finding capture.\n- subroutines.record_decision_strict: S1: Decision capture with irreversible safeguards.\n- subroutines.record_uncertainty: S1: Log unresolved question and owner.\n- subroutines.build_task_graph: S2: Build DAG + critical path from tasks/dependencies.\n- subroutines.next_best_action: S2: Select next runnable node.\n- subroutines.run_checkpoint: S1: Execute forcing checkpoint gate.\n- subroutines.verify_ac: S2: Verify acceptance criteria convergence.\n- subroutines.false_win_scan: S2: Check false-win risks mitigated.\n- subroutines.pressure_check: S2: Periodic convergence/unknowns drift check.\n- subroutines.open_blocker_issue: S1: Externalize hard blocker to issues/active path.\n- subroutines.propose_followup_issue: S1: Propose non-blocking followup issue.\n- subroutines.context_trim_plan: S2: Compute evict/retain set for context pressure.\n- subroutines.close_task_with_tax: S3: Final close gate requiring AC proof + knowledge tax.\n- subroutines.promote_l2_to_l3: S2: Promote validated L2 entries to L3 memory.\n- subroutines.spec: Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.\n- subroutines.safe_edit: Only allowed source edit path; recorded transaction with logs.json lock semantics.\n- subroutines.safe_write: Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.\n- subroutines.audit_change_ledger: Synchronous Verify/Audit check for unlogged edits + stale verification mappings.\n- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          {
+            "key": "subroutines.start_task_packet",
+            "description": "S2: Create task packet with AC/risks/path/checkpoints.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.init_registries",
+            "description": "S1: Initialize risk/uncertainty/blocker registries.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_finding_strict",
+            "description": "S1: Evidence-backed finding capture.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_decision_strict",
+            "description": "S1: Decision capture with irreversible safeguards.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_uncertainty",
+            "description": "S1: Log unresolved question and owner.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.build_task_graph",
+            "description": "S2: Build DAG + critical path from tasks/dependencies.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.next_best_action",
+            "description": "S2: Select next runnable node.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.run_checkpoint",
+            "description": "S1: Execute forcing checkpoint gate.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.verify_ac",
+            "description": "S2: Verify acceptance criteria convergence.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.false_win_scan",
+            "description": "S2: Check false-win risks mitigated.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.pressure_check",
+            "description": "S2: Periodic convergence/unknowns drift check.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.open_blocker_issue",
+            "description": "S1: Externalize hard blocker to issues/active path.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.propose_followup_issue",
+            "description": "S1: Propose non-blocking followup issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.context_trim_plan",
+            "description": "S2: Compute evict/retain set for context pressure.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.close_task_with_tax",
+            "description": "S3: Final close gate requiring AC proof + knowledge tax.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.promote_l2_to_l3",
+            "description": "S2: Promote validated L2 entries to L3 memory.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.spec",
+            "description": "Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_edit",
+            "description": "Only allowed source edit path; recorded transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_write",
+            "description": "Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.audit_change_ledger",
+            "description": "Synchronous Verify/Audit check for unlogged edits + stale verification mappings.",
+            "module": "subroutines"
+          },
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:38:34.539Z",
+    "action": "wip",
+    "params": {
+      "subAction": "status"
+    },
+    "status": "error",
+    "error": "wip.status requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:38:58.303Z",
+    "action": "wip",
+    "params": {
+      "subAction": "status",
+      "ticketId": "infra-16432"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "ticket=infra-16432\nrepos=1\nready=none"
+        }
+      ],
+      "details": {
+        "ticketId": "infra-16432",
+        "repoStatuses": [
+          {
+            "repo": "pbgen",
+            "status": "MISSING_LEDGER"
+          }
+        ],
+        "readyRepos": []
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:39:12.001Z",
+    "action": "wip",
+    "params": {
+      "subAction": "diff",
+      "ticketId": "infra-16432"
+    },
+    "status": "error",
+    "error": "Unknown wip subAction: diff"
+  },
+  {
+    "timestamp": "2026-06-16T20:39:42.275Z",
+    "action": "index",
+    "params": {},
+    "status": "error",
+    "error": "Unsupported omnitool action 'index'. Use one of: call, list, search, wip"
+  },
+  {
+    "timestamp": "2026-06-16T20:39:47.951Z",
+    "action": "search",
+    "params": {
+      "pattern": "Unknown wip subAction"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:39:51.971Z",
+    "action": "call",
+    "params": {
+      "name": "core.wip",
+      "arguments": {
+        "subAction": "status",
+        "ticketId": "infra-16432"
+      }
+    },
+    "status": "error",
+    "error": "omnitool call requires params.tool as 'module.tool'"
+  },
+  {
+    "timestamp": "2026-06-16T20:39:54.538Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "input": {
+        "subAction": "status",
+        "ticketId": "infra-16432"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:39:56.917Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "subAction": "status",
+      "ticketId": "infra-16432"
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:39:59.693Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "subAction": "status",
+        "ticketId": "infra-16432"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:40:02.555Z",
+    "action": "search",
+    "params": {
+      "pattern": "params.tool"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:40:08.369Z",
+    "action": "wip",
+    "params": {
+      "subAction": "status",
+      "ticketId": "infra-16432",
+      "verbose": true
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "ticket=infra-16432\nrepos=1\nready=none"
+        }
+      ],
+      "details": {
+        "ticketId": "infra-16432",
+        "repoStatuses": [
+          {
+            "repo": "pbgen",
+            "status": "MISSING_LEDGER"
+          }
+        ],
+        "readyRepos": []
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:41:19.057Z",
+    "action": "index",
+    "params": {},
+    "status": "error",
+    "error": "Unsupported omnitool action 'index'. Use one of: call, list, search, wip"
+  },
+  {
+    "timestamp": "2026-06-16T20:41:21.321Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet: S2: Create task packet with AC/risks/path/checkpoints.\n- subroutines.init_registries: S1: Initialize risk/uncertainty/blocker registries.\n- subroutines.record_finding_strict: S1: Evidence-backed finding capture.\n- subroutines.record_decision_strict: S1: Decision capture with irreversible safeguards.\n- subroutines.record_uncertainty: S1: Log unresolved question and owner.\n- subroutines.build_task_graph: S2: Build DAG + critical path from tasks/dependencies.\n- subroutines.next_best_action: S2: Select next runnable node.\n- subroutines.run_checkpoint: S1: Execute forcing checkpoint gate.\n- subroutines.verify_ac: S2: Verify acceptance criteria convergence.\n- subroutines.false_win_scan: S2: Check false-win risks mitigated.\n- subroutines.pressure_check: S2: Periodic convergence/unknowns drift check.\n- subroutines.open_blocker_issue: S1: Externalize hard blocker to issues/active path.\n- subroutines.propose_followup_issue: S1: Propose non-blocking followup issue.\n- subroutines.context_trim_plan: S2: Compute evict/retain set for context pressure.\n- subroutines.close_task_with_tax: S3: Final close gate requiring AC proof + knowledge tax.\n- subroutines.promote_l2_to_l3: S2: Promote validated L2 entries to L3 memory.\n- subroutines.spec: Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.\n- subroutines.safe_edit: Only allowed source edit path; recorded transaction with logs.json lock semantics.\n- subroutines.safe_write: Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.\n- subroutines.audit_change_ledger: Synchronous Verify/Audit check for unlogged edits + stale verification mappings.\n- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          {
+            "key": "subroutines.start_task_packet",
+            "description": "S2: Create task packet with AC/risks/path/checkpoints.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.init_registries",
+            "description": "S1: Initialize risk/uncertainty/blocker registries.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_finding_strict",
+            "description": "S1: Evidence-backed finding capture.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_decision_strict",
+            "description": "S1: Decision capture with irreversible safeguards.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_uncertainty",
+            "description": "S1: Log unresolved question and owner.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.build_task_graph",
+            "description": "S2: Build DAG + critical path from tasks/dependencies.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.next_best_action",
+            "description": "S2: Select next runnable node.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.run_checkpoint",
+            "description": "S1: Execute forcing checkpoint gate.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.verify_ac",
+            "description": "S2: Verify acceptance criteria convergence.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.false_win_scan",
+            "description": "S2: Check false-win risks mitigated.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.pressure_check",
+            "description": "S2: Periodic convergence/unknowns drift check.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.open_blocker_issue",
+            "description": "S1: Externalize hard blocker to issues/active path.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.propose_followup_issue",
+            "description": "S1: Propose non-blocking followup issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.context_trim_plan",
+            "description": "S2: Compute evict/retain set for context pressure.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.close_task_with_tax",
+            "description": "S3: Final close gate requiring AC proof + knowledge tax.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.promote_l2_to_l3",
+            "description": "S2: Promote validated L2 entries to L3 memory.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.spec",
+            "description": "Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_edit",
+            "description": "Only allowed source edit path; recorded transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_write",
+            "description": "Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.audit_change_ledger",
+            "description": "Synchronous Verify/Audit check for unlogged edits + stale verification mappings.",
+            "module": "subroutines"
+          },
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:41:23.506Z",
+    "action": "wip",
+    "params": {
+      "subAction": "status"
+    },
+    "status": "error",
+    "error": "wip.status requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:41:27.124Z",
+    "action": "call",
+    "params": {
+      "name": "core.wip",
+      "arguments": {
+        "subAction": "help"
+      }
+    },
+    "status": "error",
+    "error": "omnitool call requires params.tool as 'module.tool'"
+  },
+  {
+    "timestamp": "2026-06-16T20:41:30.029Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "subAction": "help"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:41:33.184Z",
+    "action": "search",
+    "params": {
+      "pattern": "STATUS: READY_FOR_GRADUATION"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:41:37.058Z",
+    "action": "call",
+    "params": {
+      "tool": "functions.ctx_tree",
+      "arguments": {
+        "path": "/Users/john.bresson/workspace",
+        "depth": 2
+      }
+    },
+    "status": "error",
+    "error": "Unknown tool 'functions.ctx_tree'. Use omnitool list/search."
+  },
+  {
+    "timestamp": "2026-06-16T20:41:40.260Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "subAction": "list"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:41:44.112Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "action": "status"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:42:27.724Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "ticketId": "graduate-001",
+        "subAction": "status"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:42:29.928Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "ticketId": "graduate-001",
+        "action": "status"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T20:42:32.247Z",
+    "action": "wip",
+    "params": {
+      "ticketId": "graduate-001",
+      "subAction": "status"
+    },
+    "status": "error",
+    "error": "wip-issue not found: graduate-001"
+  },
+  {
+    "timestamp": "2026-06-16T20:43:19.085Z",
+    "action": "wip",
+    "params": {
+      "ticketId": "graduate-001",
+      "subAction": "init",
+      "repoPath": "/Users/john.bresson/workspace"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "initialized graduate-001"
+        }
+      ],
+      "details": {
+        "ticketId": "graduate-001",
+        "repos": []
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:43:21.753Z",
+    "action": "wip",
+    "params": {
+      "ticketId": "graduate-001",
+      "subAction": "status"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "ticket=graduate-001\nrepos=0\nready=none"
+        }
+      ],
+      "details": {
+        "ticketId": "graduate-001",
+        "repoStatuses": [],
+        "readyRepos": []
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:43:24.231Z",
+    "action": "wip",
+    "params": {
+      "ticketId": "graduate-001",
+      "subAction": "clone",
+      "repoPath": "/Users/john.bresson/workspace",
+      "justification": "Migrate graduate commands to new version in current repo"
+    },
+    "status": "error",
+    "error": "wip.clone requires repoName"
+  },
+  {
+    "timestamp": "2026-06-16T20:43:27.201Z",
+    "action": "wip",
+    "params": {
+      "ticketId": "graduate-001",
+      "subAction": "clone",
+      "repoName": "workspace",
+      "repoPath": "/Users/john.bresson/workspace",
+      "justification": "Migrate graduate commands to new version in current repo"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "cloned workspace into graduate-001"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:43:33.283Z",
+    "action": "search",
+    "params": {
+      "pattern": "graduate",
+      "path": "wip/graduate-001"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:45:53.066Z",
+    "action": "search",
+    "params": {
+      "pattern": "pi.registerTools"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:45:59.840Z",
+    "action": "search",
+    "params": {
+      "pattern": "pi-lean-ctx"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:46:06.307Z",
+    "action": "search",
+    "params": {
+      "pattern": "registerTools"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:46:13.293Z",
+    "action": "search",
+    "params": {
+      "pattern": "pi-lean-ctx"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:46:20.028Z",
+    "action": "search",
+    "params": {
+      "pattern": "lean-ctx"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:46:26.094Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet: S2: Create task packet with AC/risks/path/checkpoints.\n- subroutines.init_registries: S1: Initialize risk/uncertainty/blocker registries.\n- subroutines.record_finding_strict: S1: Evidence-backed finding capture.\n- subroutines.record_decision_strict: S1: Decision capture with irreversible safeguards.\n- subroutines.record_uncertainty: S1: Log unresolved question and owner.\n- subroutines.build_task_graph: S2: Build DAG + critical path from tasks/dependencies.\n- subroutines.next_best_action: S2: Select next runnable node.\n- subroutines.run_checkpoint: S1: Execute forcing checkpoint gate.\n- subroutines.verify_ac: S2: Verify acceptance criteria convergence.\n- subroutines.false_win_scan: S2: Check false-win risks mitigated.\n- subroutines.pressure_check: S2: Periodic convergence/unknowns drift check.\n- subroutines.open_blocker_issue: S1: Externalize hard blocker to issues/active path.\n- subroutines.propose_followup_issue: S1: Propose non-blocking followup issue.\n- subroutines.context_trim_plan: S2: Compute evict/retain set for context pressure.\n- subroutines.close_task_with_tax: S3: Final close gate requiring AC proof + knowledge tax.\n- subroutines.promote_l2_to_l3: S2: Promote validated L2 entries to L3 memory.\n- subroutines.spec: Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.\n- subroutines.safe_edit: Only allowed source edit path; recorded transaction with logs.json lock semantics.\n- subroutines.safe_write: Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.\n- subroutines.audit_change_ledger: Synchronous Verify/Audit check for unlogged edits + stale verification mappings.\n- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          {
+            "key": "subroutines.start_task_packet",
+            "description": "S2: Create task packet with AC/risks/path/checkpoints.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.init_registries",
+            "description": "S1: Initialize risk/uncertainty/blocker registries.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_finding_strict",
+            "description": "S1: Evidence-backed finding capture.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_decision_strict",
+            "description": "S1: Decision capture with irreversible safeguards.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_uncertainty",
+            "description": "S1: Log unresolved question and owner.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.build_task_graph",
+            "description": "S2: Build DAG + critical path from tasks/dependencies.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.next_best_action",
+            "description": "S2: Select next runnable node.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.run_checkpoint",
+            "description": "S1: Execute forcing checkpoint gate.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.verify_ac",
+            "description": "S2: Verify acceptance criteria convergence.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.false_win_scan",
+            "description": "S2: Check false-win risks mitigated.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.pressure_check",
+            "description": "S2: Periodic convergence/unknowns drift check.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.open_blocker_issue",
+            "description": "S1: Externalize hard blocker to issues/active path.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.propose_followup_issue",
+            "description": "S1: Propose non-blocking followup issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.context_trim_plan",
+            "description": "S2: Compute evict/retain set for context pressure.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.close_task_with_tax",
+            "description": "S3: Final close gate requiring AC proof + knowledge tax.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.promote_l2_to_l3",
+            "description": "S2: Promote validated L2 entries to L3 memory.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.spec",
+            "description": "Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_edit",
+            "description": "Only allowed source edit path; recorded transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_write",
+            "description": "Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.audit_change_ledger",
+            "description": "Synchronous Verify/Audit check for unlogged edits + stale verification mappings.",
+            "module": "subroutines"
+          },
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:47:55.866Z",
+    "action": "search",
+    "params": {
+      "pattern": "registerTools"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:48:03.340Z",
+    "action": "search",
+    "params": {
+      "pattern": ".pi/extensions/pi-lean-ctx"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:48:10.519Z",
+    "action": "search",
+    "params": {
+      "pattern": "pi-lean-ctx"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T20:48:12.746Z",
+    "action": "wip",
+    "params": {
+      "ticketId": "graduate-001",
+      "subAction": "status"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "ticket=graduate-001\nrepos=1\nready=none"
+        }
+      ],
+      "details": {
+        "ticketId": "graduate-001",
+        "repoStatuses": [
+          {
+            "repo": "workspace",
+            "status": "IN_PROGRESS"
+          }
+        ],
+        "readyRepos": []
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T21:19:00.482Z",
+    "action": "index",
+    "params": {},
+    "status": "error",
+    "error": "Unsupported omnitool action 'index'. Use one of: call, list, search, wip"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:03.045Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet: S2: Create task packet with AC/risks/path/checkpoints.\n- subroutines.init_registries: S1: Initialize risk/uncertainty/blocker registries.\n- subroutines.record_finding_strict: S1: Evidence-backed finding capture.\n- subroutines.record_decision_strict: S1: Decision capture with irreversible safeguards.\n- subroutines.record_uncertainty: S1: Log unresolved question and owner.\n- subroutines.build_task_graph: S2: Build DAG + critical path from tasks/dependencies.\n- subroutines.next_best_action: S2: Select next runnable node.\n- subroutines.run_checkpoint: S1: Execute forcing checkpoint gate.\n- subroutines.verify_ac: S2: Verify acceptance criteria convergence.\n- subroutines.false_win_scan: S2: Check false-win risks mitigated.\n- subroutines.pressure_check: S2: Periodic convergence/unknowns drift check.\n- subroutines.open_blocker_issue: S1: Externalize hard blocker to issues/active path.\n- subroutines.propose_followup_issue: S1: Propose non-blocking followup issue.\n- subroutines.context_trim_plan: S2: Compute evict/retain set for context pressure.\n- subroutines.close_task_with_tax: S3: Final close gate requiring AC proof + knowledge tax.\n- subroutines.promote_l2_to_l3: S2: Promote validated L2 entries to L3 memory.\n- subroutines.spec: Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.\n- subroutines.safe_edit: Only allowed source edit path; recorded transaction with logs.json lock semantics.\n- subroutines.safe_write: Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.\n- subroutines.audit_change_ledger: Synchronous Verify/Audit check for unlogged edits + stale verification mappings.\n- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          {
+            "key": "subroutines.start_task_packet",
+            "description": "S2: Create task packet with AC/risks/path/checkpoints.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.init_registries",
+            "description": "S1: Initialize risk/uncertainty/blocker registries.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_finding_strict",
+            "description": "S1: Evidence-backed finding capture.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_decision_strict",
+            "description": "S1: Decision capture with irreversible safeguards.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_uncertainty",
+            "description": "S1: Log unresolved question and owner.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.build_task_graph",
+            "description": "S2: Build DAG + critical path from tasks/dependencies.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.next_best_action",
+            "description": "S2: Select next runnable node.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.run_checkpoint",
+            "description": "S1: Execute forcing checkpoint gate.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.verify_ac",
+            "description": "S2: Verify acceptance criteria convergence.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.false_win_scan",
+            "description": "S2: Check false-win risks mitigated.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.pressure_check",
+            "description": "S2: Periodic convergence/unknowns drift check.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.open_blocker_issue",
+            "description": "S1: Externalize hard blocker to issues/active path.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.propose_followup_issue",
+            "description": "S1: Propose non-blocking followup issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.context_trim_plan",
+            "description": "S2: Compute evict/retain set for context pressure.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.close_task_with_tax",
+            "description": "S3: Final close gate requiring AC proof + knowledge tax.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.promote_l2_to_l3",
+            "description": "S2: Promote validated L2 entries to L3 memory.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.spec",
+            "description": "Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_edit",
+            "description": "Only allowed source edit path; recorded transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_write",
+            "description": "Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.audit_change_ledger",
+            "description": "Synchronous Verify/Audit check for unlogged edits + stale verification mappings.",
+            "module": "subroutines"
+          },
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T21:19:04.767Z",
+    "action": "search",
+    "params": {
+      "pattern": "EXT-005-multi-repo-graduation",
+      "path": "."
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T21:19:07.198Z",
+    "action": "call",
+    "params": {
+      "name": "ctx_find",
+      "arguments": {
+        "pattern": "*EXT-005*",
+        "path": "."
+      }
+    },
+    "status": "error",
+    "error": "omnitool call requires params.tool as 'module.tool'"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:09.844Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "subAction": "status"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:13.985Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "subAction": "list"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:16.727Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "action": "status"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:19.368Z",
+    "action": "call",
+    "params": {
+      "tool": "core.wip",
+      "arguments": {
+        "subAction": "status",
+        "ticketId": "EXT-005"
+      }
+    },
+    "status": "error",
+    "error": "wip.undefined requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:21.829Z",
+    "action": "wip",
+    "params": {
+      "subAction": "status",
+      "ticketId": "EXT-005"
+    },
+    "status": "error",
+    "error": "wip-issue not found: EXT-005"
+  },
+  {
+    "timestamp": "2026-06-16T21:19:24.445Z",
+    "action": "wip",
+    "params": {
+      "subAction": "status"
+    },
+    "status": "error",
+    "error": "wip.status requires ticketId"
+  },
+  {
+    "timestamp": "2026-06-16T21:47:34.138Z",
+    "action": "index",
+    "params": {},
+    "status": "error",
+    "error": "Unsupported omnitool action 'index'. Use one of: call, list, search, wip"
+  },
+  {
+    "timestamp": "2026-06-16T21:47:36.805Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet: S2: Create task packet with AC/risks/path/checkpoints.\n- subroutines.init_registries: S1: Initialize risk/uncertainty/blocker registries.\n- subroutines.record_finding_strict: S1: Evidence-backed finding capture.\n- subroutines.record_decision_strict: S1: Decision capture with irreversible safeguards.\n- subroutines.record_uncertainty: S1: Log unresolved question and owner.\n- subroutines.build_task_graph: S2: Build DAG + critical path from tasks/dependencies.\n- subroutines.next_best_action: S2: Select next runnable node.\n- subroutines.run_checkpoint: S1: Execute forcing checkpoint gate.\n- subroutines.verify_ac: S2: Verify acceptance criteria convergence.\n- subroutines.false_win_scan: S2: Check false-win risks mitigated.\n- subroutines.pressure_check: S2: Periodic convergence/unknowns drift check.\n- subroutines.open_blocker_issue: S1: Externalize hard blocker to issues/active path.\n- subroutines.propose_followup_issue: S1: Propose non-blocking followup issue.\n- subroutines.context_trim_plan: S2: Compute evict/retain set for context pressure.\n- subroutines.close_task_with_tax: S3: Final close gate requiring AC proof + knowledge tax.\n- subroutines.promote_l2_to_l3: S2: Promote validated L2 entries to L3 memory.\n- subroutines.spec: Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.\n- subroutines.safe_edit: Only allowed source edit path; recorded transaction with logs.json lock semantics.\n- subroutines.safe_write: Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.\n- subroutines.audit_change_ledger: Synchronous Verify/Audit check for unlogged edits + stale verification mappings.\n- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          {
+            "key": "subroutines.start_task_packet",
+            "description": "S2: Create task packet with AC/risks/path/checkpoints.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.init_registries",
+            "description": "S1: Initialize risk/uncertainty/blocker registries.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_finding_strict",
+            "description": "S1: Evidence-backed finding capture.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_decision_strict",
+            "description": "S1: Decision capture with irreversible safeguards.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_uncertainty",
+            "description": "S1: Log unresolved question and owner.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.build_task_graph",
+            "description": "S2: Build DAG + critical path from tasks/dependencies.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.next_best_action",
+            "description": "S2: Select next runnable node.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.run_checkpoint",
+            "description": "S1: Execute forcing checkpoint gate.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.verify_ac",
+            "description": "S2: Verify acceptance criteria convergence.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.false_win_scan",
+            "description": "S2: Check false-win risks mitigated.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.pressure_check",
+            "description": "S2: Periodic convergence/unknowns drift check.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.open_blocker_issue",
+            "description": "S1: Externalize hard blocker to issues/active path.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.propose_followup_issue",
+            "description": "S1: Propose non-blocking followup issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.context_trim_plan",
+            "description": "S2: Compute evict/retain set for context pressure.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.close_task_with_tax",
+            "description": "S3: Final close gate requiring AC proof + knowledge tax.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.promote_l2_to_l3",
+            "description": "S2: Promote validated L2 entries to L3 memory.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.spec",
+            "description": "Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_edit",
+            "description": "Only allowed source edit path; recorded transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_write",
+            "description": "Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.audit_change_ledger",
+            "description": "Synchronous Verify/Audit check for unlogged edits + stale verification mappings.",
+            "module": "subroutines"
+          },
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T21:47:39.521Z",
+    "action": "search",
+    "params": {
+      "pattern": "EXT-005"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-16T23:28:28.595Z",
+    "action": "search",
+    "params": {
+      "pattern": "ctx_read|ctx_shell|ctx_ls|ctx_find|ctx_grep|lean_ctx"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 21,
+        "tools": [
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  }
+]

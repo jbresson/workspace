@@ -22,5 +22,16 @@ Agents must maintain active registries in the session (L2) to prevent cognitive 
 - **Risk Register**: High-level risks + mitigations.
 - **Blocker Log**: Hard stops for escalation.
 
-## 4. Prompt Evolution Rule
+## 4. Evidence Confidence Framework
+Findings must be labeled based on evidence strength, not narrative confidence.
+- **Confirmed**: Visually verified OR corroborated by multiple independent signals.
+- **Supported**: Consistent with hypothesis but not independently confirmed.
+- **Hypothesis**: Plausible explanation that has not been tested or visually verified.
+- **Inconclusive**: Evidence examined but does not clearly support or refute.
+
+**Mandates**: 
+- Baseline comparison ($\Delta$) is required for all abnormal metric claims.
+- Log absence $\neq$ Event absence.
+
+## 5. Prompt Evolution Rule
 **Signal $\neq$ Length**. Remove fluff, not logic. If a process has a mandatory gate or metadata requirement (e.g., `[IRREVERSIBLE]`), that trigger must be explicitly preserved in the system prompt.

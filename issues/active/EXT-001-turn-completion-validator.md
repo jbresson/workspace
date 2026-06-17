@@ -1,8 +1,6 @@
 # EXT-001: Turn Completion Validator Extension
 
-**Status**: Design (Active)  
 **Created**: 2026-06-13  
-**Priority**: Medium  
 
 ## Problem Statement
 

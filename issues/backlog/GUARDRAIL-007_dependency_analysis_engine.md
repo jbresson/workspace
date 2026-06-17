@@ -1,9 +1,5 @@
 # GUARDRAIL-007: Dependency Analysis Engine
 
-**Status**: PLANNED (no implementation evidence found)
-**Priority**: MEDIUM
-**Category**: Cognitive
-
 ## Description
 Logic to distinguish between "Isolated Blocks" (continue possible) and "Cascading Blocks" (halt required).
 

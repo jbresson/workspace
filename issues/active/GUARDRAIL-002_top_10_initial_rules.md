@@ -1,8 +1,6 @@
 # GUARDRAIL-002: Top 10 Initial Guardrail Rules
 
 **Date**: 2026-06-14  
-**Status**: OPEN / RESEARCH  
-**Priority**: P0 (Foundation)  
 **Scope**: Agent Safety, System Protection, Memory Integrity  
 
 ---

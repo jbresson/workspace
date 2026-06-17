@@ -1,9 +1,5 @@
 # GUARDRAIL-003: Skeptic Auditor Interface
 
-**Status**: PARTIALLY IMPLEMENTED (LLM-backed, hardening pending)
-**Priority**: HIGH
-**Category**: Security
-
 ## Description
 Develop the `SkepticAuditor` service to perform adversarial logic and safety checks on proposed proofs.
 

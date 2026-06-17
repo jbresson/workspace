@@ -15,6 +15,7 @@ import {
   highlightCode,
   truncateHead,
 } from "@earendil-works/pi-coding-agent";
+
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 import { existsSync, readFileSync } from "node:fs";
@@ -102,7 +103,7 @@ const leanCtxSchema = Type.Object({
   ),
 });
 
-function shellQuote(value: string): string {
+export function shellQuote(value: string): string {
   if (!value) return "''";
   if (/^[A-Za-z0-9_./=:@,+%^-]+$/.test(value)) return value;
   return `'${value.replace(/'/g, `'\\''`)}'`;
@@ -110,7 +111,7 @@ function shellQuote(value: string): string {
 
 // Environment for every lean-ctx subprocess: config.json `env` overrides
 // (lowest precedence) < the caller's env < the flags lean-ctx must always see.
-function leanCtxEnv(base: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
+export function leanCtxEnv(base: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
   return {
     ...PI_CONFIG.forwardedEnv,
     ...base,
@@ -119,7 +120,7 @@ function leanCtxEnv(base: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
   };
 }
 
-function resolveBinary(): string {
+export function resolveBinary(): string {
   const envBin = process.env.LEAN_CTX_BIN;
   if (envBin && existsSync(envBin)) return envBin;
   if (PI_CONFIG.binaryOverride && existsSync(PI_CONFIG.binaryOverride)) {
@@ -146,11 +147,11 @@ function resolveBinary(): string {
   return "lean-ctx";
 }
 
-function normalizePathArg(path: string): string {
+export function normalizePathArg(path: string): string {
   return path.startsWith("@") ? path.slice(1) : path;
 }
 
-async function chooseReadMode(path: string): Promise<"full" | "map" | "signatures"> {
+export async function chooseReadMode(path: string): Promise<"full" | "map" | "signatures"> {
   const ext = extname(path).toLowerCase();
   if (FULL_READ_EXTENSIONS.has(ext)) return "full";
 
@@ -163,7 +164,7 @@ async function chooseReadMode(path: string): Promise<"full" | "map" | "signature
   return "full";
 }
 
-async function readSlice(path: string, offset?: number, limit?: number) {
+export async function readSlice(path: string, offset?: number, limit?: number) {
   const content = await readFile(path, "utf8");
   const lines = content.split("\n");
   const startLine = offset ? Math.max(0, offset - 1) : 0;
@@ -176,11 +177,11 @@ async function readSlice(path: string, offset?: number, limit?: number) {
   return { text: truncation.content, lines: lines.length, truncated: truncation.truncated };
 }
 
-function estimateTokens(text: string) {
+export function estimateTokens(text: string) {
   return Math.ceil(text.length / 4);
 }
 
-function clampStats(original: number, compressed: number): CompressionStats {
+export function clampStats(original: number, compressed: number): CompressionStats {
   const orig = Math.max(0, original);
   const comp = Math.max(0, Math.min(orig, compressed));
   const saved = Math.max(0, orig - comp);
@@ -188,7 +189,7 @@ function clampStats(original: number, compressed: number): CompressionStats {
   return { originalTokens: orig, compressedTokens: comp, percentSaved };
 }
 
-function parseLeanCtxOutput(text: string) {
+export function parseLeanCtxOutput(text: string) {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   let stats: CompressionStats | undefined;
   const kept: string[] = [];
@@ -221,12 +222,12 @@ function parseLeanCtxOutput(text: string) {
   return { text: kept.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd(), stats };
 }
 
-function formatFooter(stats: CompressionStats) {
+export function formatFooter(stats: CompressionStats) {
   const pct = stats.percentSaved > 0 ? `-${stats.percentSaved}%` : "0%";
   return `Compressed ${stats.originalTokens} → ${stats.compressedTokens} tokens (${pct})`;
 }
 
-function withFooter(text: string, opts?: {
+export function withFooter(text: string, opts?: {
   originalText?: string;
   limit?: number;
   always?: boolean;
@@ -263,7 +264,7 @@ function withFooter(text: string, opts?: {
   };
 }
 
-function limitLines(text: string, limit?: number) {
+export function limitLines(text: string, limit?: number) {
   if (!limit || limit <= 0) return { text, truncated: false };
   const lines = text.split("\n");
   if (lines.length <= limit) return { text, truncated: false };
@@ -273,24 +274,24 @@ function limitLines(text: string, limit?: number) {
   };
 }
 
-function replaceTabs(text: string) {
+export function replaceTabs(text: string) {
   return text.replace(/\t/g, "    ");
 }
 
-function trimTrailingEmpty(lines: string[]) {
+export function trimTrailingEmpty(lines: string[]) {
   let end = lines.length;
   while (end > 0 && lines[end - 1] === "") end--;
   return lines.slice(0, end);
 }
 
-function splitFooter(text: string) {
+export function splitFooter(text: string) {
   const normalized = text.replace(/\r\n/g, "\n").trimEnd();
   const match = normalized.match(/\n\n(Compressed \d+ → \d+ tokens \((?:-?\d+|0)%\))$/);
   if (!match) return { body: normalized, footer: undefined as string | undefined };
   return { body: normalized.slice(0, -match[0].length), footer: match[1] };
 }
 
-function isMcpAdapterConfigured(): boolean {
+export function isMcpAdapterConfigured(): boolean {
   const home = homedir();
   const mcpConfigPaths = [
     resolve(home, ".pi", "agent", "mcp.json"),
@@ -311,7 +312,7 @@ function isMcpAdapterConfigured(): boolean {
   return false;
 }
 
-async function execLeanCtx(pi: ExtensionAPI, args: string[]) {
+export async function execLeanCtx(pi: ExtensionAPI, args: string[]) {
   const bin = resolveBinary();
   const result = await pi.exec(bin, args);
   if (result.code !== 0) {
@@ -349,37 +350,12 @@ export default async function (pi: ExtensionAPI) {
   let mcpBridge: McpBridge | null = null;
 
   // ── Collision-safe registration (#359) ───────────────────────────────────
-  // lean-ctx must coexist with other Pi extensions (AFT, magic-context). If a
-  // tool name is already claimed, skip it with a warning instead of letting the
-  // whole agent crash on load. Users can also hand a name to another extension
-  // via LEAN_CTX_PI_DISABLE_TOOLS / config.json `disableTools`. All ctx_* tools
-  // below register through this wrapper instead of pi.registerTool directly.
-  const skippedExtensionTools: string[] = [];
-  const disabledExtensionTools: string[] = [];
-  // The exact set of tool names this extension owns locally (CLI-first
-  // replacements). Handed to the embedded bridge so it skips precisely these
-  // MCP namesakes and can never suppress a tool without a local replacement —
-  // the root cause of #409. Recorded for every name we manage, so the set
-  // tracks the registrations automatically instead of a hand-maintained list.
+  // Tool registrations have been moved to manifest.ts for omnitool proxy support.
   const localToolNames = new Set<string>();
-  const registerTool = ((def: { name?: unknown }): void => {
-    const name = typeof def.name === "string" ? def.name : String(def.name);
-    localToolNames.add(name);
-    if (PI_CONFIG.disabledTools.has(name.toLowerCase())) {
-      disabledExtensionTools.push(name);
-      return;
-    }
-    try {
-      (pi.registerTool as (d: unknown) => void)(def);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      skippedExtensionTools.push(name);
-      console.error(
-        `[pi-lean-ctx] Skipped tool "${name}" — already registered elsewhere? (${msg})`,
-      );
-    }
-  }) as unknown as ExtensionAPI["registerTool"];
 
+
+  // ── Tool Logic moved to manifest.ts ────────────────────────────────────
+  // ── Tool Logic moved to manifest.ts ────────────────────────────────────
   const baseBashTool = createBashToolDefinition(process.cwd(), {
     spawnHook: ({ command, cwd, env }) => {
       const bin = resolveBinary();
@@ -458,7 +434,7 @@ export default async function (pi: ExtensionAPI) {
     },
   });
 
-  // ── ctx_read (replaces read) ──────────────────────────────────────────
+  // ── Tool Logic moved to manifest.ts ────────────────────────────────────
   const nativeReadTool = createReadToolDefinition(process.cwd());
 
   registerTool({
@@ -625,10 +601,7 @@ export default async function (pi: ExtensionAPI) {
     },
   });
 
-  // Native tool definitions are reused purely for their renderCall: Pi then
-  // shows the invocation with its arguments ("grep /pattern/ in dir") instead
-  // of a bare tool name, making the searched directory visible at a glance
-  // (#395). The args shapes are supersets of the native ones.
+  // ── Tool Logic moved to manifest.ts ────────────────────────────────────
   const nativeLsTool = createLsToolDefinition(process.cwd());
   const nativeFindTool = createFindToolDefinition(process.cwd());
   const nativeGrepTool = createGrepToolDefinition(process.cwd());

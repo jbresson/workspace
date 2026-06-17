@@ -71,7 +71,7 @@ Tools:
 - ctx_session: CCP. Actions: load (~400 tok), save, status, task, finding, decision, reset, list, cleanup, snapshot, restore, resume, profile, role, budget, slo, diff, verify, episodes, procedures.
 - shell: Shell command. Token-optimized output (git, npm, cargo, etc). Compressed terminal equiv.
 - ctx_call: Call any 50+ lean-ctx tools. Non-core tool use. described at helpers/lean-ctx/CTX_CALL_INDEX.md
-- load_helper_extension: Load Pi extension from helpers/extensions/. Use `load_helper_extension({ module: "name" })` to lazy load tools as needed.
+- load_helper_extension: Load Pi extension from `.pi/extensions/`. Use `load_helper_extension({ module: "name" })` to lazy load tools as needed.
   - *Discovery*: Use `load_helper_extension({ module: "list" })` to see all available extensions/tools.
 - project_memory_lean_ctx: (lean-ctx-sse) Access lazy-loaded MCP tools from project's lean-ctx server
 

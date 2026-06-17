@@ -1,9 +1,5 @@
 # GUARDRAIL-004: Constrained Command Strategy
 
-**Status**: PARTIALLY IMPLEMENTED (baseline + executor wired)
-**Priority**: HIGH
-**Category**: Security
-
 ## Description
 Implement the `ConstrainedCmdStrategy` for shell-based proofs.
 

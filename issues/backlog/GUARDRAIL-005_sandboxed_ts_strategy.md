@@ -1,9 +1,5 @@
 # GUARDRAIL-005: Sandboxed TS Strategy
 
-**Status**: PARTIALLY IMPLEMENTED (basic heuristic checks only)
-**Priority**: HIGH
-**Category**: Security
-
 ## Description
 Implement the `SandboxedTSStrategy` for complex proof logic.
 

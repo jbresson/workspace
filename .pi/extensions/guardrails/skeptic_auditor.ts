@@ -1,5 +1,5 @@
 import { Expectation } from './expectation_service';
-import { LLMService } from '../../../helpers/services/llm_service';
+import { LLMService } from '../services/llm_service';
 
 export interface AuditResult {
   approved: boolean;

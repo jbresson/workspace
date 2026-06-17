@@ -1,7 +1,6 @@
 # ISSUE SPECIFICATION
 ### 🆔 Metadata
 - **ID**: AGENT-20260614-skeptic-auditor-migration
-- **Status**: Active (Partially Implemented: LLM-backed auditor exists; agent/event-stream migration pending)
 - **Severity**: Medium
 - **Type**: Refactor
 - **Traceability**: `.pi/extensions/guardrails/skeptic_auditor.ts`

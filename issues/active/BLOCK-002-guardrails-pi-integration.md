@@ -1,9 +1,5 @@
 # BLOCK-002-guardrails-pi-integration
 
-## Status: PARTIALLY RESOLVED (2026-06-15)
-**Priority**: HIGH
-**Category**: Integration / Safety
-
 ## Description
 The Cognitive Guardrail System (CGS) is architected and validated in `.pi/registry/`, but remains a standalone library. It is not yet hooked into the Pi harness event loop, meaning it cannot currently intercept or block real tool calls.
 

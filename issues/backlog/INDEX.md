@@ -2,18 +2,18 @@
 
 ## Quick Reference
 
-| Issue | Status | Priority | Phases | Est. Lines | Dependencies |
-|-------|--------|----------|--------|-----------|--------------|
-| **ENG-001** | ✅ PLAN | HIGH | 7 | 186 | ← EXT-001 (validator) |
-| **EXT-002** | ✅ PLAN | MED | 9 | 278 | None (standalone) |
-| **EXT-003** | ✅ PLAN | HIGH | 10 | 284 | ← DEP-001 (deprecation) |
-| **DEP-001** | ✅ PLAN | HIGH | 6 | 72 | None (foundational) |
-| **GUARDRAIL-002** | ✅ PLAN | HIGH | 6 | 66 | ← 003, 004, 005 |
-| **GUARDRAIL-003** | ✅ PLAN | HIGH | 8 | 91 | None (foundational) |
-| **GUARDRAIL-004** | ✅ PLAN | HIGH | 9 | 103 | → 002 |
-| **GUARDRAIL-005** | ✅ PLAN | HIGH | 10 | 117 | → 002 |
-| **GUARDRAIL-006** | ✅ PLAN | MED | 9 | 107 | ← 002, 007 |
-| **GUARDRAIL-007** | ✅ PLAN | MED | 10 | 139 | ← 003, → 006 |
+| Issue | Phases | Dependencies |
+|-------|--------|--------------|
+| **ENG-001** | 7 | ← EXT-001 (validator) |
+| **EXT-002** | 9 | None (standalone) |
+| **EXT-003** | 10 | ← DEP-001 (deprecation) |
+| **DEP-001** | 6 | None (foundational) |
+| **GUARDRAIL-002** | 6 | ← 003, 004, 005 |
+| **GUARDRAIL-003** | 8 | None (foundational) |
+| **GUARDRAIL-004** | 9 | → 002 |
+| **GUARDRAIL-005** | 10 | → 002 |
+| **GUARDRAIL-006** | 9 | ← 002, 007 |
+| **GUARDRAIL-007** | 10 | ← 003, → 006 |
 
 ---
 
@@ -60,8 +60,6 @@
 ```
 # Issue [CODE]: [Title]
 
-**Status**: PENDING | **Priority**: HIGH | **Category**: Core/Security/Cognitive
-
 ## Description
 [What & why]
 
@@ -94,8 +92,6 @@
 - **Total Issues**: 10
 - **Total Phases**: 66
 - **Total Sub-Tasks**: 1200+
-- **Est. Unit Tests**: 500+
-- **Est. Integration Tests**: 60+
 
 ---
 

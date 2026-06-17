@@ -1,9 +1,5 @@
 # GUARDRAIL-001: Test Harness Execution Blocked
 
-**Status**: RESOLVED ✅
-**Priority**: CRITICAL
-**Category**: Infra
-
 ## Description
 The current environment is experiencing `EPERM` and `MODULE_NOT_FOUND` issues when attempting to run TypeScript tests via `ts-node` or `npx`. This prevents verification of the Registry and Gatekeeper logic.
 

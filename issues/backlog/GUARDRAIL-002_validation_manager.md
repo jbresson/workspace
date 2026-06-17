@@ -1,9 +1,5 @@
 # GUARDRAIL-002: Validation Manager Implementation
 
-**Status**: PARTIALLY IMPLEMENTED (needs validation evidence)
-**Priority**: HIGH
-**Category**: Core
-
 ## Description
 Implement the `ValidationManager` to route proof attempts to the appropriate strategy (`MANUAL`, `CONSTRAINED_CMD`, `SANDBOXED_TS`).
 

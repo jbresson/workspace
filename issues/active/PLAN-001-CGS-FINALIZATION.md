@@ -1,7 +1,5 @@
 # PLAN-001-CGS-FINALIZATION
 
-## Status: ACTIVE
-**Priority**: CRITICAL
 **Goal**: Transform CGS from a standalone library into an active, blocking safety harness with hard code-backed validation.
 
 ## 🛠️ Execution Phases

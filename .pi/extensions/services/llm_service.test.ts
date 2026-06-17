@@ -1,8 +1,8 @@
 import { LLMService } from "./llm_service";
-import * as runner from "../extensions/pi-buddies/runner";
+import * as runner from "../extensions/buddies/runner";
 
 // Mock the runner's execute function to avoid actual CLI calls during unit tests
-jest.mock("../extensions/pi-buddies/runner", () => ({
+jest.mock("../extensions/buddies/runner", () => ({
   runBuddy: jest.fn(),
 }));
 

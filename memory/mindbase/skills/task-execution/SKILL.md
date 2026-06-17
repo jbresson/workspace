@@ -250,9 +250,9 @@ A phase may not complete perfectly in one turn. **Use `sessionId` to refine.**
 - `/pi-task-cooldown` (Phase 5-6)
 
 **Tools** (7):
-- `task_phase0` through `task_phase6` (via `helpers/extensions/task_execution/`)
+- `task_phase0` through `task_phase6` (via `.pi/extensions/task_execution/`)
 
-**Implementation**: `helpers/extensions/task_execution/lean-ctx-helpers.ts` (243L)
+**Implementation**: `.pi/extensions/task_execution/lean-ctx-helpers.ts` (243L)
 
 ---
 

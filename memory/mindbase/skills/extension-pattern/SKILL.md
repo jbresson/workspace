@@ -83,7 +83,7 @@ pi.registerCommand("command-name", {
 ## Files Refactored (4)
 
 ### 1. `.pi/extensions/extension-loader.ts` (366L)
-**Purpose**: Dynamically load extensions from `helpers/extensions/`
+**Purpose**: Dynamically load extensions from `.pi/extensions/`
 
 **Helper**: `loadExtension(pi, params)`
 - Discovers available modules
@@ -99,7 +99,7 @@ pi.registerCommand("command-name", {
 
 ---
 
-### 2. `.pi/extensions/pi-buddies/buddy.ts` (413L)
+### 2. `.pi/extensions/buddies/buddy.ts` (413L)
 **Purpose**: Headless Pi CLI executor for custom reasoning tasks
 
 **Helpers**:
@@ -117,7 +117,7 @@ pi.registerCommand("command-name", {
 
 ---
 
-### 3. `helpers/extensions/lean-ctx-sse/loader.ts` (100L)
+### 3. `.pi/extensions/lean-ctx-sse/loader.ts` (100L)
 **Purpose**: Project memory via lean-ctx SSE server
 
 **Helper**: `projectMemory(pi, params)`
@@ -133,7 +133,7 @@ pi.registerCommand("command-name", {
 
 ---
 
-### 4. `helpers/extensions/task_execution/lean-ctx-helpers.ts` (243L)
+### 4. `.pi/extensions/task_execution/lean-ctx-helpers.ts` (243L)
 **Purpose**: Task execution lifecycle tools (phases 0-5)
 
 **Phase Commands** (6):
@@ -273,7 +273,7 @@ project_memory_lean_ctx projectPath:/path/to/project
 
 ## References
 
-- **Implementation**: `.pi/extensions/`, `helpers/extensions/`
+- **Implementation**: `.pi/extensions/`
 - **Details**: `memory/knowledgebase/projects/extensions-pattern.md`
 - **Buddy Skill**: `memory/mindbase/skills/buddy/SKILL.md`
 - **Task Execution Skill**: `memory/mindbase/skills/task-execution/SKILL.md`
