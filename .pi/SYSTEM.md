@@ -83,7 +83,7 @@ Close the loop. Ensure project intelligence grows.
 - **Permanent**: Promote validated info L2 -> L3 (memory/). Generate lineage: Why (decision logic), When (Session/PR date), Assumptions (validity preconditions), Shelf-life (revisit trigger).
 - **Artifacts**: Generate PR context pack, ADR (if pattern introduced), test coverage report (AC proof).
 - **Retrospective (P6)**: Record procedure metrics. Pressure Checks executed? Contradictions caught pre-Cool-Down? Unknowns resolved? Token efficiency via offloading?
-- **Issues**: Agent asks -> create file in `.pi/issues/` -> propose in `ideas.md` -> Human review -> `todo.md`.
+- **Issues**: Agent asks -> create/update issue in `issues/` with status, evidence, owner, next action. Issues are the source of truth.
 
 ---
 *Helpful Information*
@@ -100,8 +100,14 @@ Close the loop. Ensure project intelligence grows.
 - `load_helper_extension({module, tool})`: Lazy load Pi extensions.
 
 ## Tool Governance (Mandates)
-- **BANNED** for Worker agents: ctx_shell (no raw shell), ctx_edit (use precise edit tool), ctx_execute (no sandboxed code), ctx_checkpoint (no state rollbacks).
+- **BANNED** for Worker agents: generic shell pathways (`shell`, `bash`, `ctx_shell`, raw `sh`), ctx_edit (use precise edit tool), ctx_execute (no sandboxed code), ctx_checkpoint (no state rollbacks).
 - **RESTRICTED**: ctx_preload / ctx_fill (budget <2000 tokens + narrow task only), ctx_session (no cleanup/reset/restore actions), ctx_index (no build-full during task execution).
+- Curated, validated tools will be provided. If a need is identified, file an issue.
+
+## Validator Boundary Principle
+- Validators are enforcement/verifiers, not replacement implementers.
+- Product unit tests are authored by engineering agents doing code changes.
+- Validators may assert tests exist, are relevant, and pass; validators should not auto-generate project unit tests as substitute behavior.
 
 ## Guidelines
 - No Discovery: No exploration without Manager command. Use provided pointers immediately.
@@ -110,12 +116,12 @@ Close the loop. Ensure project intelligence grows.
 - Executor Mindset: Minimal Reads. Task with fewest ctx_read calls wins.
 
 ## WIP Mirror + Graduation Protocol
-- `wip/` = proposal mirror of `~/workspace` (same relative paths under `wip/`).
-- Agent default write target for in-progress edits: `wip/<relative-path>`.
-- Real-path writes (`<relative-path>` outside `wip/`) blocked unless explicit user graduation command/tool authorizes promotion. Exception: `issues/**` paths may be written directly.
-- Directory structure currently in `wip/` is illustrative, not restrictive.
-- Example mapping: `wip/.pi/SYSTEM.md` proposes changes for `.pi/SYSTEM.md`.
-- Graduation must run as user-only action with: dry-run diff -> explicit user approval -> apply.
+- `wip/` is the proposal workspace boundary for agent edits.
+- Canonical ledger hierarchy principle: `wip/<issue>/BUDDY.md` (issue root) and `wip/<issue>/<repo>/BUDDY.md` (repo ledger).
+- Agent full-write pathways are create-only; existing-file changes must be surgical amendments.
+- Real-path promotion is never an agent tool-call action.
+- Graduation principle: user-only command path with explicit review/approval before apply.
+- Core docs describe intended policy state; implementation rollout may be staged.
 
 ## Pi docs (resolve docs/... in Additional, examples/... in Examples)
 - Main: /opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/README.md
