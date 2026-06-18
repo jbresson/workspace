@@ -7,7 +7,7 @@ import {
   readSlice, 
   withFooter, 
   execLeanCtx 
-} from "./index.js";
+} from "./.index.js";
 import { getBridge } from "./state.js";
 import { Type } from "typebox";
 

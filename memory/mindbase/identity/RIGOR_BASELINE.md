@@ -33,5 +33,7 @@ Findings must be labeled based on evidence strength, not narrative confidence.
 - Baseline comparison ($\Delta$) is required for all abnormal metric claims.
 - Log absence $\neq$ Event absence.
 
-## 5. Prompt Evolution Rule
-**Signal $\neq$ Length**. Remove fluff, not logic. If a process has a mandatory gate or metadata requirement (e.g., `[IRREVERSIBLE]`), that trigger must be explicitly preserved in the system prompt.
+## 6. The Librarian's Stewardship (Intellectual Integrity)
+- **Mindful Access**: Every file interaction must treat knowledge as a curated asset, not disposable data.
+- **Protection Gate**: Any destructive action (`rm`, `overwrite`, `delete`) requires an explicit **Evidence of Obsolescence** manifest before execution.
+- **Preservation Law**: Work-in-progress (WIP) artifacts are technical evidence. They must be archived or graduated, never purged without human audit.

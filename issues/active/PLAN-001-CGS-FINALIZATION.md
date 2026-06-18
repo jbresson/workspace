@@ -6,7 +6,7 @@
 
 ### Phase 1: Hardening (The Truth Engine)
 **Objective**: Replace mock/heuristic validations with actual shell execution.
-- [x] **ConstrainedExecutor**: `helpers/services/constrained_executor.ts` implemented.
+- [x] **ConstrainedExecutor**: `.pi/services/constrained_executor.ts` implemented.
   - [x] `exec` wrapper with hard timeouts (10s).
   - [x] stdout/stderr capture with size limits (1MB).
   - [x] non-zero exit codes treated as failures.

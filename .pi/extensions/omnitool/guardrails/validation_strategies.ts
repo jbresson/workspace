@@ -1,5 +1,5 @@
 import { Expectation } from './expectation_service';
-import { ConstrainedExecutor } from '../../../helpers/services/constrained_executor';
+import { ConstrainedExecutor } from '../services/constrained_executor';
 
 export interface ValidationResult {
   success: boolean;

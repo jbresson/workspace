@@ -38,12 +38,30 @@ export const GUARDRAIL_RULES: Record<string, RuleDefinition> = {
   },
   'RULE-4': {
     id: 'RULE-4',
-    trigger: 'todo.md',
-    condition: 'Append-only mutation. No deletions or rewrites.',
+    trigger: 'issues.init | issues.transition',
+    condition: 'Must pass Issue Quality Gate (Deterministic hard checks + Auditor alignment).',
+    validationType: 'SANDBOXED_TS',
+    scope: 'GLOBAL',
+    description: 'Issue Quality Gate',
+    risk: 'Low-signal, duplicate, or value-misaligned issues polluting the project.'
+  },
+  'RULE-11': {
+    id: 'RULE-11',
+    trigger: 'full_write',
+    condition: 'Full-content writes are create-only. Existing files must be patched via edit/amend.',
     validationType: 'CONSTRAINED_CMD',
     scope: 'GLOBAL',
-    description: 'todo.md Append-Only',
-    risk: 'Erasure of assigned tasks.'
+    description: 'Global Create-Only Full Writes',
+    risk: 'Blind overwrites of existing code/docs.'
+  },
+  'RULE-12': {
+    id: 'RULE-12',
+    trigger: 'tool_dispatch',
+    condition: 'Agent-callable tool surface restricted strictly to omnitool.',
+    validationType: 'CONSTRAINED_CMD',
+    scope: 'GLOBAL',
+    description: 'Tool Surface Lockdown',
+    risk: 'Unbounded execution surface or legacy tool abuse.'
   },
   'RULE-5': {
     id: 'RULE-5',

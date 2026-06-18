@@ -1,8 +1,8 @@
-# EXT-005 — mrmeseeks tool integration
+# EXT-008 — mrmeseeks curated tool integration
 
 ## Context
 Need first-class access pattern for `mrmeseeks` during Vivint workflows.
-User requested guardrails-off temporary bash probe.
+Initial discovery came from temporary probing; target outcome is a curated non-generic tool pathway (no generic shell exposure to agents).
 
 ## Evidence
 Commands run:

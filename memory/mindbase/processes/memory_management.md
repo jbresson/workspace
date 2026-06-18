@@ -7,6 +7,9 @@ This process defines how info flows from raw observation to persistent project i
 | **L3** | Semantic Memory | Project Knowledge | .md files in /memory | Permanent |
 ## 2. The Capture Pipeline (Knowledge prod)
 Agents must pay a "Knowledge Tax" at the end of every task (Record phase).
+**Librarian's Mandate**: All captures must be performed with mindfulness, ensuring that the context of *why* and *how* is preserved alongside the *what*.
+
+### L1 -> L2 (Active Capture)
 ### L1 -> L2 (Active Capture)
 During exec, immediately offload strategic info to prevent window bloat:
 - **Findings**: Technical facts discovered -> ctx_session(action="finding", val="...")

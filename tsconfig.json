@@ -22,7 +22,6 @@
     ]
   },
   "include": [
-    ".pi/extensions/**/*.ts",
-    "helpers/extensions/**/*.ts"
+    ".pi/extensions/**/*.ts"
   ]
 }

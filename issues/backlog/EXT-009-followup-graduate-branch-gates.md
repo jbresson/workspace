@@ -1,4 +1,4 @@
-# EXT-005 Follow-up: Strengthen `/graduate` branch preflight gates
+# EXT-009 Follow-up: Strengthen `/graduate` branch preflight gates
 
 ## Context
 Current graduation preflight checks enforce:
@@ -18,7 +18,7 @@ Branch policy remains permissive. We do not currently verify:
 
 ## Why low priority now
 Current gates already prevent most unsafe local state failures (dirty tree, detached head, missing repos).
-Given EXT-005 primary objective is user-command graduation + auditable SHA mapping + safe finalize semantics, this stricter policy can land separately.
+Given EXT-005 primary objective is user-command graduation + auditable SHA mapping + safe finalize semantics, this stricter policy lands as a dedicated follow-up.
 
 ## Proposed follow-up scope
 1. Add optional config for allowed target branch patterns.

@@ -1,6 +1,8 @@
 # Backlog Planning Summary
 **Date**: 2026-06-13
 
+> ⚠️ Historical planning snapshot. Some policies here are superseded by newer issue decisions and core-doc principles (notably user-only graduation, create-only draft semantics, omnitool-only surface, and curated CLI over generic shell). Use current issue files + `issues/backlog/INDEX.md` as source of truth.
+
 ---
 
 ## Overview

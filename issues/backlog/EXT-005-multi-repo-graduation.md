@@ -25,7 +25,7 @@ Implement ticket-scoped WIP orchestration + user-sovereign graduation where code
 
 ## Still Open
 - `sync` and `diff` wip sub-actions remain outside this command-contract update.
-- Optional stricter branch policy gates tracked in follow-up (`EXT-005-followup-graduate-branch-gates.md`).
+- Optional stricter branch policy gates tracked in follow-up (`EXT-009-followup-graduate-branch-gates.md`).
 
 ---
 

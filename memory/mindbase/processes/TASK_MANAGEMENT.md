@@ -9,6 +9,12 @@
 ## 🚀 Flow
 `Discovery` -> `issues/backlog` (or `issues/active` if urgent blocker) -> `Human triage` -> `docs/pending/<item-id>/` artifact contract created -> `Gate A pass` -> `Do via Gate B` -> `Verify/Audit via Gate C` -> `Execution updates in same issue` -> `Archive when complete`
 
+## WIP vs Active State (Knowledge Hygiene)
+- Paths under `wip/` are staged proposals only.
+- Do not report `wip/` artifacts as active repository state.
+- Issue progress notes must label staged evidence as `[WIP-STAGED]`.
+- Active-state claims require graduated non-`wip/` paths.
+
 ## Required Work Item Contract
 Path is deterministic from item id: `docs/pending/<item-id>/`
 Required files: `plan.md`, `spec.json`, `logs.json`, `verify.json`

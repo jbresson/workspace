@@ -74,7 +74,7 @@ Need explicit support for Go test + dev lifecycle commands:
 - CI parity: same command set available locally + in automation
 
 ## Related issues
-- mrmeseeks tooling issue: `~/workspace/issues/backlog/EXT-005-mrmeseeks-tool-integration.md`
+- mrmeseeks tooling issue: `~/workspace/issues/backlog/EXT-008-mrmeseeks-tool-integration.md`
 
 ## Notes
 This issue surfaced during migration of `scheduled-jobs` from `protoc.sh` to `pbgen`.

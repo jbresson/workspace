@@ -1770,5 +1770,245 @@
         ]
       }
     }
+  },
+  {
+    "timestamp": "2026-06-17T23:55:38.343Z",
+    "action": "index",
+    "params": {
+      "scope": ".pi/extensions/guardrails"
+    },
+    "status": "error",
+    "error": "Unsupported omnitool action 'index'. Use one of: call, list, search, wip"
+  },
+  {
+    "timestamp": "2026-06-17T23:55:40.777Z",
+    "action": "list",
+    "params": {},
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- pi-lean-ctx.ctx_shell: Run shell commands. Prefer over native Bash/shell (auto-compressed output).\n- pi-lean-ctx.ctx_read: Read a file. Prefer over native Read/cat/head/tail (cached, compressed).\n- subroutines.start_task_packet: S2: Create task packet with AC/risks/path/checkpoints.\n- subroutines.init_registries: S1: Initialize risk/uncertainty/blocker registries.\n- subroutines.record_finding_strict: S1: Evidence-backed finding capture.\n- subroutines.record_decision_strict: S1: Decision capture with irreversible safeguards.\n- subroutines.record_uncertainty: S1: Log unresolved question and owner.\n- subroutines.build_task_graph: S2: Build DAG + critical path from tasks/dependencies.\n- subroutines.next_best_action: S2: Select next runnable node.\n- subroutines.run_checkpoint: S1: Execute forcing checkpoint gate.\n- subroutines.verify_ac: S2: Verify acceptance criteria convergence.\n- subroutines.false_win_scan: S2: Check false-win risks mitigated.\n- subroutines.pressure_check: S2: Periodic convergence/unknowns drift check.\n- subroutines.open_blocker_issue: S1: Externalize hard blocker to issues/active path.\n- subroutines.propose_followup_issue: S1: Propose non-blocking followup issue.\n- subroutines.context_trim_plan: S2: Compute evict/retain set for context pressure.\n- subroutines.close_task_with_tax: S3: Final close gate requiring AC proof + knowledge tax.\n- subroutines.promote_l2_to_l3: S2: Promote validated L2 entries to L3 memory.\n- subroutines.spec: Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.\n- subroutines.safe_edit: Only allowed source edit path; recorded transaction with logs.json lock semantics.\n- subroutines.safe_write: Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.\n- subroutines.audit_change_ledger: Synchronous Verify/Audit check for unlogged edits + stale verification mappings.\n- core.wip: Workspace orchestration tool (init/clone/status/abort)"
+        }
+      ],
+      "details": {
+        "count": 23,
+        "tools": [
+          {
+            "key": "pi-lean-ctx.ctx_shell",
+            "description": "Run shell commands. Prefer over native Bash/shell (auto-compressed output).",
+            "module": "pi-lean-ctx"
+          },
+          {
+            "key": "pi-lean-ctx.ctx_read",
+            "description": "Read a file. Prefer over native Read/cat/head/tail (cached, compressed).",
+            "module": "pi-lean-ctx"
+          },
+          {
+            "key": "subroutines.start_task_packet",
+            "description": "S2: Create task packet with AC/risks/path/checkpoints.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.init_registries",
+            "description": "S1: Initialize risk/uncertainty/blocker registries.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_finding_strict",
+            "description": "S1: Evidence-backed finding capture.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_decision_strict",
+            "description": "S1: Decision capture with irreversible safeguards.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.record_uncertainty",
+            "description": "S1: Log unresolved question and owner.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.build_task_graph",
+            "description": "S2: Build DAG + critical path from tasks/dependencies.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.next_best_action",
+            "description": "S2: Select next runnable node.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.run_checkpoint",
+            "description": "S1: Execute forcing checkpoint gate.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.verify_ac",
+            "description": "S2: Verify acceptance criteria convergence.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.false_win_scan",
+            "description": "S2: Check false-win risks mitigated.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.pressure_check",
+            "description": "S2: Periodic convergence/unknowns drift check.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.open_blocker_issue",
+            "description": "S1: Externalize hard blocker to issues/active path.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.propose_followup_issue",
+            "description": "S1: Propose non-blocking followup issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.context_trim_plan",
+            "description": "S2: Compute evict/retain set for context pressure.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.close_task_with_tax",
+            "description": "S3: Final close gate requiring AC proof + knowledge tax.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.promote_l2_to_l3",
+            "description": "S2: Promote validated L2 entries to L3 memory.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.spec",
+            "description": "Work-item spec operations: init, ready, append_invariant, append_scenario, link_issue.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_edit",
+            "description": "Only allowed source edit path; recorded transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.safe_write",
+            "description": "Only allowed full-file write path; records finalized write transaction with logs.json lock semantics.",
+            "module": "subroutines"
+          },
+          {
+            "key": "subroutines.audit_change_ledger",
+            "description": "Synchronous Verify/Audit check for unlogged edits + stale verification mappings.",
+            "module": "subroutines"
+          },
+          {
+            "key": "core.wip",
+            "description": "Workspace orchestration tool (init/clone/status/abort)",
+            "module": "core"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-17T23:55:43.951Z",
+    "action": "call",
+    "params": {
+      "tool": "pi-lean-ctx.ctx_read",
+      "args": {
+        "path": "/Users/john.bresson/workspace/.pi/extensions/guardrails/gatekeeper-rules.ts",
+        "mode": "full"
+      }
+    },
+    "status": "error",
+    "error": "Error: could not read /Users/john.bresson/workspace/undefined//Users/john.bresson/workspace/.pi/extensions/guardrails/gatekeeper-rules.ts"
+  },
+  {
+    "timestamp": "2026-06-17T23:55:46.360Z",
+    "action": "call",
+    "params": {
+      "tool": "pi-lean-ctx.ctx_read",
+      "args": {
+        "path": ".pi/extensions/guardrails/gatekeeper-rules.ts",
+        "mode": "full"
+      }
+    },
+    "status": "error",
+    "error": "Error: could not read /Users/john.bresson/workspace/undefined/.pi/extensions/guardrails/gatekeeper-rules.ts"
+  },
+  {
+    "timestamp": "2026-06-17T23:55:49.041Z",
+    "action": "search",
+    "params": {
+      "pattern": "gatekeeper-rules",
+      "path": ".pi"
+    },
+    "status": "success",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "- pi-lean-ctx.ctx_shell\n- pi-lean-ctx.ctx_read\n- subroutines.start_task_packet\n- subroutines.init_registries\n- subroutines.record_finding_strict\n- subroutines.record_decision_strict\n- subroutines.record_uncertainty\n- subroutines.build_task_graph\n- subroutines.next_best_action\n- subroutines.run_checkpoint\n- subroutines.verify_ac\n- subroutines.false_win_scan\n- subroutines.pressure_check\n- subroutines.open_blocker_issue\n- subroutines.propose_followup_issue\n- subroutines.context_trim_plan\n- subroutines.close_task_with_tax\n- subroutines.promote_l2_to_l3\n- subroutines.spec\n- subroutines.safe_edit\n- subroutines.safe_write\n- subroutines.audit_change_ledger\n- core.wip"
+        }
+      ],
+      "details": {
+        "count": 23,
+        "tools": [
+          "pi-lean-ctx.ctx_shell",
+          "pi-lean-ctx.ctx_read",
+          "subroutines.start_task_packet",
+          "subroutines.init_registries",
+          "subroutines.record_finding_strict",
+          "subroutines.record_decision_strict",
+          "subroutines.record_uncertainty",
+          "subroutines.build_task_graph",
+          "subroutines.next_best_action",
+          "subroutines.run_checkpoint",
+          "subroutines.verify_ac",
+          "subroutines.false_win_scan",
+          "subroutines.pressure_check",
+          "subroutines.open_blocker_issue",
+          "subroutines.propose_followup_issue",
+          "subroutines.context_trim_plan",
+          "subroutines.close_task_with_tax",
+          "subroutines.promote_l2_to_l3",
+          "subroutines.spec",
+          "subroutines.safe_edit",
+          "subroutines.safe_write",
+          "subroutines.audit_change_ledger",
+          "core.wip"
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-17T23:55:51.906Z",
+    "action": "call",
+    "params": {
+      "name": "pi-lean-ctx.ctx_read",
+      "arguments": {
+        "path": ".pi/extensions/guardrails/gatekeeper-rules.ts",
+        "mode": "full"
+      }
+    },
+    "status": "error",
+    "error": "omnitool call requires params.tool as 'module.tool'"
+  },
+  {
+    "timestamp": "2026-06-17T23:55:54.628Z",
+    "action": "call",
+    "params": {
+      "tool": "pi-lean-ctx.ctx_read",
+      "parameters": {
+        "path": "./.pi/extensions/guardrails/gatekeeper-rules.ts",
+        "mode": "full"
+      }
+    },
+    "status": "error",
+    "error": "Cannot read properties of undefined (reading 'startsWith')"
   }
 ]

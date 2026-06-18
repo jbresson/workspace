@@ -17,10 +17,12 @@ Do not load it if you don't need it. Do not read it fully if a fragment suffices
 
 ## 2. Tool Governance (The Forbidden List)
 To prevent systemic corruption and token exhaustion, the following tools are **BANNED** for Worker agents:
-- ❌ `ctx_shell`: No raw shell execution.
+- ❌ Generic shell tools (`shell`, `bash`, `ctx_shell`, raw `sh` pathways).
 - ❌ `ctx_edit`: No atomic search-and-replace; use the precise `edit` tool.
 - ❌ `ctx_execute`: No sandboxed code execution.
 - ❌ `ctx_checkpoint (action="restore")`: No state rollbacks.
+
+If CLI capability is required, expose a curated, parameter-validated tool for that specific need.
 
 ## 3. Tool Governance (The Restricted List)
 The following tools are permitted only under strict guidelines:
@@ -46,3 +48,11 @@ Every branch/MR should have a single, coherent purpose — describable in one se
 ## 8. Technical Execution Rigor
 - **Edit Strategy**: If a file edit fails multiple times (e.g., timeout, mismatch), do not repeat the same large block. Break the change into smaller, atomic edits.
 - **Atomic Purpose**: Favor "one edit per purpose" to ensure reviewability and reduce failure rates.
+- **Draft Semantics**: Full-file write pathways are create-only for agents. Existing files must be changed through surgical amend/edit operations.
+- **Graduation Boundary**: Promotion from WIP to canonical workspace is user-command only, never an agent tool call.
+
+## 9. Validator Role Boundary
+Validators enforce and verify quality gates; they do not replace engineering responsibility.
+- Validators may check unit tests exist, are relevant, and pass.
+- Validators should not auto-generate the project’s product unit tests as a substitute for implementation work.
+

@@ -21,11 +21,10 @@ The agent interacts via `omnitool({ action: string, params: Record<string, any> 
 | **`search`** | Pattern scan across codebase | `ctx_grep` / `ctx_find` | L1 (Pattern) |
 | **`knowledge`** | Query or verify deep facts | `ctx_knowledge` $\rightarrow$ `memory/*.md` | L3 (Knowledge) |
 | **`note`** | Store or get working memory | `ctx_session` (findings/decisions) | L2 (Working) |
-| **`draft`** | Create new file / Full overwrite | `write` $\rightarrow$ target: `wip/` | Filesystem |
+| **`draft`** | Create new file only (no overwrite) | `write` $\rightarrow$ target: `wip/` (create-only gate) | Filesystem |
 | **`amend`** | Precise surgical update | `edit` $\rightarrow$ target: `wip/` | Filesystem |
 | **`archive`** | Promote working memory to L3 | System process (L2 $\rightarrow$ L3) | L2 $\rightarrow$ L3 |
 | **`audit`** | Validate correctness / Run tests | `ctx_verify` / functional tests | Truth Check |
-| **`graduate`** | Promote WIP changes to Real | User-approved sync: `wip/` $\rightarrow$ `/` | Filesystem |
 
 ## 🛠️ Implementation Roadmap
 
@@ -44,16 +43,16 @@ The agent interacts via `omnitool({ action: string, params: Record<string, any> 
 ### Phase 3: Lockdown & Migration (The Wall)
 - [ ] **3.1**: Purge all individual tool definitions from the Agent's system prompt / environment.
 - [ ] **3.2**: Update `.pi/SYSTEM.md` (WIP) to define `omnitool` as the sole interface and document Librarian nomenclature.
-- [ ] **3.3**: Implement `graduate` logic: a guarded process for mirroring `wip/` changes to production files.
+- [ ] **3.3**: Enforce graduation boundary in omnitool policy: no agent-callable `graduate` action; user-command pathway only.
 
 ### Phase 4: Verification & Pressure Testing
 - [ ] **4.1**: **Illegal Call Test**: Attempt shell execution or direct `ctx_*` calls $\rightarrow$ verify failure.
 - [ ] **4.2**: **Audit Trace Test**: Verify `.pi/logs/tool_call.json` accurately reflects a complex task sequence.
-- [ ] **4.3**: **Full Cycle Test**: Execute: `knowledge` (recall) $\rightarrow$ `note` (plan) $\rightarrow$ `draft` (wip) $\rightarrow$ `amend` (wip) $\rightarrow$ `audit` $\rightarrow$ `graduate`.
+- [ ] **4.3**: **Full Cycle Test**: Execute: `knowledge` (recall) $\rightarrow$ `note` (plan) $\rightarrow$ `draft` (wip create-only) $\rightarrow$ `amend` (wip) $\rightarrow$ `audit` $\rightarrow$ request user graduation.
 
 ## ✅ Acceptance Criteria
 - [ ] Agent has exactly ONE tool available: `omnitool`.
 - [ ] Zero access to shell/exec in any form.
 - [ ] 100% of tool calls are recorded in `.pi/logs/tool_call.json`.
-- [ ] Code changes only hit the real filesystem via a `graduate` action.
+- [ ] Code changes never promote to real filesystem via agent tool call; promotion occurs only through user graduation command pathway.
 - [ ] Token overhead for tools is reduced by $\ge 50\%$ (no more verbose schemas in prompt).

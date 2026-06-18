@@ -1,4 +1,5 @@
-import * as path from 'path';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 
 export type InspectionResult = { allowed: true } | { 
   allowed: false; 
@@ -65,21 +66,62 @@ const hasGraduateIntent = (toolName: string, params: any): boolean => {
 
 export const GLOBAL_RULES: GatekeeperRule[] = [
   {
-    id: 'RULE-GRADUATE-BLOCK',
-    description: 'Block all tool-call graduation avenues; graduation is user-command only.',
-    toolGuard: () => true,
-    paramInspector: (toolName, params) => {
-      if (hasGraduateIntent(toolName, params)) {
-        return {
-          allowed: false,
-          reason: 'Tool-call graduation is forbidden by policy. Use user command `graduate <repo>` only.',
-          alternative: 'Run user command `graduate <repo>` in approved flow.',
+    id: 'RULE-4',
+    description: 'Issue Quality Gate',
+    toolGuard: (name) => name === 'wip' && (name.includes('issues.init') || name.includes('issues.transition')), // Simplified, refined in paramInspector
+    paramInspector: (name, params) => {
+      // We check subAction within the 'wip' tool context
+      const subAction = params?.subAction;
+      if (subAction !== 'issues.init' && subAction !== 'issues.transition') return { allowed: true };
+
+      // Hard deterministic checks for issues.init
+      if (subAction === 'issues.init') {
+        if (!params.dedupCheck) return { allowed: false, reason: 'Missing dedupCheck payload.' };
+        if (params.currentState === params.targetState) return { allowed: false, reason: 'currentState and targetState are equivalent.' };
+        if (!params.evidence || params.evidence.length === 0) return { allowed: false, reason: 'Evidence array cannot be empty.' };
+        if (!params.owner && !params.ownerNeeded) return { allowed: false, reason: 'Must provide owner or set ownerNeeded=true.' };
+        if (!params.acceptanceCriteria || params.acceptanceCriteria.length === 0) return { allowed: false, reason: 'Acceptance criteria required.' };
+      }
+
+      return { allowed: true }; // Auditor check would happen next in a real deep-check
+    },
+    requiresOversight: true,
+    resolutionGuidance: 'Ensure all quality gate requirements (dedup, delta, evidence, ownership, AC) are met.',
+    afkBehavior: 'BLOCK',
+  },
+  {
+    id: 'RULE-11',
+    description: 'Global Create-Only Full Writes',
+    toolGuard: (name) => ['write', 'draft', 'safe_write'].includes(name),
+    paramInspector: (name, params) => {
+      const p = params.path || params.filePath;
+      if (!p) return { allowed: true };
+      
+      // Deterministic check: If file exists, block full write
+      if (fs.existsSync(p)) {
+        return { 
+          allowed: false, 
+          reason: `File ${p} already exists. Full-writes are create-only. Use edit() or amend() to modify existing files.`, 
+          alternative: 'Use surgical patching tools.' 
         };
       }
       return { allowed: true };
     },
     requiresOversight: false,
-    resolutionGuidance: 'Do not invoke graduate through tools or tool-proxy actions.',
+    resolutionGuidance: 'Do not overwrite existing files using full-write tools.',
+    afkBehavior: 'BLOCK',
+  },
+  {
+    id: 'RULE-12',
+    description: 'Tool Surface Lockdown',
+    toolGuard: (name) => true,
+    paramInspector: (name, params) => {
+      // This rule is enforced by the dispatch boundary in index.ts, 
+      // but we define it here for consistency.
+      return { allowed: true };
+    },
+    requiresOversight: false,
+    resolutionGuidance: 'Use omnitool as the sole interface.',
     afkBehavior: 'BLOCK',
   },
   {

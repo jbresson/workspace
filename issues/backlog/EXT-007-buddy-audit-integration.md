@@ -1,4 +1,4 @@
-# Issue EXT-004: Buddy Ledger & JSON Audit Integration
+# Issue EXT-007: Buddy Ledger & JSON Audit Integration
 
 ## 🎯 Objective
 Integrate the `BUDDY.md` (Narrative State) and `.pi/logs/tool_call.json` (Audit Evidence) into all higher-level process tools to ensure seamless synchronization between agent thought and system record.
@@ -6,7 +6,7 @@ Integrate the `BUDDY.md` (Narrative State) and `.pi/logs/tool_call.json` (Audit 
 ## 📋 Requirements
 ### 1. Narrative State (`BUDDY.md`) Integration
 - [ ] **Note Tool Evolution**: Update `omnitool({ action: "note" })` to support structured updates to specific sections of `BUDDY.md` (e.g., `# CURRENT FOCUS`, `# THE WALL`).
-- [ ] **Automatic State Updates**: Process tools (like `archive` or `graduate`) should automatically append a summary of their outcome to the `# WORKING MEMORY` section of `BUDDY.md`.
+- [ ] **Automatic State Updates**: Process tools (like `archive` or user-command graduation events) should automatically append a summary of their outcome to the `# WORKING MEMORY` section of `BUDDY.md`.
 - [ ] **Handover Automation**: Create a tool/command to generate a "Session Summary" from `BUDDY.md` for cross-agent handovers.
 
 ### 2. Audit Evidence (`tool_call.json`) Integration
