@@ -319,13 +319,19 @@ Constraint:
 - [ ] Legacy/stale rule ids and docs reconciled (no split-brain rule maps).
 - [ ] **Unified WIP Manager**: `core.wip` and `wip-worktree` consolidated into `.pi/extensions/omnitool/wip-manager/`.
 - [ ] **Sparse Mirroring**: `wip.clone` implemented via Git Sparse Checkout with automated "Core Set" inclusion.
+- [ ] **AC-11**: Update OMNITOOL_STANDARD.md with actual dispatch actions (call, list, search, wip, guardrail).
+- [ ] **AC-12**: Document new Guardrails System (Rules 1-12, expectations, gatekeeper) in OMNITOOL_STANDARD.md.
+- [ ] **AC-13**: Document WIP Manager lifecycle + schemas in OMNITOOL_STANDARD.md.
+- [ ] **AC-14**: Explicitly document deferred standard verbs (knowledge, note, archive, audit, index, fetch) as Future/Out-of-Scope with rationale.
+- [ ] **AC-15**: Complete graduation protocol + document in OMNITOOL_STANDARD.md.
 
-### AC Exit Evidence (required artifacts, no ambiguity)
+### AC Exit Evidence (artifacts, no ambiguity)
 1. Rule parity artifact: table mapping `rules_definition.ts` <-> `gatekeeper-rules.ts` with exact id/trigger/condition parity.
 2. Tool surface artifact: runtime dump of registered tools showing ONLY `omnitool` registered.
 3. Write-policy artifact: test proof that full-write to existing file is blocked for each full-write tool variant.
 4. Ledger artifact: sample blocked + allowed + error calls recorded in single omnitool-owned ledger (`tool_call.json`) with guardrail metadata.
 5. Docs parity artifact: links to updated sections in `GUARDRAIL-002_top_10_initial_rules.md` and guardrails docs with removed legacy `.pi/issues`/`todo.md` references.
+6. **NEW**: OMNITOOL_STANDARD.md updated with actual implementation dispatch structure (call, list, search, wip, guardrail) and new guardrails system documented.
 
 ---
 
@@ -429,7 +435,34 @@ Constraint:
 ---
 
 ## Status
-**ACTIVE** — intended for immediate follow-up implementation.
+**READY_FOR_IMPLEMENTATION** — Comprehensive plan complete. 31 FW (friction-point work items) identified. Phased execution (9 phases) defined. All blocking uncertainties resolved.
 
 ## Owner
-Unassigned (needs implementation owner confirmation)
+**Buddy** + **ANA** + **us** (collaborative)
+
+## Planning Summary (2026-06-17)
+
+### Current State Audit
+✓ `.pi/extensions/omnitool/` exists with 31 guardrails files
+✓ RULE-4, RULE-11, RULE-12 defined in rules_definition.ts
+✓ Basic implementations in gatekeeper-rules.ts (hard checks only)
+✓ WIP Manager exists with basic `issues.*` support
+✗ Auditor integration incomplete
+✗ Mode system not implemented
+✗ Sparse checkout not implemented
+✗ Graduation protocol not implemented
+
+### Work Breakdown
+- **10 Friction Points** identified (Auditor, Mode System, Versioning, Sparse Checkout, etc.)
+- **31 Work Items** (FW-1 through FW-31) with explicit deliverables
+- **9 Implementation Phases** with strict dependency ordering
+- **14 Tests** required (T-1 through T-14) for AC convergence
+- **5 Exit Evidence Artifacts** (EV-1 through EV-5)
+
+### Critical Path
+P0 (Validation) → P1 (Config) → P2 (RULE-4) → P6 (Negotiation) → P7 (Ledger) → P8 (Docs) → P9 (Final)
+
+**Parallel Tracks**: P3 (RULE-11), P4 (RULE-12), P5 (Sparse Checkout) can start after P0.
+
+### Reference
+**Detailed plan**: `/Users/john.bresson/workspace/wip/guardrail-008/BUDDY.md` (19KB ledger with full phase breakdown, work inventory, and handoff prompt)

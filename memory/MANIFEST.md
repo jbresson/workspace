@@ -17,6 +17,8 @@ This manifest provides a high-density index of the project's long-term memory.
 | `processes/TASK_MANAGEMENT.md` | Task Flow | `issues/` as single source of truth | `full` |
 | `processes/EXECUTION_PACKET.md` | C2 Protocol | Packet structure for Manager -> Worker dispatch | `full` |
 | `processes/TASK_EXECUTION.md` | Task Pipeline | Phases 0-6, AC, Convergence Proof | `map` |
+| `processes/OMNITOOL_IMPLEMENTATION_STATUS.md` | OmniTool Dev | Current status (31 guardrails files), 10 mitigations, work inventory, risks | `full` |
+| `processes/OMNITOOL_SPEC_VS_REALITY.md` | OmniTool Gaps | 8 major gaps vs. spec, mitigations, exit plans, resolution triggers | `full` |
 
 ## 🧪 Diagnostic Skills (The Tools)
 | File | Focus | Key Truths / Coordinates | Rec. Mode |
