@@ -1197,7 +1197,206 @@ export class SubroutineEngine {
     return { remoteHead, sourceShas };
   }
 
-  async graduateReview(params: GraduateActionParams): Promise<any> {
+  // ── private graduation helpers (unchanged above) ──────────────────
+
+  private async _resolveAndFetch(params: GraduateActionParams): Promise<{
+    resolved:    any;
+    sourceRepo:  string;
+    remoteAlias: string;
+    preHead:     string;
+    remoteHead:  string;
+    sourceShas:  string[];
+  }> {
+    const resolved   = await this.resolveRepoForIssue(params.issue, params.repo);
+    const sourceRepo = path.join(this.sourceCacheRoot, resolved.repo);
+
+    const srcExists = await fs.stat(sourceRepo).catch(() => null);
+    if (!srcExists?.isDirectory()) throw new Error(`GRAD_E_SRC_CACHE_MISSING: ${sourceRepo}`);
+
+    const srcInside = await this.git(sourceRepo, ["rev-parse", "--is-inside-work-tree"]);
+    if (srcInside.code !== 0 || srcInside.stdout.trim() !== "true")
+      throw new Error(`GRAD_E_SRC_NOT_GIT: ${sourceRepo}`);
+
+    const wipInside = await this.git(resolved.repoDir, ["rev-parse", "--is-inside-work-tree"]);
+    if (wipInside.code !== 0 || wipInside.stdout.trim() !== "true")
+      throw new Error(`GRAD_E_WIP_NOT_GIT: ${resolved.repoDir}`);
+
+    const branch = await this.git(sourceRepo, ["rev-parse", "--abbrev-ref", "HEAD"]);
+    if (branch.code !== 0 || !branch.stdout.trim() || branch.stdout.trim() === "HEAD")
+      throw new Error("GRAD_E_BRANCH_UNDETERMINED: checkout target branch before graduate");
+
+    const preHead     = (await this.git(sourceRepo, ["rev-parse", "HEAD"])).stdout.trim();
+    const remoteAlias = `wip-${resolved.ticketId}-${resolved.repo}`.replace(/[^a-zA-Z0-9_-]/g, "-");
+
+    await this.git(sourceRepo, ["remote", "remove", remoteAlias]);
+    const addRemote = await this.git(sourceRepo, ["remote", "add", remoteAlias, resolved.repoDir]);
+    if (addRemote.code !== 0) throw new Error(`GRAD_E_REMOTE_ADD_FAILED: ${addRemote.stderr || addRemote.stdout}`);
+
+    const fetch = await this.git(sourceRepo, ["fetch", remoteAlias]);
+    if (fetch.code !== 0) throw new Error(`GRAD_E_FETCH_FAILED: ${fetch.stderr || fetch.stdout}`);
+
+    const { remoteHead, sourceShas } = await this.collectCandidateShas(sourceRepo, remoteAlias, preHead);
+
+    return { resolved, sourceRepo, remoteAlias, preHead, remoteHead, sourceShas };
+  }
+
+  // ── public graduation ─────────────────────────────────────────────
+
+  async graduateDiff(params: GraduateActionParams): Promise<{
+    resolved:    any;
+    sourceRepo:  string;
+    remoteAlias: string;
+    preHead:     string;
+    remoteHead:  string;
+    sourceShas:  string[];
+    fileDiffs:   Array<{ path: string; oldContent: string; newContent: string }>;
+  }> {
+    const base = await this._resolveAndFetch(params);
+    const { sourceRepo, preHead, remoteHead } = base;
+
+    const changedResult = await this.git(sourceRepo, ["diff", "--name-only", preHead, remoteHead]);
+    const changedFiles  = changedResult.stdout.split("\n").map(s => s.trim()).filter(Boolean);
+
+    const fileDiffs = await Promise.all(changedFiles.map(async filePath => {
+      const [oldR, newR] = await Promise.all([
+        this.git(sourceRepo, ["show", `${preHead}:${filePath}`]),
+        this.git(sourceRepo, ["show", `${remoteHead}:${filePath}`]),
+      ]);
+      return {
+        path:       filePath,
+        oldContent: oldR.code === 0 ? oldR.stdout : "",
+        newContent: newR.code === 0 ? newR.stdout : "",
+      };
+    }));
+
+    return { ...base, fileDiffs };
+  }
+
+  async applyAndCommit(
+    sourceRepo:  string,
+    resolved:    any,
+    remoteAlias: string,
+    preHead:     string,
+    sourceShas:  string[],
+  ): Promise<any> {
+    const dirty = await this.git(sourceRepo, ["status", "--porcelain"]);
+    if (dirty.code !== 0) throw new Error(`GRAD_E_STATUS_FAILED: ${dirty.stderr || dirty.stdout}`);
+    if (this.parsePorcelainStatus(dirty.stdout)) throw new Error("GRAD_E_DIRTY_WORKTREE: local source cache has uncommitted changes");
+
+    const buckets = sourceShas.map(sha => ({ sourceShas: [sha] }));
+    const mapping: Array<{ sourceShas: string[]; destinationSha: string }> = [];
+
+    try {
+      for (let i = 0; i < buckets.length; i++) {
+        const b  = buckets[i];
+        const cp = await this.git(sourceRepo, ["cherry-pick", "-n", ...b.sourceShas]);
+        if (cp.code !== 0) {
+          const conflicts = (await this.git(sourceRepo, ["diff", "--name-only", "--diff-filter=U"]))
+            .stdout.split("\n").map(s => s.trim()).filter(Boolean);
+          return {
+            status: "conflict_paused",
+            issue: resolved.ticketId, repo: resolved.repo,
+            bucketIndex: i, sourceShas: b.sourceShas, conflicts,
+            instructions: [
+              `cd ${sourceRepo}`,
+              "git status",
+              "resolve conflicts && git add <files>",
+              "git cherry-pick --continue  (or --abort)",
+            ],
+          };
+        }
+
+        const staged      = await this.git(sourceRepo, ["diff", "--cached", "--name-only"]);
+        const stagedFiles = staged.stdout.split("\n").map(s => s.trim()).filter(Boolean);
+        if (stagedFiles.length === 0) throw new Error(`GRAD_E_EMPTY_BUCKET_STAGE: ${i}`);
+
+        const commit = await this.git(sourceRepo, ["commit", "-m", this.structuredCommitMessage(resolved.repo, i, b.sourceShas)]);
+        if (commit.code !== 0) throw new Error(`GRAD_E_COMMIT_FAILED: ${commit.stderr || commit.stdout}`);
+
+        const destinationSha = (await this.git(sourceRepo, ["rev-parse", "HEAD"])).stdout.trim();
+        mapping.push({ sourceShas: b.sourceShas, destinationSha });
+      }
+    } catch (e: any) {
+      await this.git(sourceRepo, ["cherry-pick", "--abort"]);
+      await this.git(sourceRepo, ["reset", "--hard", preHead]);
+      throw e;
+    } finally {
+      await this.git(sourceRepo, ["remote", "remove", remoteAlias]);
+    }
+
+    const archiveDir = path.join(this.workspaceRoot, "wip", resolved.ticketId, ".archives", resolved.repo);
+    await fs.mkdir(archiveDir, { recursive: true });
+    for (const name of ["BUDDY.md", "tool_call.json", "graduation.events.json"]) {
+      const src = path.join(resolved.repoDir, name);
+      const has = await fs.stat(src).catch(() => null);
+      if (has) await fs.copyFile(src, path.join(archiveDir, name));
+    }
+    await fs.rm(resolved.repoDir, { recursive: true, force: true });
+
+    return {
+      status: "success",
+      issue: resolved.ticketId, repo: resolved.repo,
+      sourceToDestination: mapping, archivedTo: archiveDir,
+    };
+  }
+
+  async recordGraduationDenials(params: {
+    issue:   string;
+    repo?:   string;
+    denials: Array<{ path: string; reason?: string }>;
+  }): Promise<void> {
+    const resolved = await this.resolveRepoForIssue(params.issue, params.repo);
+    await this.appendGraduationEvent(
+      resolved.ticketDir,
+      { event: "review_denials_recorded", issue: resolved.ticketId, repo: resolved.repo, denials: params.denials },
+      resolved.repo, resolved.repoDir,
+    );
+    await this.upsertGraduationSection(
+      path.join(resolved.ticketDir, "BUDDY.md"),
+      `${now()} checkpoint: repo ${resolved.repo} — ${params.denials.length} file(s) denied, fixes needed`,
+    );
+  }
+
+  async recordReviewOutcome(params: {
+    issue:    string;
+    repo?:    string;
+    status:   "started" | "finalized" | "rolled_back" | "conflict_paused";
+    preHead:  string;
+    mapping?: Array<{ sourceShas: string[]; destinationSha: string }>;
+    error?:   string;
+  }): Promise<void> {
+    const resolved  = await this.resolveRepoForIssue(params.issue, params.repo);
+    const eventName = `review_confirmed_${params.status}`;
+
+    const eventPayload: Record<string, unknown> = {
+      event: eventName,
+      issue: resolved.ticketId,
+      repo:  resolved.repo,
+      preHead: params.preHead,
+      ...(params.mapping && { mapping: params.mapping }),
+      ...(params.error   && { error:   params.error   }),
+    };
+
+    if (params.status !== "started") {
+      await this.appendGraduateLedger(resolved.repoDir, {
+        status: eventName,
+        preHead: params.preHead,
+        ...(params.mapping && { mapping: params.mapping }),
+        ...(params.error   && { error: params.error, restored: true }),
+      });
+    }
+
+    await this.appendGraduationEvent(resolved.ticketDir, eventPayload, resolved.repo, resolved.repoDir);
+
+    if (params.status === "finalized") {
+      await this.upsertGraduationSection(
+        path.join(resolved.ticketDir, "BUDDY.md"),
+        `${now()} milestone: repo ${resolved.repo} done (review)`,
+      );
+    }
+  }
+
+  async graduateForce(params: GraduateActionParams): Promise<any> {
     const resolved = await this.resolveRepoForIssue(params.issue, params.repo);
     const sourceRepo = path.join(this.sourceCacheRoot, resolved.repo);
     const srcExists = await fs.stat(sourceRepo).catch(() => null);
@@ -1221,97 +1420,6 @@ export class SubroutineEngine {
     await this.upsertGraduationSection(path.join(resolved.ticketDir, "BUDDY.md"), `${now()} checkpoint: repo ${resolved.repo} reviewed`);
 
     return { status: "review_ready", issue: resolved.ticketId, repo: resolved.repo, traversal: resolved.traversal, preHead, remoteHead, sourceShas, buckets: sourceShas.map((sha) => ({ sourceShas: [sha] })) };
-  }
-
-  async graduateForce(params: GraduateActionParams): Promise<any> {
-    const resolved = await this.resolveRepoForIssue(params.issue, params.repo);
-    const sourceRepo = path.join(this.sourceCacheRoot, resolved.repo);
-
-    const srcExists = await fs.stat(sourceRepo).catch(() => null);
-    if (!srcExists?.isDirectory()) throw new Error(`GRAD_E_SRC_CACHE_MISSING: ${sourceRepo}`);
-
-    const srcInside = await this.git(sourceRepo, ["rev-parse", "--is-inside-work-tree"]);
-    if (srcInside.code !== 0 || srcInside.stdout.trim() !== "true") throw new Error(`GRAD_E_SRC_NOT_GIT: ${sourceRepo}`);
-
-    const wipInside = await this.git(resolved.repoDir, ["rev-parse", "--is-inside-work-tree"]);
-    if (wipInside.code !== 0 || wipInside.stdout.trim() !== "true") throw new Error(`GRAD_E_WIP_NOT_GIT: ${resolved.repoDir}`);
-
-    const branch = await this.git(sourceRepo, ["rev-parse", "--abbrev-ref", "HEAD"]);
-    if (branch.code !== 0 || !branch.stdout.trim() || branch.stdout.trim() === "HEAD") throw new Error("GRAD_E_BRANCH_UNDETERMINED: checkout target branch before graduate");
-
-    const dirty = await this.git(sourceRepo, ["status", "--porcelain"]);
-    if (dirty.code !== 0) throw new Error(`GRAD_E_STATUS_FAILED: ${dirty.stderr || dirty.stdout}`);
-    if (this.parsePorcelainStatus(dirty.stdout)) throw new Error("GRAD_E_DIRTY_WORKTREE: local source cache has uncommitted changes");
-
-    const preHead = (await this.git(sourceRepo, ["rev-parse", "HEAD"])).stdout.trim();
-    const remoteAlias = `wip-${resolved.ticketId}-${resolved.repo}`.replace(/[^a-zA-Z0-9_-]/g, "-");
-
-    await this.appendGraduationEvent(resolved.ticketDir, { event: "force_started", issue: resolved.ticketId, repo: resolved.repo, preHead }, resolved.repo, resolved.repoDir);
-    await this.git(sourceRepo, ["remote", "remove", remoteAlias]);
-    const addRemote = await this.git(sourceRepo, ["remote", "add", remoteAlias, resolved.repoDir]);
-    if (addRemote.code !== 0) throw new Error(`GRAD_E_REMOTE_ADD_FAILED: ${addRemote.stderr || addRemote.stdout}`);
-
-    const fetch = await this.git(sourceRepo, ["fetch", remoteAlias]);
-    if (fetch.code !== 0) throw new Error(`GRAD_E_FETCH_FAILED: ${fetch.stderr || fetch.stdout}`);
-
-    const { remoteHead, sourceShas } = await this.collectCandidateShas(sourceRepo, remoteAlias, preHead);
-
-    if (sourceShas.length === 0) {
-      await this.appendGraduateLedger(resolved.repoDir, { status: "noop", reason: "no_delta", preHead, remoteHead });
-      await this.appendGraduationEvent(resolved.ticketDir, { event: "force_succeeded_finalized", issue: resolved.ticketId, repo: resolved.repo, outcome: "noop", preHead, remoteHead }, resolved.repo, resolved.repoDir);
-      await this.git(sourceRepo, ["remote", "remove", remoteAlias]);
-      return { status: "noop", issue: resolved.ticketId, repo: resolved.repo, sourceShas: [] };
-    }
-
-    const buckets = sourceShas.map((sha) => ({ sourceShas: [sha] }));
-    const mapping: Array<{ sourceShas: string[]; destinationSha: string }> = [];
-
-    try {
-      for (let i = 0; i < buckets.length; i++) {
-        const b = buckets[i];
-        const cp = await this.git(sourceRepo, ["cherry-pick", "-n", ...b.sourceShas]);
-        if (cp.code !== 0) {
-          const conflicts = (await this.git(sourceRepo, ["diff", "--name-only", "--diff-filter=U"]))
-            .stdout.split("\n").map((s) => s.trim()).filter(Boolean);
-          await this.appendGraduateLedger(resolved.repoDir, { status: "conflict_paused", bucketIndex: i, sourceShas: b.sourceShas, conflicts });
-          await this.appendGraduationEvent(resolved.ticketDir, { event: "conflict_paused", issue: resolved.ticketId, repo: resolved.repo, bucketIndex: i, sourceShas: b.sourceShas, conflicts }, resolved.repo, resolved.repoDir);
-          return { status: "conflict_paused", issue: resolved.ticketId, repo: resolved.repo, bucketIndex: i, sourceShas: b.sourceShas, conflicts, instructions: [`cd ${sourceRepo}`, "git status", "resolve conflicts && git add <files>", "git cherry-pick --continue  (or --abort)"] };
-        }
-
-        const staged = await this.git(sourceRepo, ["diff", "--cached", "--name-only"]);
-        const stagedFiles = staged.stdout.split("\n").map((s) => s.trim()).filter(Boolean);
-        if (stagedFiles.length === 0) throw new Error(`GRAD_E_EMPTY_BUCKET_STAGE: ${i}`);
-
-        const commit = await this.git(sourceRepo, ["commit", "-m", this.structuredCommitMessage(resolved.repo, i, b.sourceShas)]);
-        if (commit.code !== 0) throw new Error(`GRAD_E_COMMIT_FAILED: ${commit.stderr || commit.stdout}`);
-        const destinationSha = (await this.git(sourceRepo, ["rev-parse", "HEAD"])).stdout.trim();
-        mapping.push({ sourceShas: b.sourceShas, destinationSha });
-      }
-    } catch (e: any) {
-      await this.git(sourceRepo, ["cherry-pick", "--abort"]);
-      await this.git(sourceRepo, ["reset", "--hard", preHead]);
-      await this.appendGraduateLedger(resolved.repoDir, { status: "force_failed_rolled_back", error: String(e?.message || e), preHead, restored: true });
-      await this.appendGraduationEvent(resolved.ticketDir, { event: "force_failed_rolled_back", issue: resolved.ticketId, repo: resolved.repo, error: String(e?.message || e), preHead }, resolved.repo, resolved.repoDir);
-      throw e;
-    } finally {
-      await this.git(sourceRepo, ["remote", "remove", remoteAlias]);
-    }
-
-    await this.appendGraduateLedger(resolved.repoDir, { status: "force_succeeded_finalized", preHead, mapping, buckets });
-    await this.appendGraduationEvent(resolved.ticketDir, { event: "force_succeeded_finalized", issue: resolved.ticketId, repo: resolved.repo, preHead, mapping }, resolved.repo, resolved.repoDir);
-
-    const archiveDir = path.join(this.workspaceRoot, "wip", resolved.ticketId, ".archives", resolved.repo);
-    await fs.mkdir(archiveDir, { recursive: true });
-    for (const name of ["BUDDY.md", "tool_call.json", "graduation.events.json"]) {
-      const src = path.join(resolved.repoDir, name);
-      const has = await fs.stat(src).catch(() => null);
-      if (has) await fs.copyFile(src, path.join(archiveDir, name));
-    }
-    await fs.rm(resolved.repoDir, { recursive: true, force: true });
-
-    await this.upsertGraduationSection(path.join(resolved.ticketDir, "BUDDY.md"), `${now()} milestone: repo ${resolved.repo} done`);
-
-    return { status: "success", issue: resolved.ticketId, repo: resolved.repo, sourceToDestination: mapping, archivedTo: archiveDir };
   }
 
   async graduateStatus(params: GraduateActionParams): Promise<any> {
@@ -1338,7 +1446,4 @@ export class SubroutineEngine {
     return { issue: ticketId, selfStatus: "active", childrenStatus: { pending, done: uniqueDone }, lastReviewedAt: reviewed.length ? reviewed[reviewed.length - 1].ts : null, lastForcedAt: forced.length ? forced[forced.length - 1].ts : null, latestOutcome: last?.event || "none", pendingTraversal: pending, doneTraversal: uniqueDone };
   }
 
-  async graduate(params: GraduateActionParams): Promise<any> {
-    return this.graduateReview(params);
-  }
 }

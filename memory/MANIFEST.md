@@ -19,10 +19,12 @@ This manifest provides a high-density index of the project's long-term memory.
 | `processes/TASK_EXECUTION.md` | Task Pipeline | Phases 0-6, AC, Convergence Proof | `map` |
 | `processes/OMNITOOL_IMPLEMENTATION_STATUS.md` | OmniTool Dev | Current status (31 guardrails files), 10 mitigations, work inventory, risks | `full` |
 | `processes/OMNITOOL_SPEC_VS_REALITY.md` | OmniTool Gaps | 8 major gaps vs. spec, mitigations, exit plans, resolution triggers | `full` |
+| `processes/omnitool-execution-tracing.md` | OmniTool Debug | Console logging strategy, trace points, error handling | `full` |
 
 ## 🧪 Diagnostic Skills (The Tools)
 | File | Focus | Key Truths / Coordinates | Rec. Mode |
 | :--- | :--- | :--- | :--- |
+| `skills/qa-walk/SKILL.md` | QA Walk | **MANDATE**: Use `qa_walk_open` for ≥2 questions. Controls: ↑↓ nav, Enter/Ctrl+D submit, Esc cancel. TUI-only. | `full` |
 | `skills/debug.md` | Debugging | `@[5-15]` $\rightarrow$ **Scientific Loop**. <br> `@[17-24]` $\rightarrow$ **Mental Trace**. <br> `@[26-33]` $\rightarrow$ **Delta Debugging**. | `map` |
 | `skills/buddy/SKILL.md` | Buddy | Headless Pi executor, custom prompts | `full` |
 | `skills/extension-pattern/SKILL.md` | Extensions | Dual registration, tool + command pattern | `map` |
@@ -35,6 +37,7 @@ This manifest provides a high-density index of the project's long-term memory.
 | `projects/system-design.md` | Architecture | High-level design decisions | `map` |
 | `projects/system-spec.md` | Specifications | Technical requirements and specs | `map` |
 | `projects/wip-status.md` | cur State | Active work and pending items | `full` |
+| `projects/omnitool-implementation.md` | OmniTool API | WipWorktreeManager spec, dispatch routing, RULE-12, ledger | `map` |
 | `decisions/hf-download.md` | Model Ops | HF retention, local_dir defaults, subprocess.run | `full` |
 | `research/lm-studio-configs.md` | LM Studio | Inference profiles, thinking mode toggle, active config | `full` |
 | `research/llm-sliding-context-dilution.md` | LLM Context | Sys prompt attention decay, dilution rates, position encoding effects | `full` |

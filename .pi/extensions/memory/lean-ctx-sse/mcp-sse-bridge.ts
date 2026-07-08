@@ -173,6 +173,8 @@ export class McpSseBridge {
     const match = url.match(/:(\d+)/);
     return match ? parseInt(match[1], 10) : 0;
   }
+
+  async connect(): Promise<void> {
     this.transport = new SseClientTransport({
       url: this.sseUrl,
     });

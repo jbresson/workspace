@@ -27,8 +27,6 @@ async function runBuddyWrapper(params: any) {
 }
 
 export default function (pi: ExtensionAPI) {
-
-export default function (pi: ExtensionAPI) {
   // Schema for common parameters
   const systemPromptParam = Type.String({
     description:

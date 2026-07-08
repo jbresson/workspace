@@ -54,7 +54,7 @@ export default function (pi: ExtensionAPI) {
         return undefined; // pass through if we're off
     }
 
-    const sessionId = ctx.sessionId || "default-session";
+    const sessionId = event.sessionId() || "default-session";
 
     ctx.ui.notify(`[CGS-2] Checking action for session: ${sessionId}`);
     const check = await orchestrator.handleAction(sessionId, toolName, toolParams);

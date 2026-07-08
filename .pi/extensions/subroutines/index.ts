@@ -1,4 +1,6 @@
 import { SubroutineEngine } from "./engine";
+import { GraduationReviewPanel } from "./graduation-tui";
+import type { ReviewResult }     from "./graduation-tui";
 
 type ExtensionAPI = any;
 
@@ -237,13 +239,95 @@ export default async function (pi: ExtensionAPI) {
   });
 
   pi.registerCommand("graduate", {
-    description: "/graduate <issue> [<repo>]",
+    description: "/graduate <issue> [<repo>]  — review changes file-by-file, commit if all confirmed",
     handler: async (args, ctx) => {
-      const raw = String(args || "").trim();
+      const raw   = String(args || "").trim();
       const parts = raw.split(/\s+/).filter(Boolean);
-      const result = !parts[0]
-        ? { ok: false, error: "missing_issue", message: "usage: /graduate <issue> [<repo>]" }
-        : await engine.graduateReview({ issue: parts[0], repo: parts[1] });
+      if (!parts[0]) {
+        ctx.ui.setEditorText("usage: /graduate <issue> [<repo>]");
+        return;
+      }
+      if (ctx.mode !== "tui") {
+        ctx.ui.notify("/graduate requires TUI mode", "error");
+        return;
+      }
+
+      let diffResult: Awaited<ReturnType<typeof engine.graduateDiff>>;
+      try {
+        diffResult = await engine.graduateDiff({ issue: parts[0], repo: parts[1] });
+      } catch (e: any) {
+        ctx.ui.setEditorText(`Graduation error: ${e.message}`);
+        return;
+      }
+
+      const { resolved, sourceRepo, remoteAlias, preHead, sourceShas, fileDiffs } = diffResult;
+
+      if (sourceShas.length === 0) {
+        ctx.ui.setEditorText("Nothing to graduate — no commits ahead of source.");
+        return;
+      }
+
+      const reviewResult = await ctx.ui.custom<ReviewResult>((tui, theme, _kb, done) => {
+        const panel = new GraduationReviewPanel(
+          fileDiffs, tui, theme,
+          () => tui.requestRender(),
+          done,
+        );
+        return {
+          render:      (w: number) => panel.render(w),
+          handleInput: (d: string) => { panel.handleInput(d); tui.requestRender(); },
+          invalidate:  ()          => panel.invalidate(),
+        };
+      });
+
+      if (reviewResult.cancelled) {
+        ctx.ui.setEditorText("Graduation review cancelled — no changes applied.");
+        return;
+      }
+
+      const denied    = reviewResult.reviews.filter(r => !r.confirmed);
+      const confirmed = reviewResult.reviews.filter(r =>  r.confirmed);
+
+      if (denied.length > 0) {
+        try {
+          await engine.recordGraduationDenials({
+            issue:   parts[0],
+            repo:    parts[1],
+            denials: denied.map(d => ({ path: d.path, reason: d.reason })),
+          });
+        } catch { /* non-fatal */ }
+
+        const lines = [
+          "## Graduation Review — Changes Need Fixes",
+          "",
+          ...denied.map(d => `\`${d.path}\`: ${d.reason ?? "(no reason given)"}`),
+          "",
+          confirmed.length > 0
+            ? `${confirmed.length} file(s) confirmed, ${denied.length} denied. Resolve denials before re-attempting.`
+            : `All ${denied.length} file(s) denied.`,
+        ];
+        ctx.ui.setEditorText(lines.join("\n"));
+        return;
+      }
+
+      await engine.recordReviewOutcome({ issue: parts[0], repo: parts[1], status: "started", preHead });
+
+      let result: any;
+      try {
+        result = await engine.applyAndCommit(sourceRepo, resolved, remoteAlias, preHead, sourceShas);
+      } catch (e: any) {
+        await engine.recordReviewOutcome({ issue: parts[0], repo: parts[1], status: "rolled_back", preHead, error: e.message });
+        ctx.ui.setEditorText(`Graduation failed during commit: ${e.message}`);
+        return;
+      }
+
+      if (result.status === "conflict_paused") {
+        await engine.recordReviewOutcome({ issue: parts[0], repo: parts[1], status: "conflict_paused", preHead });
+        ctx.ui.setEditorText(JSON.stringify(result, null, 2));
+        return;
+      }
+
+      await engine.recordReviewOutcome({ issue: parts[0], repo: parts[1], status: "finalized", preHead, mapping: result.sourceToDestination });
       ctx.ui.setEditorText(JSON.stringify(result, null, 2));
     },
   });

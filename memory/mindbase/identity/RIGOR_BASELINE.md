@@ -22,16 +22,19 @@ Agents must maintain active registries in the session (L2) to prevent cognitive 
 - **Risk Register**: High-level risks + mitigations.
 - **Blocker Log**: Hard stops for escalation.
 
-## 4. Evidence Confidence Framework
-Findings must be labeled based on evidence strength, not narrative confidence.
-- **Confirmed**: Visually verified OR corroborated by multiple independent signals.
-- **Supported**: Consistent with hypothesis but not independently confirmed.
-- **Hypothesis**: Plausible explanation that has not been tested or visually verified.
-- **Inconclusive**: Evidence examined but does not clearly support or refute.
+## 5. The Alignment Proof (Anti-Compression Standard)
+To prevent "lossy compression" of technical requirements, every implementation must be accompanied by an **Alignment Proof**. 
 
-**Mandates**: 
-- Baseline comparison ($\Delta$) is required for all abnormal metric claims.
-- Log absence $\neq$ Event absence.
+**Definition**: A 1:1 traceability map between the original requirement, the literal implementation, and the verification evidence.
+
+### The Librarian's Proof Template
+When proposing architectural or implementation changes, the agent must provide:
+1. **Requirement**: Literal quote from spec/AC.
+2. **Implementation**: Exact file/line or logic block introduced.
+3. **Verification**: The specific test, log, or audit result that proves the implementation satisfies the requirement.
+4. **Delta Analysis**: Explicit statement of what was *not* implemented or what was modified from the original intent (if any).
+
+**Mandate**: If a requirement is "simplified" or "streamlined" without an Alignment Proof, it is treated as a regression.
 
 ## 6. The Librarian's Stewardship (Intellectual Integrity)
 - **Mindful Access**: Every file interaction must treat knowledge as a curated asset, not disposable data.

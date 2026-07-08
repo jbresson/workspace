@@ -8,6 +8,7 @@ export interface Expectation {
   id: string;
   trigger: string; // File path or tool name
   condition: string;
+  description?: string; // Added for compatibility with skeptic_auditor and negotiation_manager
   state: ExpectationState;
   validationType: ValidationType;
   proof: string | null;

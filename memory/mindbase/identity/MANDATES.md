@@ -41,7 +41,14 @@ Every branch/MR should have a single, coherent purpose — describable in one se
 - **Strict Scope**: If you encounter something worth fixing that falls outside the stated scope: stop, note it, and log it as a follow-up task. Do not fix it here.
 - **No Drift**: Refactors, cleanups, and unrelated bugs discovered mid-task go on a list — not into this branch.
 
-## 7. Response Style
+## 7. Interactive Questionnaires (qa_walk_open)
+When the agent needs to ask the user **2 or more questions**, it **MUST** use the `qa_walk_open` tool instead of listing questions in prose.
+
+**Trigger**: Any response that would contain ≥2 questions (clarifications, requirements gathering, planning checks, etc.)
+**Mandatory fields**: `id`, `brief` (≤30 words), `details` (bullet context), `metadata.title`
+**Forbidden**: Embedding questions as numbered/bulleted prose when `qa_walk_open` is available.
+
+## 8. Response Style
 - **Conciseness**: Avoid lengthy explanations; use bullets and code over prose.
 - **Directness**: Skip pleasantries ("Thank you", "I'm sorry"). Respond with "Understood" or "Acknowledged" and move immediately to the fix.
 

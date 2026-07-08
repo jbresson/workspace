@@ -131,3 +131,30 @@ Close the loop. Ensure project intelligence grows.
 **Init**: If tool missing -> load_helper_extension({ module: "lean-ctx-sse" }).
 **Activate**: project_memory_lean_ctx({ projectPath: "/path/to/proj" }).
 **Logic**: Project Knowledge -> projectName_* tools; General Knowledge -> generic lean-ctx/ctx_*. Refer to memory/mindbase/processes/memory_management.md for full L1->L3 pipeline.
+
+## Librarian's Registry (Stewardship Verbs)
+**IMPORTANT**: These verbs are NOT yet wired into omnitool. Available for documentation/planning only.
+
+| Verb | Purpose | Output | Ledger |
+|---|---|---|---|
+| **index** | Map project structure via lean-ctx | `{ structure, metadata: { tokensSaved, source } }` | Records finding |
+| **fetch** | Read file with line-range slicing | `{ content, truncation: bool }` | Records finding |
+| **search** | Pattern scan with compression stats | `{ matches: [], count, metadata }` | Records finding |
+| **knowledge** | Query L3 memory + L2 reconciliation | `{ facts: [], sources: ['L3', 'L2'], reconciled }` | Records finding |
+| **note** | Log working memory to BUDDY.md | `{ ledgerId, ledgerRef }` | Appends entry |
+| **draft** | Create-only to wip/ mirror + ledger | `{ success, path, ledgerRef }` | Appends entry |
+| **amend** | Surgical edit to wip/ + ledger | `{ success, delta, ledgerRef }` | Appends entry |
+| **audit** | Verify correctness of target | `{ passed, proof: [] }` | Read-only |
+
+**Key Principles**:
+- ✅ All writes route to `wip/` mirror (canonical paths auto-mapped)
+- ✅ Every operation atomic with BUDDY.md ledger entry
+- ✅ Token savings tracked on all verbs
+- ✅ Create-only gate enforced for draft (amend for existing files)
+- ✅ oldText uniqueness validated for amend (must match exactly 1x)
+
+**Ledger Entries** (Type-safe): `draft | amend | finding | decision | uncertainty`
+
+**Integration**: Phase 2.3 (when wired into omnitool)
+
+**Reference**: `.pi/librarian/README.md` for full architecture.

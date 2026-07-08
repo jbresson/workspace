@@ -130,6 +130,11 @@ For every `[IRREVERSIBLE]` decision:
 **Audit required (synchronous)**: run `audit_change_ledger` in Verify/Audit phase, not background.
 Task cannot close if audit reports unlogged modifications, hash mismatches, or stale invariant verification mappings.
 
+### Alignment Proof Generation
+Before the final checklist, generate the **Alignment Proof** for each AC:
+- **Requirement** $\rightarrow$ **Implementation** $\rightarrow$ **Verification**.
+- Ensure no "lossy compression" occurred during the Cycling phase.
+
 ### AC Checklist
 - Each AC satisfied? If not: gap? Current PR or follow-up?
 

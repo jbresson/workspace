@@ -8,7 +8,7 @@ import {
   appendAudit,
   buildRegistryFromExtensions,
   executeWipSubAction,
-} from "../subroutines/omnitool";
+} from "./omnitool";
 
 function mkTmp(prefix: string): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));

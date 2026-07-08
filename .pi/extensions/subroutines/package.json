@@ -1,0 +1,8 @@
+{
+  "name": "subroutines",
+  "version": "0.1.0",
+  "dependencies": {
+    "diff": "^7.0.0",
+    "@shikijs/cli": "^4.0.2"
+  }
+}

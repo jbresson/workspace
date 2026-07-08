@@ -11,9 +11,13 @@ The CGS is a transactional guardrail system that transforms "Safety" into "Expec
 5. **Interceptor Extension**: The bridge to the Pi Tool Hub, located at `.pi/extensions/guardrails/guardrail-interceptor.ts`, which performs the real-time blocking of sensitive tools.
 
 ### Operational Modes
-- **OFF**: No interception.
-- **DEBUG**: Intercept and warn, but allow execution.
-- **ENFORCE**: Intercept and block based on Registry expectations.
+Refer to `MODES.md` for the full Omnitool Mode Matrix, including registration and logging behaviors.
+
+- **OFF**: No registration or interception.
+- **DEBUG**: Verbose registration logging; no guardrails.
+- **ON**: Full proxy access; no guardrails.
+- **GUARDED_DEBUG**: Guardrails active (warn only); verbose logging.
+- **GUARDED**: Guardrails active; blocking enabled (Default).
 - **AFK (Away From Keyboard)**: High-autonomy mode where real-time human confirmation is unavailable. 
   - **Behavior**: Blocks all "confirm with user" prompts.
   - **Requirement**: Forces the agent to externalize blocked work as a formal TODO/Ticket and provide a written justification for how they will proceed without human oversight.

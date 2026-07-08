@@ -5,6 +5,7 @@ export type InspectionResult = { allowed: true } | {
   allowed: false; 
   reason: string; 
   alternative?: string; 
+  ruleId?: string;
 };
 
 export interface GatekeeperRule {
