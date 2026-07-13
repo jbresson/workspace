@@ -352,7 +352,7 @@ export default async function (pi: ExtensionAPI) {
       const result = !parts[0]
         ? { ok: false, error: "missing_issue", message: "usage: /graduate-status <issue> [<repo>]" }
         : await engine.graduateStatus({ issue: parts[0], repo: parts[1] });
-      ctx.ui.setEditorText(JSON.stringify(result, null, 2));
+      ctx.ui.notify(JSON.stringify(result, null, 2));
     },
   });
 }

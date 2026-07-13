@@ -6,8 +6,8 @@ import * as path from "node:path";
  * When false: full worktree checkout. Set true once sparse checkout workflow is validated.
  */
 const SPARSE_CHECKOUT = false;
-import { Type } from "@sinclair/typebox";
-import { value } from "@sinclair/typebox/value";
+import { Type } from "typebox";
+import { value } from "typebox/value";
 import { 
   IssueInitSchema, 
   IssueUpdateStatusSchema, 

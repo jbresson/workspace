@@ -1,0 +1,10 @@
+{
+  "name": "pi-extensions",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "extensions/subroutines",
+    "extensions/memory/lean-ctx-sse",
+    "extensions/pi-lean-ctx"
+  ]
+}

@@ -6,7 +6,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 import * as path from "path";
 import { GuardrailOrchestrator } from "./orchestrator";
 import { ExpectationService } from "./expectation_service";

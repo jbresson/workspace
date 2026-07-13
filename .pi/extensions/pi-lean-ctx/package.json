@@ -1,0 +1,7 @@
+{
+  "name": "pi-lean-ctx",
+  "version": "0.1.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  }
+}

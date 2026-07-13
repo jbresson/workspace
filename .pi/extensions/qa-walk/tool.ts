@@ -2,7 +2,7 @@
  * QA Walk Extension - Tool Definition (qa_walk_open)
  */
 
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import type { Question, Metadata } from "./types.ts";

@@ -10,7 +10,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 
 // Module-level state for sharing across tool and command
 let bridges: Record<string, any> = {};
