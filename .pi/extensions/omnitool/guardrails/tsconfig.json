@@ -8,6 +8,7 @@
     "outDir": ".",
     "rootDir": ".",
     "strict": false,
+    "noEmitOnError": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node"

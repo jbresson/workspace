@@ -1,1 +1,1 @@
-Guardrail test content - Final Attempt 2
+{"id":"EXP-SESS-1","trigger":".env","condition":"API_KEY","validationType":"CONSTRAINED_CMD","sessionId":"s1","scope":"SESSION","state":"RESOLVED","timestamp":1783984400486,"metadata":{"negotiation":{"iterations":2,"proposedValidator":"grep 'SERVICE_KEY' .env","status":"AGREED"}},"proof":"grep 'SERVICE_KEY' .env"}

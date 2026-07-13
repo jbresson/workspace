@@ -19,7 +19,7 @@ export interface Expectation {
 }
 
 export class ExpectationService {
-  private expectationPath = path.join(process.cwd(), '.pi/extensions/guardrails/expectations.jsonl');
+  private expectationPath = path.join(process.cwd(), '.pi/extensions/omnitool/guardrails/expectations.jsonl');
 
   async issueExpectation(sessionId: string, exp: Omit<Expectation, 'timestamp' | 'state' | 'sessionId'>): Promise<Expectation> {
     const expectation: Expectation = {

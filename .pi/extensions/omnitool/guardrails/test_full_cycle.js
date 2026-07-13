@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 class ExpectationService {
-  constructor() { this.registryPath = path.join(process.cwd(), '.pi/registry/expectations.jsonl'); }
+  constructor() { this.registryPath = path.join(process.cwd(), '.pi/extensions/omnitool/guardrails/expectations.jsonl'); }
   async issueExpectation(exp) {
     const expectation = { ...exp, state: 'PENDING', timestamp: Date.now(), metadata: {} };
     await fs.promises.appendFile(this.registryPath, JSON.stringify(expectation) + '\n', 'utf8');
@@ -89,7 +89,7 @@ class FinalizeChecker {
 
 async function runIntegrationTest() {
   const reg = new ExpectationService();
-  if (fs.existsSync('.pi/registry/expectations.jsonl')) await fs.promises.unlink('.pi/registry/expectations.jsonl');
+  if (fs.existsSync('.pi/extensions/omnitool/guardrails/expectations.jsonl')) await fs.promises.unlink('.pi/extensions/omnitool/guardrails/expectations.jsonl');
   const auditor = new SkepticAuditor();
   const vm = new ValidationManager();
   const nm = new NegotiationManager(reg, auditor);

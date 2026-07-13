@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { ExpectationService } from './expectation_service.ts';
-import { GUARDRAIL_RULES, GUARDRAIL_PROFILES } from './rules_definition.ts';
+import { ExpectationService } from './expectation_service';
+import { GUARDRAIL_RULES, GUARDRAIL_PROFILES } from './rules_definition';
 
 class GuardrailBootstrapper {
   constructor(registry) {

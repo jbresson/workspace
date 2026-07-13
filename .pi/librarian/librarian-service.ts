@@ -1,6 +1,6 @@
 /**
  * LibrarianService: Central orchestrator for Librarian Stewardship Engine
- * 
+ *
  * Implements all verbs per the Primitive Mapping Table:
  * - index: Map project structure (stateless CLI)
  * - fetch: Read file with line-range slicing
@@ -10,9 +10,12 @@
  * - draft: Create-only to wip/ + ledger
  * - amend: Surgical edit to wip/ + ledger
  * - audit: Verify correctness
+ *
+ * EXT-010 AC-4: draft/amend auto-stage files in git worktree when path is
+ * under ~/wip/<issue>/<repo>/ (detected via PathResolver.getWipWorktreeInfo).
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -50,6 +53,30 @@ export class LibrarianService {
   }
 
   /**
+   * EXT-010 AC-4: Auto-stage a file in its git worktree after write.
+   *
+   * Runs `git -C <worktreeRoot> add <relFile>` if the path is under
+   * ~/wip/<issue>/<repo>/. Non-fatal: errors are silently suppressed since
+   * the file write already succeeded.
+   *
+   * Only `git add` is needed (draft/amend never delete files).
+   */
+  private stageWipFile(wipPath: string): void {
+    try {
+      const info = PathResolver.getWipWorktreeInfo(wipPath);
+      if (!info.isWorktree || !info.worktreeRoot || !info.relFile) return;
+
+      // Non-fatal: worktree may not be initialized yet or file may be untrackable
+      execFileSync('git', ['-C', info.worktreeRoot, 'add', info.relFile], {
+        stdio: 'ignore',
+        timeout: 5000,
+      });
+    } catch {
+      // Silently suppress — file write succeeded; staging is best-effort
+    }
+  }
+
+  /**
    * INDEX: Map project structure via lean-ctx
    */
   async index(scope?: string): Promise<LibrarianResult<any>> {
@@ -65,10 +92,9 @@ export class LibrarianService {
         ? `${this.binaryResolution.binary} index ${scope}`
         : `${this.binaryResolution.binary} index`;
 
-      const rawOutput = execSync(cmd, { encoding: 'utf8' });
+      const rawOutput = execFileSync(this.binaryResolution.binary!, ['index', ...(scope ? [scope] : [])], { encoding: 'utf8' });
       const parsed = OutputParser.parseLeanCtxOutput(rawOutput);
 
-      // Parse index output as JSON (lean-ctx typically outputs structured data)
       let structure: any;
       try {
         structure = JSON.parse(parsed.content);
@@ -106,7 +132,6 @@ export class LibrarianService {
     limit?: number
   ): Promise<LibrarianResult<string>> {
     try {
-      // Validate file exists
       if (!fs.existsSync(filePath)) {
         return {
           success: false,
@@ -114,14 +139,12 @@ export class LibrarianService {
         };
       }
 
-      // Read file content
       const content = fs.readFileSync(filePath, 'utf-8');
       const lines = content.split('\n');
 
       let result = content;
       let truncated = false;
 
-      // Apply line-range if specified
       if (offset !== undefined || limit !== undefined) {
         const start = offset || 1;
         const end = limit ? start + limit - 1 : lines.length;
@@ -129,7 +152,6 @@ export class LibrarianService {
         truncated = end < lines.length;
       }
 
-      // Calculate compression stats (simulated)
       const stats: CompressionStats = {
         original: content.length,
         compressed: result.length,
@@ -138,7 +160,6 @@ export class LibrarianService {
       };
 
       const builtResult = OutputParser.buildResult(result, stats, 'cache');
-
       const ledgerRef = await this.ledger.recordFinding(
         `Fetch: ${filePath}`,
         'high',
@@ -174,14 +195,10 @@ export class LibrarianService {
     }
 
     try {
-      const cmd = scope
-        ? `${this.binaryResolution.binary} search "${pattern}" ${scope}`
-        : `${this.binaryResolution.binary} search "${pattern}"`;
-
-      const rawOutput = execSync(cmd, { encoding: 'utf8' });
+      const args = ['search', pattern, ...(scope ? [scope] : [])];
+      const rawOutput = execFileSync(this.binaryResolution.binary!, args, { encoding: 'utf8' });
       const parsed = OutputParser.parseLeanCtxOutput(rawOutput);
 
-      // Parse as structured search results
       let matches: any[] = [];
       try {
         matches = JSON.parse(parsed.content);
@@ -193,7 +210,7 @@ export class LibrarianService {
       const ledgerRef = await this.ledger.recordFinding(
         `Search: ${pattern}`,
         'high',
-        [cmd, `matches: ${matches.length}`]
+        [`matches: ${matches.length}`]
       );
 
       return {
@@ -222,11 +239,10 @@ export class LibrarianService {
     }
 
     try {
-      const cmd = `${this.binaryResolution.binary} knowledge query "${query}"`;
-      const rawOutput = execSync(cmd, { encoding: 'utf8' });
+      const args = ['knowledge', 'query', query];
+      const rawOutput = execFileSync(this.binaryResolution.binary!, args, { encoding: 'utf8' });
       const parsed = OutputParser.parseLeanCtxOutput(rawOutput);
 
-      // Parse knowledge results
       let facts: any[] = [];
       try {
         facts = JSON.parse(parsed.content);
@@ -238,7 +254,7 @@ export class LibrarianService {
       const ledgerRef = await this.ledger.recordFinding(
         `Knowledge query: ${query}`,
         'medium',
-        [cmd, `facts: ${facts.length}`]
+        [`facts: ${facts.length}`]
       );
 
       return {
@@ -292,10 +308,12 @@ export class LibrarianService {
 
   /**
    * DRAFT: Create-only to wip/ + ledger
+   *
+   * EXT-010 AC-4: If the resolved path is inside a git worktree
+   * (~/wip/<issue>/<repo>/<file>), auto-runs `git add <file>` after write.
    */
   async draft(filePath: string, content: string): Promise<LibrarianResult<void>> {
     try {
-      // Resolve path to wip mirror if canonical
       const resolution = PathResolver.resolve(filePath, true);
 
       if (resolution.error) {
@@ -307,7 +325,6 @@ export class LibrarianService {
 
       const wipPath = resolution.resolved;
 
-      // Check create-only gate
       const gate = PathResolver.checkCreateOnlyGate(wipPath);
       if (!gate.allowed) {
         return {
@@ -316,7 +333,6 @@ export class LibrarianService {
         };
       }
 
-      // Ensure parent directory exists
       if (!PathResolver.ensureParentExists(wipPath)) {
         return {
           success: false,
@@ -327,7 +343,9 @@ export class LibrarianService {
       // Write file
       fs.writeFileSync(wipPath, content, 'utf-8');
 
-      // Record in ledger
+      // AC-4: Auto-stage in git worktree (non-fatal)
+      this.stageWipFile(wipPath);
+
       const ledgerResponse = await this.ledger.recordDraft(
         filePath,
         wipPath,
@@ -354,6 +372,9 @@ export class LibrarianService {
 
   /**
    * AMEND: Surgical edit to wip/ + ledger
+   *
+   * EXT-010 AC-4: If the resolved path is inside a git worktree
+   * (~/wip/<issue>/<repo>/<file>), auto-runs `git add <file>` after write.
    */
   async amend(
     filePath: string,
@@ -361,7 +382,6 @@ export class LibrarianService {
     newText: string
   ): Promise<LibrarianResult<void>> {
     try {
-      // Resolve path to wip mirror if canonical
       const resolution = PathResolver.resolve(filePath, true);
 
       if (resolution.error) {
@@ -373,7 +393,6 @@ export class LibrarianService {
 
       const wipPath = resolution.resolved;
 
-      // File must exist for amend
       if (!fs.existsSync(wipPath)) {
         return {
           success: false,
@@ -381,10 +400,8 @@ export class LibrarianService {
         };
       }
 
-      // Read current content
       const current = fs.readFileSync(wipPath, 'utf-8');
 
-      // Validate oldText is unique match
       const matches = (current.match(new RegExp(oldText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
       if (matches !== 1) {
         return {
@@ -393,11 +410,12 @@ export class LibrarianService {
         };
       }
 
-      // Perform replacement
       const updated = current.replace(oldText, newText);
       fs.writeFileSync(wipPath, updated, 'utf-8');
 
-      // Record in ledger
+      // AC-4: Auto-stage in git worktree (non-fatal)
+      this.stageWipFile(wipPath);
+
       const ledgerResponse = await this.ledger.recordAmend(filePath, wipPath, 1);
 
       return {
@@ -423,7 +441,6 @@ export class LibrarianService {
    */
   async audit(target: string): Promise<LibrarianResult<any>> {
     try {
-      // Check if file exists
       if (!fs.existsSync(target)) {
         return {
           success: false,
@@ -431,7 +448,6 @@ export class LibrarianService {
         };
       }
 
-      // For now, basic validation: file readable and contains content
       const content = fs.readFileSync(target, 'utf-8');
       const proof = [
         `File exists: ${target}`,

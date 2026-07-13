@@ -143,6 +143,10 @@ test('LibrarianService: execute fetch verb', async () => {
 });
 
 test('LibrarianService: execute draft verb (to wip mirror)', async () => {
+  // Ensure clean state for idempotent runs
+  const fsSync = require('fs');
+  if (fsSync.existsSync('wip/test-draft.txt')) fsSync.unlinkSync('wip/test-draft.txt');
+
   const service = new LibrarianService('test-service');
   const result = await service.draft('wip/test-draft.txt', 'test content');
   assert.strictEqual(result.success, true);

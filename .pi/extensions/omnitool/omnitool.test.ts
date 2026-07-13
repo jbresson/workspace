@@ -7,7 +7,6 @@ import * as path from "node:path";
 import {
   appendAudit,
   buildRegistryFromExtensions,
-  executeWipSubAction,
 } from "./omnitool";
 
 function mkTmp(prefix: string): string {
@@ -41,74 +40,7 @@ test("appendAudit appends structured entries", () => {
   assert.ok(parsed[0].timestamp);
 });
 
-test("wip init/clone/status/abort lifecycle", async () => {
-  const wipRoot = mkTmp("omni-wip-");
-
-  await executeWipSubAction(wipRoot, {
-    subAction: "init",
-    ticketId: "ABC-123",
-    goals: "Do thing",
-    repos: ["repo-a"],
-  });
-
-  const ticketDir = path.join(wipRoot, "ABC-123");
-  assert.equal(fs.existsSync(path.join(ticketDir, "BUDDY.md")), true);
-  assert.equal(fs.existsSync(path.join(ticketDir, "repo-a", "BUDDY.md")), true);
-
-  fs.writeFileSync(
-    path.join(ticketDir, "repo-a", "BUDDY.md"),
-    "STATUS: READY_FOR_GRADUATION\n# REPO LEDGER: repo-a"
-  );
-
-  const status = await executeWipSubAction(wipRoot, {
-    subAction: "status",
-    ticketId: "ABC-123",
-  });
-
-  assert.equal(status.details.readyRepos.includes("repo-a"), true);
-
-  await executeWipSubAction(wipRoot, {
-    subAction: "clone",
-    ticketId: "ABC-123",
-    repoName: "repo-b",
-    justification: "needed for dependency",
-  });
-
-  assert.equal(fs.existsSync(path.join(ticketDir, "repo-b", "BUDDY.md")), true);
-
-  await executeWipSubAction(wipRoot, {
-    subAction: "abort",
-    ticketId: "ABC-123",
-  });
-
-  assert.equal(fs.existsSync(ticketDir), false);
-});
-
-test("wip clone restores archived ledgers", async () => {
-  const wipRoot = mkTmp("omni-restore-");
-
-  await executeWipSubAction(wipRoot, {
-    subAction: "init",
-    ticketId: "ABC-124",
-    goals: "Restore",
-    repos: [],
-  });
-
-  const archiveDir = path.join(wipRoot, "ABC-124", ".archives", "repo-z");
-  fs.mkdirSync(archiveDir, { recursive: true });
-  fs.writeFileSync(path.join(archiveDir, "BUDDY.md"), "STATUS: IN_PROGRESS\n# REPO LEDGER: repo-z");
-  fs.writeFileSync(path.join(archiveDir, "tool_call.json"), "[{\"x\":1}]");
-
-  await executeWipSubAction(wipRoot, {
-    subAction: "clone",
-    ticketId: "ABC-124",
-    repoName: "repo-z",
-    justification: "reopen",
-  });
-
-  const clonedBuddy = fs.readFileSync(path.join(wipRoot, "ABC-124", "repo-z", "BUDDY.md"), "utf8");
-  const clonedCalls = fs.readFileSync(path.join(wipRoot, "ABC-124", "repo-z", "tool_call.json"), "utf8");
-
-  assert.equal(clonedBuddy.includes("repo-z"), true);
-  assert.equal(clonedCalls.includes('"x":1'), true);
-});
+// NOTE: Legacy wip ticket-based lifecycle tests (init/clone/status/abort with ticketId)
+// have been removed. These tested the old file-mirror wip model which has been
+// replaced by the EXT-010 git worktree backend. See:
+//   .pi/extensions/omnitool/wip-manager/manager.test.ts  (27 tests for new model)

@@ -1,15 +1,17 @@
 /**
  * PathResolver: Enforce wip/ mirror logic for Canonical Intelligence
- * 
+ *
  * Handles:
  * - Classification of paths (canonical vs. temp)
  * - wip/ mirror resolution
  * - Path validation (parent existence, permissions)
  * - Creation-only gate for draft operations
+ * - EXT-010: Wip worktree path detection for AC-4 git-staging
  */
 
 import * as path from 'path';
 import * as fs from 'fs';
+import * as os from 'os';
 
 export interface PathResolutionResult {
   original: string;
@@ -17,6 +19,16 @@ export interface PathResolutionResult {
   isMirror: boolean;
   isCanonical: boolean;
   error?: string;
+}
+
+/**
+ * Info about a path inside a git worktree under ~/wip/<issue>/<repo>/
+ * Used by LibrarianService to auto-stage files after draft/amend (AC-4).
+ */
+export interface WipWorktreeInfo {
+  isWorktree: boolean;
+  worktreeRoot?: string;  // e.g. /Users/john/wip/EXT-010/workspace
+  relFile?: string;       // e.g. src/index.ts
 }
 
 export class PathResolver {
@@ -172,4 +184,54 @@ export class PathResolver {
     // e.g., "wip/primary/src/index.ts" -> "src/index.ts"
     return wipPath.replace(/^wip\/primary\//, '');
   }
+
+  /**
+   * EXT-010 AC-4: Detect if a path is inside a git worktree at ~/wip/<issue>/<repo>/
+   *
+   * Structure: ~/wip/<issue>/<repo>/<relFile>
+   *   - <issue> must match [A-Z]+-[0-9]+ (at least one path segment before repo)
+   *   - <repo> is the second segment after ~/wip/
+   *   - <relFile> is everything after ~/wip/<issue>/<repo>/
+   *
+   * Returns { isWorktree: false } for paths NOT under ~/wip/<issue>/<repo>/
+   * Returns { isWorktree: true, worktreeRoot, relFile } for paths inside a worktree.
+   *
+   * Non-fatal: if home dir cannot be resolved, returns { isWorktree: false }.
+   */
+  static getWipWorktreeInfo(filePath: string): WipWorktreeInfo {
+    try {
+      const wipBase = path.join(os.homedir(), 'wip');
+      const absPath = path.isAbsolute(filePath)
+        ? filePath
+        : path.resolve(filePath);
+
+      // Must start with ~/wip/ + separator
+      if (!absPath.startsWith(wipBase + path.sep)) {
+        return { isWorktree: false };
+      }
+
+      // Strip wipBase/ → e.g. "EXT-010/workspace/src/index.ts"
+      const rel = absPath.slice(wipBase.length + 1);
+      const parts = rel.split(path.sep);
+
+      // Need at least: <issue>/<repo>/<file>
+      if (parts.length < 3) return { isWorktree: false };
+
+      const [issue, repo, ...fileParts] = parts;
+
+      // Validate issue format to avoid false positives (e.g. BUDDY.md at ticket root)
+      if (!/^[A-Z][A-Z0-9]*-[0-9]+$/.test(issue)) return { isWorktree: false };
+      if (!repo || fileParts.length === 0) return { isWorktree: false };
+
+      return {
+        isWorktree: true,
+        worktreeRoot: path.join(wipBase, issue, repo),
+        relFile: fileParts.join(path.sep),
+      };
+    } catch {
+      return { isWorktree: false };
+    }
+  }
 }
+
+export default PathResolver;
